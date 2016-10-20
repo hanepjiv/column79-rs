@@ -1,0 +1,31 @@
+# -*- mode:toml; coding:utf-8-unix; -*-
+# =============================================================================
+[package]
+name            = "column79"
+version         = "0.1.0"
+authors         = ["hanepjiv <hanepjiv@gmail.com>"]
+license         = "MIT/Apache-2.0"
+keywords        = ["utility"]
+description     = ""
+readme          = "README.md"
+documentation   = "https://bitbucket.org/hanepjiv/column79/overview"
+homepage        = "https://bitbucket.org/hanepjiv/column79"
+repository      = "https://hanepjiv@bitbucket.org/hanepjiv/column79.git"
+
+[dependencies]
+bitflags        = "^0.7.0"
+env_logger      = "^0.3.5"
+getopts         = "^0.2.14"
+log             = "^0.3.6"
+regex           = "^0.1.77"
+tempfile        = "^2.1.4"
+toml            = "^0.2.1"
+
+[[bin]]
+name            = "column79"
+test            = true
+doctest         = true
+bench           = false
+doc             = false
+plugin          = false
+harness         = true
