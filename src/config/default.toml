@@ -1,0 +1,90 @@
+# -*- mode:toml;coding:utf-8; -*-
+# =============================================================================
+column                  = 79
+separator_threshold     = 12
+language                = "cargo"
+# =============================================================================
+[[languages]]
+name                    = "c"
+extensions              = ["h", "c"]
+block_comment_begin     = "/\\*"
+block_comment_end       = "\\*/"
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "c++"
+base                    = "c"
+extensions              = ["hh", "cc", "hpp", "cpp"]
+line_comment_begin      = "//"
+sublanguages            = ["c"]
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "rust"
+base                    = "c++"
+extensions              = ["rs"]
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "toml"
+extensions              = ["toml"]
+line_comment_begin      = "#"
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "cargo"
+base                    = "toml"
+sublanguages            = ["rust"]
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "sh"
+extensions              = ["sh"]
+line_comment_begin      = "#"
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "autotools"
+base                    = "sh"
+extensions              = ["ac", "am"]
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "cmake"
+base                    = "sh"
+extensions              = ["txt"]
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "python"
+extensions              = ["py"]
+line_comment_begin      = "#"
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "json"
+base                    = "c++"
+extensions              = ["json"]
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "javascript"
+base                    = "c++"
+extensions              = ["js", "es6"]
+sublanguages            = ["json"]
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "yaml"
+extensions              = ["yaml"]
+line_comment_begin      = "#"
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "haskell"
+extensions              = ["hs"]
+line_comment_begin      = "--"
+block_comment_begin     = "\\{-"
+block_comment_end       = "-\\}"
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "cabal"
+base                    = "haskell"
+extensions              = ["cabal"]
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "stack"
+sublanguages            = ["cabal", "yaml"]
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "elisp"
+extensions              = ["el"]
+line_comment_begin      = ";"
