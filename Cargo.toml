@@ -8,16 +8,16 @@ license         = "MIT/Apache-2.0"
 keywords        = ["utility"]
 description     = ""
 readme          = "README.md"
-documentation   = "https://bitbucket.org/hanepjiv/column79/overview"
-homepage        = "https://bitbucket.org/hanepjiv/column79"
-repository      = "https://hanepjiv@bitbucket.org/hanepjiv/column79.git"
+documentation   = "https://github.com/hanepjiv/column79-rs/wiki"
+homepage        = "https://github.com/hanepjiv/column79-rs"
+repository      = "https://github.com/hanepjiv/column79-rs.git"
 
 [dependencies]
 bitflags        = "^0.7.0"
 env_logger      = "^0.3.5"
 getopts         = "^0.2.14"
 log             = "^0.3.6"
-regex           = "^0.1.77"
+regex           = "^0.1.79"
 tempfile        = "^2.1.4"
 toml            = "^0.2.1"
 

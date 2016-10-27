@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2016/10/21
+//  @date 2016/10/22
 
 //! # Examples
 //!
@@ -46,92 +46,11 @@ mod                     line_type;
 mod                     language;
 mod                     inspector;
 // define  ====================================================================
-const CONFIG_DIRNAME: &'static str              = ".config";
-const CONFIG_DEFAULT_FILENAME: &'static str     = "default.toml";
-const CONFIG_USER_FILENAME: &'static str        = "user.toml";
-const CONFIG_DEFAULT: &'static str              =
-    r##"# -*- mode:toml;coding:utf-8; -*-
-# =============================================================================
-column                  = 79
-separator_threshold     = 12
-language                = "cargo"
-# =============================================================================
-[[languages]]
-name                    = "c"
-extensions              = ["h", "c"]
-block_comment_begin     = "/\\*"
-block_comment_end       = "\\*/"
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "c++"
-base                    = "c"
-extensions              = ["hh", "cc", "hpp", "cpp"]
-line_comment_begin      = "//"
-sublanguages            = ["c"]
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "rust"
-base                    = "c++"
-extensions              = ["rs"]
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "toml"
-extensions              = ["toml"]
-line_comment_begin      = "#"
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "cargo"
-base                    = "toml"
-sublanguages            = ["rust"]
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "sh"
-extensions              = ["sh"]
-line_comment_begin      = "#"
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "autotools"
-base                    = "sh"
-extensions              = ["ac", "am"]
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "cmake"
-base                    = "sh"
-extensions              = ["txt"]
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "python"
-extensions              = ["py"]
-line_comment_begin      = "#"
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "javascript"
-base                    = "c++"
-extensions              = ["js", "es6"]
-sublanguages            = ["json"]
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "json"
-base                    = "c++"
-extensions              = ["json"]
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "haskell"
-extensions              = ["hs"]
-line_comment_begin      = "--"
-block_comment_begin     = "\\{-"
-block_comment_end       = "-\\}"
-# -----------------------------------------------------------------------------
-[[languages]]
-name                    = "elisp"
-extensions              = ["el"]
-line_comment_begin      = ";"
-"##;
-const CONFIG_USER: &'static str              =
-    r##"# -*- mode:toml;coding:utf-8; -*-
-# user defined config
-# see ./default.toml
-"##;
+const CONFIG_DIRNAME: &'static str      = ".config";
+const CONFIG_DEFAULT_PATH: &'static str = "default.toml";
+const CONFIG_USER_PATH: &'static str    = "user.toml";
+const CONFIG_DEFAULT: &'static str      = include_str!("config/default.toml");
+const CONFIG_USER: &'static str         = include_str!("config/user.toml");
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Command
@@ -204,14 +123,14 @@ impl Column79 {
         }
         // config_default_path  -----------------------------------------------
         let mut config_default_path = config_dir.clone();
-        config_default_path.push(CONFIG_DEFAULT_FILENAME);
+        config_default_path.push(CONFIG_DEFAULT_PATH);
         if !config_default_path.exists() {
             try!(Column79::create_config(config_default_path.clone(),
                                          CONFIG_DEFAULT))
         }
         // config_user_path  --------------------------------------------------
         let mut config_user_path = config_dir.clone();
-        config_user_path.push(CONFIG_USER_FILENAME);
+        config_user_path.push(CONFIG_USER_PATH);
         if !config_user_path.exists() {
             try!(Column79::create_config(config_user_path.clone(),
                                          CONFIG_USER))
