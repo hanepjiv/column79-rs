@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2016/10/22
+//  @date 2016/10/27
 
 //! # Examples
 //!
@@ -17,8 +17,8 @@
 // attribute  =================================================================
 #![deny(fat_ptr_transmutes, missing_copy_implementations,
         missing_debug_implementations, missing_docs, unstable_features,
-        unused_extern_crates, unused_qualifications, unused_results,
-        unused_import_braces, variant_size_differences, warnings)]
+        unused_results, unused_import_braces, variant_size_differences)]
+#![warn(unused_qualifications, unused_extern_crates, warnings)]
 #![allow(box_pointers, trivial_casts, trivial_numeric_casts, unsafe_code)]
 // extern  ====================================================================
 #[macro_use] extern     crate bitflags;
