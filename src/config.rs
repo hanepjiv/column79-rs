@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2016/10/21
+//  @date 2016/11/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -102,23 +102,6 @@ impl Config {
             if septhr.is_some() { self.septhr = septhr.unwrap(); }
         }
         {
-            let values = match table.get("languages") {
-                None            => None,
-                Some(c)         => match c.as_slice() {
-                    None        => {
-                        error!("Config::import({:?}): languages is not slice",
-                               path);
-                        return Err(InvalidConfig("column79::Config::import"));
-                    },
-                    Some(v)     => Some(v)
-                }
-            };
-            if values.is_some() {
-                let mut languages = try!(parse_languages(&values.unwrap()));
-                self.languages.append(&mut languages);
-            }
-        }
-        {
             let language = match table.get("language") {
                 None            => None,
                 Some(c)         => match c.as_str() {
@@ -131,6 +114,22 @@ impl Config {
                 }
             };
             if language.is_some()   { self.language = language.unwrap(); }
+        }
+        {
+            let values = match table.get("languages") {
+                None            => None,
+                Some(c)         => match c.as_slice() {
+                    None        => {
+                        error!("Config::import({:?}): languages is not slice",
+                               path);
+                        return Err(InvalidConfig("column79::Config::import"));
+                    },
+                    Some(v)     => Some(v)
+                }
+            };
+            if values.is_some() {
+                try!(parse_languages(&values.unwrap(), &mut self.languages));
+            }
         }
         Ok(())
     }

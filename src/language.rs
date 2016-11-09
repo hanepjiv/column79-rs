@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2016/10/21
+//  @date 2016/11/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -249,8 +249,9 @@ impl  Language {
     }
 }
 // ////////////////////////////////////////////////////////////////////////////
-pub fn parse_languages(slice: &[Value])
-                       -> Result<BTreeMap<String, Language>, Error> {
+pub fn parse_languages(slice: &[Value],
+                       languages: &mut BTreeMap<String, Language>)
+                       -> Result<(), Error> {
     let mut srcs = BTreeMap::new();
     for i in slice {
         let table = try!(i.as_table().
@@ -265,10 +266,9 @@ pub fn parse_languages(slice: &[Value])
         }
     }
 
-    let mut languages = BTreeMap::new();
     for k in srcs.keys() {
         if languages.contains_key(k) { continue; }
-        let l = try!(Language::new(&srcs, k, &mut Vec::new(), &mut languages));
+        let l = try!(Language::new(&srcs, k, &mut Vec::new(), languages));
         match languages.insert(k.clone(), l) {
             Some(_)     => {
                 error!("parse_languages: languages.insert");
@@ -278,5 +278,5 @@ pub fn parse_languages(slice: &[Value])
         }
     }
 
-    Ok(languages)
+    Ok(())
 }

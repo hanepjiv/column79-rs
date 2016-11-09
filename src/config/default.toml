@@ -88,3 +88,8 @@ sublanguages            = ["cabal", "yaml"]
 name                    = "elisp"
 extensions              = ["el"]
 line_comment_begin      = ";"
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "glsl"
+base                    = "c++"
+extensions              = ["glsl"]
