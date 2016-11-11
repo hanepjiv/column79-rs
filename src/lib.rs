@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2016/10/27
+//  @date 2016/11/11
 
 //! # Examples
 //!
@@ -27,15 +27,14 @@ extern                  crate regex;
 extern                  crate tempfile;
 extern                  crate toml;
 // use  =======================================================================
-use                     ::std::env;
 use                     ::std::path::PathBuf;
-use                     ::std::io;
 use                     ::std::io::Write;
 use                     ::std::fs::File;
 // ----------------------------------------------------------------------------
 use                     config::Config;
 pub use                 error::Error;
-use                     error::Error::IOError;
+use                     error::Error::{ IOError,
+                                        Column79Error, };
 use                     inspector::{ Inspector, Checker, Replacer, };
 // mod  =======================================================================
 mod                     error;
@@ -99,8 +98,14 @@ impl Column79 {
     /// create_config_default
     fn create_config(path: PathBuf, config: &'static str)
                      -> Result<(), Error> {
-        let mut f = try!(File::create(path).map_err(|e| IOError(e)));
-        f.write_all(config.as_ref()).map_err(|e| IOError(e))
+        let mut f = File::create(path.clone()).map_err(|e| IOError(format!(
+            "::column79::lib::Column79::create_config(\"{:?}\", ...): \
+             ::std::fs::File::create(...): \
+             failed", path), e))?;
+        f.write_all(config.as_ref()).map_err(|e| IOError(format!(
+            "::column79::lib::Column79::create_config(\"{:?}\", ...): \
+             ::std::fs::File::write_all(...): \
+             failed", path), e))
     }
     // ========================================================================
     /// run
@@ -111,41 +116,50 @@ impl Column79 {
                septhr:          Option<usize>,
                flags:           flags::Flags) -> Result<(), Error> {
         // config_dir  --------------------------------------------------------
-        let mut config_dir = try!(env::home_dir()
-                                  .ok_or(IOError(io::Error::last_os_error())));
+        let mut config_dir = ::std::env::home_dir().ok_or(Column79Error(
+            format!(
+                "::column79::lib::Column79::run(\"{:?}\"): \
+                 ::std::env::home_dir(): not found", input)))?;
         config_dir.push(CONFIG_DIRNAME);
-        config_dir.push(try!(try!(env::current_exe().map_err(|e| IOError(e)))
-                             .file_name()
-                             .ok_or(IOError(io::Error::last_os_error()))));
+        config_dir.push(::std::env::current_exe().map_err(|e| IOError(format!(
+            "::column79::lib::Column79::run(..., \"{:?}\", ...): \
+             ::std::env::current_exe(): failed", input), e))?
+                        .file_name()
+                        .ok_or(Column79Error(format!(
+                            "::column79::lib::Column79::run(\"{:?}\"): \
+                             ::std::env::current_exe().file_name(): \
+                             not found", input)))?);
         if !config_dir.exists() {
-            try!(::std::fs::create_dir_all(config_dir.clone())
-                 .map_err(|e| IOError(e)));
+            ::std::fs::create_dir_all(config_dir.clone())
+                 .map_err(|e| IOError(format!(
+                     "::column79::lib::Column79::run(\"{:?}\"): \
+                      ::std::fs::current_dir_all(): failed", input), e))?
         }
         // config_default_path  -----------------------------------------------
         let mut config_default_path = config_dir.clone();
         config_default_path.push(CONFIG_DEFAULT_PATH);
         if !config_default_path.exists() {
-            try!(Column79::create_config(config_default_path.clone(),
-                                         CONFIG_DEFAULT))
+            Column79::create_config(config_default_path.clone(),
+                                    CONFIG_DEFAULT)?
         }
         // config_user_path  --------------------------------------------------
         let mut config_user_path = config_dir.clone();
         config_user_path.push(CONFIG_USER_PATH);
         if !config_user_path.exists() {
-            try!(Column79::create_config(config_user_path.clone(),
-                                         CONFIG_USER))
+            Column79::create_config(config_user_path.clone(),
+                                         CONFIG_USER)?
         }
 
         let mut config =
-            try!(Config::new(&config_default_path.clone().into_os_string()));
-        try!(config.import(&config_user_path.clone().into_os_string()));
+            Config::new(&config_default_path.clone().into_os_string())?;
+        config.import(&config_user_path.clone().into_os_string())?;
 
         if column.is_some()     { config.column         = column.unwrap() };
         if septhr.is_some()     { config.septhr         = septhr.unwrap() };
         if language.is_some()   { config.language       = language.unwrap() };
         config.flags.insert(flags);
 
-        try!(config.validation());
+        config.validation()?;
 
         let c79 = Column79 {
             command:                    command,
@@ -167,11 +181,18 @@ impl Column79 {
     /// walk
     fn walk<T>(&self, path: &PathBuf, inspector: &T) ->  Result<(), Error>
         where T:        Inspector, {
-        for i in try!(::std::fs::read_dir(path).map_err(|e| IOError(e))) {
-            let entry = try!(i.map_err(|e| IOError(e)));
-            let ftype = try!(entry.file_type().map_err(|e| IOError(e)));
+        for i in ::std::fs::read_dir(path).map_err(|e| IOError(format!(
+            "::column79::lib::Column79::walk(\"{:?}\", ...): \
+             ::std::fs::read_dir(...): \
+             failed", path), e))? {
+            let entry = i.map_err(|e| IOError(format!(
+                "::column79::lib::Column79::walk(\"{:?}\", ...): \
+                 entry(...): failed", path), e))?;
+            let ftype = entry.file_type().map_err(|e| IOError(format!(
+                "::column79::lib::Column79::walk(\"{:?}\", ...): \
+                 file_type(...): failed", path), e))?;
             if ftype.is_dir() {
-                let _ = try!(self.walk(&entry.path(), inspector));
+                let _ = self.walk(&entry.path(), inspector)?;
                 continue;
             }
             let entry_path = &entry.path();
@@ -179,7 +200,7 @@ impl Column79 {
                 Some(language)  => {
                     info!("Column79::walk {} {:?}",
                           language.peek_name(), entry_path);
-                    try!(inspector.inspect(language, entry_path))
+                    inspector.inspect(language, entry_path)?
                 },
                 None            => (),
             }
@@ -189,8 +210,8 @@ impl Column79 {
     // ========================================================================
     /// init
     fn init(&self) -> Result<(), Error> {
-        try!(Column79::create_config(self.config_default_path.clone(),
-                                     CONFIG_DEFAULT));
+        Column79::create_config(self.config_default_path.clone(),
+                                CONFIG_DEFAULT)?;
         if !self.config_user_path.exists() {
             return Column79::create_config(self.config_user_path.clone(),
                                            CONFIG_USER);
@@ -199,8 +220,7 @@ impl Column79 {
             return Column79::create_config(self.config_user_path.clone(),
                                            CONFIG_USER);
         }
-        if try!(::ask::ask("Do you want to overwrite your user config?",
-                           false)) {
+        if ::ask::ask("Do you want to overwrite your user config?", false)? {
             return Column79::create_config(self.config_user_path.clone(),
                                            CONFIG_USER);
         }

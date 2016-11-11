@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2016/11/09
+//  @date 2016/11/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -17,7 +17,8 @@ use                     ::std::collections::BTreeMap;
 // ----------------------------------------------------------------------------
 use                     error::Error;
 use                     error::Error::{ IOError,
-                                        ParseConfigError, InvalidConfig };
+                                        ParseConfigError,
+                                        InvalidConfigError };
 use                     flags;
 use                     language::{ Language, parse_languages, };
 // ////////////////////////////////////////////////////////////////////////////
@@ -54,7 +55,7 @@ impl Config {
     /// new
     pub fn new(path: &OsString) -> Result<Self, Error> {
         let mut config = Config::default();
-        try!(config.import(path));
+        config.import(path)?;
         Ok(config)
     }
     // ========================================================================
@@ -64,22 +65,28 @@ impl Config {
             let mut src = String::new();
             let mut parser;
             {
-                let _ = try!(File::open(path.clone())
-                             .and_then(|mut f| { f.read_to_string(&mut src) })
-                             .map_err(|e| IOError(e)));
+                let _ = File::open(path.clone())
+                    .and_then(|mut f| { f.read_to_string(&mut src) })
+                    .map_err(|e| IOError(
+                        format!("::column79::config::Config::import({:?}): \
+                                 open", path),
+                        e))?;
                 parser = ::toml::Parser::new(&src);
             }
-            table = try!(parser.parse()
-                         .ok_or(ParseConfigError(parser.errors)));
+            table = parser.parse()
+                .ok_or(ParseConfigError(
+                    format!("::column79::config::Config::import({:?}): \
+                             parse", path),
+                    parser.errors))?;
         }
         {
             let column = match table.get("column") {
                 None            => None,
                 Some(c)         => match c.as_integer() {
                     None        => {
-                        error!("Config::import({:?}): column is not integer",
-                               path);
-                        return Err(InvalidConfig("column79::Config::import"));
+                        return Err(InvalidConfigError(format!(
+                            "::column79::config::Config::import({:?}): \
+                             column is not integer", path)));
                     },
                     Some(v)     => Some(v as usize)
                 }
@@ -91,10 +98,9 @@ impl Config {
                 None            => None,
                 Some(c)         => match c.as_integer() {
                     None        => {
-                        error!("Config::import({:?}): \
-                                separator_threshold is not integer",
-                               path);
-                        return Err(InvalidConfig("column79::Config::import"));
+                        return Err(InvalidConfigError(format!(
+                            "::column79::config::Config::import({:?}): \
+                             separator_threshold is not integer", path)));
                     },
                     Some(v)     => Some(v as usize)
                 }
@@ -106,9 +112,9 @@ impl Config {
                 None            => None,
                 Some(c)         => match c.as_str() {
                     None        => {
-                        error!("Config::import({:?}): language is not integer",
-                               path);
-                        return Err(InvalidConfig("column79::Config::import"));
+                        return Err(InvalidConfigError(format!(
+                            "::column79::config::Config::import({:?}): \
+                             language is not integer", path)));
                     },
                     Some(v)     => Some(String::from(v))
                 }
@@ -120,15 +126,15 @@ impl Config {
                 None            => None,
                 Some(c)         => match c.as_slice() {
                     None        => {
-                        error!("Config::import({:?}): languages is not slice",
-                               path);
-                        return Err(InvalidConfig("column79::Config::import"));
+                        return Err(InvalidConfigError(format!(
+                            "::column79::config::Config::import({:?}): \
+                             languages is not slice", path)));
                     },
                     Some(v)     => Some(v)
                 }
             };
             if values.is_some() {
-                try!(parse_languages(&values.unwrap(), &mut self.languages));
+                parse_languages(&values.unwrap(), &mut self.languages)?;
             }
         }
         Ok(())
@@ -137,11 +143,9 @@ impl Config {
     pub fn validation(&self) -> Result<(), Error> {
         match self.languages.get(&self.language) {
             Some(_)     => Ok(()),
-            None        => {
-                error!("Config::validation: language not found. {}",
-                       self.language);
-                Err(InvalidConfig("column79::Config::validation"))
-            },
+            None        => Err(InvalidConfigError(format!(
+                "::column79::config::Config::validation(&self): \
+                 language not found {}", self.language))),
         }
     }
     // ========================================================================

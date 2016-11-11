@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2016/10/15
+//  @date 2016/11/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // extern  ====================================================================
@@ -17,14 +17,16 @@ extern                  crate toml;
 /// enum Error
 #[derive( Debug, )]
 pub enum Error {
+    /// Column79Error
+    Column79Error(String),
     /// IOError
-    IOError(::std::io::Error),
+    IOError(String, ::std::io::Error),
     /// ParseConfigError
-    ParseConfigError(Vec<::toml::ParserError>),
-    /// InvalidConfig
-    InvalidConfig(&'static str),
+    ParseConfigError(String, Vec<::toml::ParserError>),
+    /// InvalidConfigError
+    InvalidConfigError(String),
     /// InspectError
-    InspectError(&'static str),
+    InspectError(String),
 }
 // ============================================================================
 impl ::std::fmt::Display for Error {
@@ -35,13 +37,10 @@ impl ::std::fmt::Display for Error {
 // ============================================================================
 impl ::std::error::Error for Error {
     fn description(&self) -> &str { match self {
-        &Error::IOError(ref _inner)
-            => "::column79::Error::IOError",
-        &Error::ParseConfigError(ref _inner)
-            => "::column79::Error::ParseConfigError",
-        &Error::InvalidConfig(ref _inner)
-            => "::column79::Error::InvalidConfig",
-        &Error::InspectError(ref _inner)
-            => "::column79::Error::InspectError",
+        &Error::Column79Error(ref m)            => m.as_str(),
+        &Error::IOError(ref m, _)               => m.as_str(),
+        &Error::ParseConfigError(ref m, _)      => m.as_str(),
+        &Error::InvalidConfigError(ref m)       => m.as_str(),
+        &Error::InspectError(ref m)             => m.as_str(),
     } }
 }

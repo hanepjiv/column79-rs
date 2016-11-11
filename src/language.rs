@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2016/11/09
+//  @date 2016/11/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -16,7 +16,7 @@ use                     ::toml::{ Value, Table };
 use                     ::regex::{ Regex, Captures, };
 // ----------------------------------------------------------------------------
 use                     error::Error;
-use                     Error::InvalidConfig;
+use                     Error::InvalidConfigError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct LanguageCommon
@@ -40,44 +40,66 @@ impl LanguageCommon {
     // ========================================================================
     /// new
     pub fn new(table: &Table) -> Result<Self, Error> {
-        let name =
-            try!(try!(table.get("name")
-                      .ok_or(InvalidConfig("LanguageCommon: get(name)")))
-                 .as_str()
-                 .ok_or(InvalidConfig("LanguageCommon: name.as_str")));
+        let name_value = table.get("name").ok_or(InvalidConfigError(format!(
+            "::column79::language::LanguageCommon::new(...): \
+             get(\"name\")")))?;
+        let name = name_value.as_str().ok_or(InvalidConfigError(format!(
+            "::column79::language::LanguageCommon::new(...): \
+             name = \"{:?}\": as_str", name_value)))?;
         let exts_src = match table.get("extensions") {
             Some(v)     =>
-                try!(v.as_slice()
-                     .ok_or(InvalidConfig("LanguageCommon: exts.as_slice"))),
+                v.as_slice().ok_or(InvalidConfigError(format!(
+                    "::column79::language::LanguageCommon::new(...): \
+                     : name = \"{}\": as_slice", name)))?,
             None        => &[],
         };
         let mut exts = Vec::new();
         for i in exts_src {
             exts.push(String::from(
-                try!(i.as_str()
-                     .ok_or(InvalidConfig("LanguageCommon: exts.as_str")))))
+                i.as_str().ok_or(InvalidConfigError(format!(
+                    "::column79::language::LanguageCommon::new(...): \
+                     : name = \"{}\", extension = {:?}: \
+                     as_str", name, i)))?))
         }
         let lcb = match table.get("line_comment_begin") {
-            Some(v)     => v.as_str().map(|s| -> String { String::from(s) }),
+            Some(v)     => Some(String::from(
+                v.as_str().ok_or(InvalidConfigError(format!(
+                    "::column79::language::LanguageCommon::new(...): \
+                     : name = \"{}\", line_comment_begin = \"{:?}\": \
+                     as_str", name, v)))?)),
             None        => None,
         };
         let bcb = match table.get("block_comment_begin") {
-            Some(v)     => v.as_str().map(|s| -> String { String::from(s) }),
+            Some(v)     => Some(String::from(
+                v.as_str().ok_or(InvalidConfigError(format!(
+                    "::column79::language::LanguageCommon::new(...): \
+                     : name = \"{}\", block_comment_begin = \"{:?}\": \
+                     as_str", name, v)))?)),
             None        => None,
         };
         let bce = match table.get("block_comment_end") {
-            Some(v)     => v.as_str().map(|s| -> String { String::from(s) }),
+            Some(v)     => Some(String::from(
+                v.as_str().ok_or(InvalidConfigError(format!(
+                    "::column79::language::LanguageCommon::new(...): \
+                     : name = \"{}\", block_comment_end = \"{:?}\": \
+                     as_str", name, v)))?)),
             None        => None,
         };
         let mut sublanguages = Vec::new();
         {
             let sl = table.get("sublanguages");
             if sl.is_some() {
-                for i in try!(sl.unwrap().as_slice().
-                              ok_or(InvalidConfig("sl.as_slice"))) {
+                for i in sl.unwrap().as_slice()
+                    .ok_or(InvalidConfigError(format!(
+                        "::column79::language::LanguageCommon::new(...): \
+                         : name = \"{}\", sublanguages = \"{:?}\": \
+                         as_slice", name, sl)))? {
                     sublanguages.push(String::from(
-                        try!(i.as_str().ok_or(InvalidConfig("i.as_str")))));
-                }
+                        i.as_str().ok_or(InvalidConfigError(format!(
+                            "::column79::language::LanguageCommon::new(...): \
+                             : name = \"{}\", sublanguage = \"{:?}\": \
+                             as_str", name, i)))?));
+                    }
             }
         }
         Ok(LanguageCommon {
@@ -118,13 +140,18 @@ impl LanguageSrc {
     // ========================================================================
     /// new
     pub fn new(table: &Table) -> Result<Self, Error> {
+        let common = LanguageCommon::new(table)?;
         let base = match table.get("base") {
-            Some(v)     => v.as_str().map(|s| -> String { String::from(s) }),
+            Some(v)     => Some(String::from(
+                v.as_str().ok_or(InvalidConfigError(format!(
+                    "::column79::language::LanguageSrc::new(...): \
+                     : name = \"{}\", base = {:?}: \
+                     as_str", common.name, v)))?)),
             None        => None,
         };
 
         Ok(LanguageSrc {
-            common:     try!(LanguageCommon::new(table)),
+            common:     common,
             base:       base,
         })
     }
@@ -167,22 +194,28 @@ impl  Language {
                descent: &mut Vec<String>,
                langs:   &mut BTreeMap<String, Language>)
                -> Result<Self, Error> {
-        let src = srcs.get(name).unwrap();
         descent.push(name.clone());
+        let src = srcs.get(name).ok_or(InvalidConfigError(format!(
+            "::column79::language::Language::new(..., \"{}\", ...): \
+             not found", name)))?;
 
         let mut common = src.common.clone();
         if src.base.is_some() {
             let base_name = src.base.clone().unwrap();
             if descent.contains(&base_name) {
-                error!("Language: cyclic dependencies");
-                return Err(InvalidConfig("Language: cyclic dependencies"));
+                return Err(InvalidConfigError(format!(
+                    "::column79::language::Language::new(...): \
+                     name = \"{}\" base = \"{}\": \
+                     cyclic dependencies", common.name, base_name)));
             }
             if !langs.contains_key(&base_name) {
-                let l = try!(Language::new(srcs, &base_name, descent, langs));
+                let l = Language::new(srcs, &base_name, descent, langs)?;
                 match langs.insert(base_name.clone(), l) {
                     Some(_)     => {
-                        error!("Language: langs insert");
-                        return Err(InvalidConfig("Language: langs insert"))
+                        return Err(InvalidConfigError(format!(
+                            "::column79::language::Language::new(...): \
+                             name = \"{}\": \
+                             already exists", base_name)))
                     }
                     None        => (),
                 }
@@ -193,11 +226,13 @@ impl  Language {
 
         for ref i in &src.common.sublanguages {
             if !langs.contains_key(i.clone()) {
-                let l = try!(Language::new(srcs, i, &mut Vec::new(), langs));
+                let l = Language::new(srcs, i, &mut Vec::new(), langs)?;
                 match langs.insert((*i).clone(), l) {
                     Some(_)     => {
-                        error!("Language: langs insert");
-                        return Err(InvalidConfig("Language: langs insert"))
+                        return Err(InvalidConfigError(format!(
+                            "::column79::language::Language::new(...): \
+                             name = \"{}\": \
+                             already exists", i)))
                     }
                     None        => (),
                 }
@@ -205,23 +240,25 @@ impl  Language {
         }
 
         Ok(Language {
-            re_line:    try!(Regex::new(
-                &format!(r##"^(.*?{}\s*)(.*)$"##,
-                         common.lcb.clone().unwrap_or(String::new())))
-                             .map_err(|_| {
-                                 error!("Language::new: {} line_comment",
-                                        common.name);
-                                 InvalidConfig("re_line")
-                             } )),
-            re_block:   try!(Regex::new(
-                &format!(r##"^(.*?{}\s*)(.*?)(\s*{})$"##,
-                         common.bcb.clone().unwrap_or(String::new()),
-                         common.bce.clone().unwrap_or(String::new())))
-                             .map_err(|_| {
-                                 error!("Language::new: {} line_block",
-                                        common.name);
-                                 InvalidConfig("re_block")
-                             } )),
+            re_line:    Regex::new(&format!(
+                r##"^(.*?{}\s*)(.*)$"##,
+                common.lcb.clone().unwrap_or(String::new())))
+                .map_err(|_| {
+                    InvalidConfigError(format!(
+                        "::column79::language::Language::new(...): \
+                         name = \"{}\": \
+                         regex line comment", common.name))
+                })?,
+            re_block:   Regex::new(&format!(
+                r##"^(.*?{}\s*)(.*?)(\s*{})$"##,
+                common.bcb.clone().unwrap_or(String::new()),
+                common.bce.clone().unwrap_or(String::new())))
+                .map_err(|_| {
+                    InvalidConfigError(format!(
+                        "::column79::language::Language::new(...): \
+                         name = \"{}\": \
+                         regex block comment", common.name))
+                })?,
             common:     common,
         })
     }
@@ -254,13 +291,17 @@ pub fn parse_languages(slice: &[Value],
                        -> Result<(), Error> {
     let mut srcs = BTreeMap::new();
     for i in slice {
-        let table = try!(i.as_table().
-                         ok_or(InvalidConfig("parse_languages: as_table")));
-        let src = try!(LanguageSrc::new(table));
-        match srcs.insert(src.common.name.clone(), src) {
+        let table = i.as_table().ok_or(InvalidConfigError(format!(
+            "::column79::language::parse_languages(...): \
+             as_table {:?}", i)))?;
+        let src = LanguageSrc::new(table)?;
+        let name = src.common.name.clone();
+        match srcs.insert(name.clone(), src.clone()) {
             Some(_)     => {
-                error!("parse_language: srcs.insert");
-                return Err(InvalidConfig("parse_languages: srcs.insert"))
+                return Err(InvalidConfigError(format!(
+                    "::column79::language::parse_languages: \
+                     name = \"{}\": \
+                     already exists", name)))
             }
             None        => (),
         }
@@ -268,11 +309,13 @@ pub fn parse_languages(slice: &[Value],
 
     for k in srcs.keys() {
         if languages.contains_key(k) { continue; }
-        let l = try!(Language::new(&srcs, k, &mut Vec::new(), languages));
+        let l = Language::new(&srcs, k, &mut Vec::new(), languages)?;
         match languages.insert(k.clone(), l) {
             Some(_)     => {
-                error!("parse_languages: languages.insert");
-                return Err(InvalidConfig("parse_languages: languages.insert"))
+                return Err(InvalidConfigError(format!(
+                    "::column79::language::parse_languages: \
+                     name = \"{}\": \
+                     already exists", k)))
             }
             None        => (),
         }
