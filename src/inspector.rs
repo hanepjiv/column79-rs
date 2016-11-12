@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2016/11/11
+//  @date 2016/11/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -316,8 +316,8 @@ impl <'a> Inspector for Replacer<'a> {
                 println!("* backup: {:?}", path_back.clone().into_os_string());
                 let _ = ::std::fs::rename(path, path_back)
                     .map_err(|e| IOError(format!(
-                    "::column79::inspector::Replacer::inspect : \
-                     ::std::fs::rename(\"{:?}\", ...)", path), e))?;
+                        "::column79::inspector::Replacer::inspect : \
+                         ::std::fs::rename(\"{:?}\", ...)", path), e))?;
             }
             let mut file_new = File::create(path).map_err(|e| IOError(format!(
                 "::column79::inspector::Replacer::inspect : \
@@ -327,7 +327,6 @@ impl <'a> Inspector for Replacer<'a> {
                 .map_err(|e| IOError(format!(
                     "::column79::inspector::Replacer::inspect : \
                      ::std::io::copy(...)"), e))?;
-
             println!("* replace: {:?}", path.clone().into_os_string());
         }
         Ok(())

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2016/11/11
+//  @date 2016/11/12
 
 //! # Examples
 //!
@@ -69,7 +69,7 @@ impl <'a> From<&'a str> for Command {
     // ========================================================================
     fn from(src: &'a str) -> Self { match src.to_lowercase().as_str() {
         "init"          => Command::Init,
-        "check"         => Command::Check,
+        "check"             => Command::Check,
         "replace"       => Command::Replace,
         _               => Command::Unknown,
     } }
@@ -116,8 +116,8 @@ impl Column79 {
                septhr:          Option<usize>,
                flags:           flags::Flags) -> Result<(), Error> {
         // config_dir  --------------------------------------------------------
-        let mut config_dir = ::std::env::home_dir().ok_or(Column79Error(
-            format!(
+        let mut config_dir =
+            ::std::env::home_dir().ok_or(Column79Error(format!(
                 "::column79::lib::Column79::run(\"{:?}\"): \
                  ::std::env::home_dir(): not found", input)))?;
         config_dir.push(CONFIG_DIRNAME);
@@ -131,9 +131,9 @@ impl Column79 {
                              not found", input)))?);
         if !config_dir.exists() {
             ::std::fs::create_dir_all(config_dir.clone())
-                 .map_err(|e| IOError(format!(
-                     "::column79::lib::Column79::run(\"{:?}\"): \
-                      ::std::fs::current_dir_all(): failed", input), e))?
+                .map_err(|e| IOError(format!(
+                    "::column79::lib::Column79::run(\"{:?}\"): \
+                     ::std::fs::current_dir_all(): failed", input), e))?
         }
         // config_default_path  -----------------------------------------------
         let mut config_default_path = config_dir.clone();
@@ -147,7 +147,7 @@ impl Column79 {
         config_user_path.push(CONFIG_USER_PATH);
         if !config_user_path.exists() {
             Column79::create_config(config_user_path.clone(),
-                                         CONFIG_USER)?
+                                    CONFIG_USER)?
         }
 
         let mut config =
@@ -170,8 +170,9 @@ impl Column79 {
             config:                     config,
         };
         match c79.command {
-            Command::Unknown    =>
-                panic!("Column79::run: invalid command {:?}", c79.command),
+            Command::Unknown    => Err(Column79Error(format!(
+                "::column79::lib::Column79::run: \
+                 invalid command {:?}", c79.command))),
             Command::Init       => c79.init(),
             Command::Check      => c79.check(),
             Command::Replace    => c79.replace(),

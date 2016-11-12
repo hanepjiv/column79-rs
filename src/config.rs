@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2016/11/11
+//  @date 2016/11/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -119,7 +119,7 @@ impl Config {
                     Some(v)     => Some(String::from(v))
                 }
             };
-            if language.is_some()   { self.language = language.unwrap(); }
+            if language.is_some() { self.language = language.unwrap(); }
         }
         {
             let values = match table.get("languages") {
