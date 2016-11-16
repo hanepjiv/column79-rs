@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2016/11/12
+//  @date 2016/11/14
 
 //! # Examples
 //!
@@ -55,7 +55,7 @@ fn main() {
         .optopt("c", "column", "set column number", "NUM")
         .optopt("t", "threshold", "set separator threshold number", "NUM")
         .optopt("l", "language",
-                "set language LANG=('cargo' | 'rust' | 'c' | 'c++' | ...)",
+                "set language LANG=('cargo'|'rust'|'c'|'c++'|...)",
                 "LANG")
         .optflag("", "no-ask", "will not be asked to allow");
 
