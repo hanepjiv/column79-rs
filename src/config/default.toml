@@ -93,3 +93,10 @@ line_comment_begin      = ";"
 name                    = "glsl"
 base                    = "c++"
 extensions              = ["glsl"]
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "lua"
+extensions              = ["lua"]
+line_comment_begin      = "--"
+block_comment_begin     = "--[["
+block_comment_end       = "]]--"
