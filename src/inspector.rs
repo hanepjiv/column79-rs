@@ -169,11 +169,11 @@ impl <'a> Replacer<'a> {
     fn make_line(&self, lang: &Language, line_type: &LineType) -> String {
         let mut s =
             Regex::new(&format!(r"(.*){}(.*)",
-                                lang.peek_bcb().clone().unwrap())).unwrap()
-            .replace(&line_type.head().unwrap(),
+                                lang.peek_bcb().clone().unwrap())).unwrap().
+            replace(&line_type.head().unwrap(),
                      format!(r"$1{}$2",
                              lang.peek_lcb().clone().unwrap()).as_str()).
-        into_owned();
+            into_owned();
         s.push_str(line_type.body().unwrap());
         s
     }
