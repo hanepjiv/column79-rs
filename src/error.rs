@@ -47,5 +47,4 @@ impl ::std::error::Error for Error {
         Error::InvalidConfigError(_)            => None,
         Error::InspectError(_)                  => None,
     } }
-
 }

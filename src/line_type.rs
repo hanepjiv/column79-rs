@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2016/11/12
+//  @date 2017/02/15
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -73,8 +73,8 @@ impl LineType {
                            -> Option<LineType> {
         if !lang.has_line_comment() { return None; }
         lang.re_line_captures(line).map(|c| -> LineType {
-            let head = String::from(c.at(1).unwrap());
-            let body = String::from(c.at(2).unwrap());
+            let head = String::from(c.get(1).unwrap().as_str());
+            let body = String::from(c.get(2).unwrap().as_str());
             if LineType::is_separator(conf, &body) {
                 LineType::LineSeparator(head, body)
             } else {
@@ -87,9 +87,9 @@ impl LineType {
                             -> Option<LineType> {
         if !lang.has_block_comment() { return None; }
         lang.re_block_captures(line).map(|c| -> LineType {
-            let head = String::from(c.at(1).unwrap());
-            let body = String::from(c.at(2).unwrap());
-            let foot = String::from(c.at(3).unwrap());
+            let head = String::from(c.get(1).unwrap().as_str());
+            let body = String::from(c.get(2).unwrap().as_str());
+            let foot = String::from(c.get(3).unwrap().as_str());
             if LineType::is_separator(conf, &body) {
                 LineType::BlockSeparator(head, body, foot)
             } else {

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2016/11/12
+//  @date 2017/02/15
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -172,7 +172,8 @@ impl <'a> Replacer<'a> {
                                 lang.peek_bcb().clone().unwrap())).unwrap()
             .replace(&line_type.head().unwrap(),
                      format!(r"$1{}$2",
-                             lang.peek_lcb().clone().unwrap()).as_str());
+                             lang.peek_lcb().clone().unwrap()).as_str()).
+        into_owned();
         s.push_str(line_type.body().unwrap());
         s
     }
