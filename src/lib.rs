@@ -89,7 +89,6 @@
 #[macro_use] extern     crate bitflags;
 #[macro_use] extern     crate log;
 extern                  crate regex;
-#[macro_use] extern     crate serde;
 #[macro_use] extern     crate serde_derive;
 extern                  crate tempfile;
 extern                  crate toml;
