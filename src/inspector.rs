@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2017/02/15
+//  @date 2017/02/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -34,8 +34,8 @@ pub trait Inspector: ::std::fmt::Debug {
     fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error>;
     // ========================================================================
     /// inspect_impl
-    fn inspect_impl<F>(&self, conf: &Config, lang: &Language, path: &PathBuf,
-                       func: &mut F)
+    fn inspect_impl<F>(&self, conf: &Config, lang: &Language,
+                       path: &PathBuf, func: &mut F)
                        -> Result<(), Error>
         where F: FnMut(usize, &LineType, &str) -> Result<(), Error>, {
         let file_in = File::open(path).map_err(|e| IOError(format!(
@@ -264,7 +264,8 @@ impl <'a> Replacer<'a> {
 impl <'a> Inspector for Replacer<'a> {
     // ========================================================================
     /// inspect
-    fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error> {
+    fn inspect(&self, lang: &Language, path: &PathBuf)
+               -> Result<(), Error> {
         let c = self.config.column;
         let mut file_tmp = tempfile().map_err(|e| IOError(format!(
             "::column79::inspector::Replacer::inspect : \

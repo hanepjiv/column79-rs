@@ -6,332 +6,200 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2016/11/12
+//  @date 2017/02/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
+use                     ::std::cell::RefCell;
 use                     ::std::collections::BTreeMap;
 // ----------------------------------------------------------------------------
-use                     ::toml::{ Value, Table };
 use                     ::regex::{ Regex, Captures, };
 // ----------------------------------------------------------------------------
-use                     error::Error;
-use                     Error::InvalidConfigError;
-// ////////////////////////////////////////////////////////////////////////////
-// ============================================================================
-/// struct LanguageCommon
-#[derive( Debug, Clone, )]
-pub struct LanguageCommon {
-    /// name
-    name:               String,
-    /// exts
-    exts:               Vec<String>,
-    /// lcb
-    lcb:                Option<String>,
-    /// bcb
-    bcb:                Option<String>,
-    /// bce
-    bce:                Option<String>,
-    /// sublanguages
-    sublanguages:       Vec<String>,
-}
-// ============================================================================
-impl LanguageCommon {
-    // ========================================================================
-    /// new
-    pub fn new(table: &Table) -> Result<Self, Error> {
-        let name_value = table.get("name").ok_or(InvalidConfigError(format!(
-            "::column79::language::LanguageCommon::new(...): \
-             get(\"name\")")))?;
-        let name = name_value.as_str().ok_or(InvalidConfigError(format!(
-            "::column79::language::LanguageCommon::new(...): \
-             name = \"{:?}\": as_str", name_value)))?;
-        let exts_src = match table.get("extensions") {
-            Some(v)     =>
-                v.as_slice().ok_or(InvalidConfigError(format!(
-                    "::column79::language::LanguageCommon::new(...): \
-                     : name = \"{}\": as_slice", name)))?,
-            None        => &[],
-        };
-        let mut exts = Vec::new();
-        for i in exts_src {
-            exts.push(String::from(
-                i.as_str().ok_or(InvalidConfigError(format!(
-                    "::column79::language::LanguageCommon::new(...): \
-                     : name = \"{}\", extension = {:?}: as_str", name, i)))?))
-        }
-        let lcb = match table.get("line_comment_begin") {
-            Some(v)     => Some(String::from(
-                v.as_str().ok_or(InvalidConfigError(format!(
-                    "::column79::language::LanguageCommon::new(...): \
-                     : name = \"{}\", line_comment_begin = \"{:?}\": as_str",
-                    name, v)))?)),
-            None        => None,
-        };
-        let bcb = match table.get("block_comment_begin") {
-            Some(v)     => Some(String::from(
-                v.as_str().ok_or(InvalidConfigError(format!(
-                    "::column79::language::LanguageCommon::new(...): \
-                     : name = \"{}\", block_comment_begin = \"{:?}\": as_str",
-                    name, v)))?)),
-            None        => None,
-        };
-        let bce = match table.get("block_comment_end") {
-            Some(v)     => Some(String::from(
-                v.as_str().ok_or(InvalidConfigError(format!(
-                    "::column79::language::LanguageCommon::new(...): \
-                     : name = \"{}\", block_comment_end = \"{:?}\": as_str",
-                    name, v)))?)),
-            None        => None,
-        };
-        let mut sublanguages = Vec::new();
-        {
-            let sl = table.get("sublanguages");
-            if sl.is_some() {
-                for i in sl.unwrap().as_slice()
-                    .ok_or(InvalidConfigError(format!(
-                        "::column79::language::LanguageCommon::new(...): \
-                         : name = \"{}\", sublanguages = \"{:?}\": as_slice",
-                        name, sl)))? {
-                        sublanguages.push(String::from(
-                            i.as_str().ok_or(InvalidConfigError(format!(
-                                "::column79::language::LanguageCommon::new(): \
-                                 : name = \"{}\", sublanguage = \"{:?}\": \
-                                 as_str",
-                                name, i)))?));
-                    }
-            }
-        }
-        Ok(LanguageCommon {
-            name:               String::from(name),
-            exts:               exts,
-            lcb:                lcb,
-            bcb:                bcb,
-            bce:                bce,
-            sublanguages:       sublanguages,
-        })
-    }
-    // ========================================================================
-    /// extend
-    pub fn extend(&mut self, src: &LanguageCommon) {
-        if self.lcb.is_none() && src.lcb.is_some() {
-            self.lcb = src.lcb.clone();
-        }
-        if self.bcb.is_none() && src.bcb.is_some() {
-            self.bcb = src.bcb.clone();
-        }
-        if self.bce.is_none() && src.bce.is_some() {
-            self.bce = src.bce.clone();
-        }
-    }
-}
+use                     super::error::Error;
+use                     super::error::Error::InvalidConfigError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct LanguageSrc
-#[derive( Debug, Clone, )]
+#[derive( Debug, Deserialize, )]
 pub struct LanguageSrc {
-    /// common
-    common:             LanguageCommon,
+    /// name
+    pub name:                   Option<String>,
     /// base
-    base:               Option<String>,
-}
-// ============================================================================
-impl LanguageSrc {
-    // ========================================================================
-    /// new
-    pub fn new(table: &Table) -> Result<Self, Error> {
-        let common = LanguageCommon::new(table)?;
-        let base = match table.get("base") {
-            Some(v)     => Some(String::from(
-                v.as_str().ok_or(InvalidConfigError(format!(
-                    "::column79::language::LanguageSrc::new(...): \
-                     : name = \"{}\", base = {:?}: as_str",
-                    common.name, v)))?)),
-            None        => None,
-        };
-
-        Ok(LanguageSrc {
-            common:     common,
-            base:       base,
-        })
-    }
+    pub base:                   Option<String>,
+    /// extensions
+    pub extensions:             Option<Vec<String>>,
+    /// line_comment_begin
+    pub line_comment_begin:     Option<String>,
+    /// block_comment_begin
+    pub block_comment_begin:    Option<String>,
+    /// block_comment_end
+    pub block_comment_end:      Option<String>,
+    /// sublanguages
+    pub sublanguages:           Option<Vec<String>>,
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Language
-#[derive( Debug, Clone, )]
+#[derive( Debug, Clone, Default, )]
 pub struct Language {
+    /// name
+    name:                       String,
+    /// base
+    base:                       Option<String>,
+    /// extensions
+    extensions:                 Vec<String>,
+    /// line_comment_begin
+    line_comment_begin:         Option<String>,
+    /// block_comment_begin
+    block_comment_begin:        Option<String>,
+    /// block_comment_end
+    block_comment_end:          Option<String>,
+    /// sublanguages
+    sublanguages:               Vec<String>,
     /// re_line
-    re_line:    Regex,
+    re_line:                    RefCell<Option<Regex>>,
     /// re_block
-    re_block:   Regex,
-    /// common
-    common:     LanguageCommon,
+    re_block:                   RefCell<Option<Regex>>,
 }
 // ============================================================================
-impl  Language {
+impl Language {
     // ========================================================================
-    pub fn peek_name(&self) -> &String { &self.common.name }
-    pub fn peek_lcb(&self) -> &Option<String> { &self.common.lcb }
-    pub fn peek_bcb(&self) -> &Option<String> { &self.common.bcb }
-    // pub fn peek_bce(&self) -> &Option<String> { &self.common.bce }
+    pub fn peek_name(&self) -> &String          { &self.name }
+    pub fn peek_lcb(&self)  -> &Option<String>  { &self.line_comment_begin }
+    pub fn peek_bcb(&self)  -> &Option<String>  { &self.block_comment_begin }
+    // pub fn peek_bce(&self)  -> &Option<String>  { &self.block_comment_end }
     // ========================================================================
-    pub fn has_line_comment(&self) -> bool { self.common.lcb.is_some() }
-    pub fn has_block_comment(&self) -> bool { self.common.bcb.is_some() }
-    // ========================================================================
-    pub fn re_line_captures<'t>(&self, line: &'t str)
-                                -> Option<Captures<'t>> {
-        self.re_line.captures(line)
+    pub fn has_line_comment(&self) -> bool {
+        self.line_comment_begin.is_some()
     }
-    pub fn re_block_captures<'t>(&self, line: &'t str)
-                                 -> Option<Captures<'t>> {
-        self.re_block.captures(line)
+    // ------------------------------------------------------------------------
+    pub fn has_block_comment(&self) -> bool {
+        self.block_comment_begin.is_some() && self.block_comment_end.is_some()
     }
     // ========================================================================
-    /// new
-    pub fn new(srcs:    &BTreeMap<String, LanguageSrc>,
-               name:    &String,
-               descent: &mut Vec<String>,
-               langs:   &mut BTreeMap<String, Language>)
-               -> Result<Self, Error> {
-        descent.push(name.clone());
-        let src = srcs.get(name).ok_or(InvalidConfigError(format!(
-            "::column79::language::Language::new(..., \"{}\", ...): not found",
-            name)))?;
-
-        let mut common = src.common.clone();
-        if src.base.is_some() {
-            let base_name = src.base.clone().unwrap();
-            if descent.contains(&base_name) {
+    /// extend
+    pub fn extend(&mut self, base: &Language) {
+        if self.line_comment_begin.is_none() &&
+            base.line_comment_begin.is_some() {
+                self.line_comment_begin = base.line_comment_begin.clone();
+            }
+        if self.block_comment_begin.is_none() &&
+            base.block_comment_begin.is_some() {
+                self.block_comment_begin = base.block_comment_begin.clone();
+            }
+        if self.block_comment_end.is_none() &&
+            base.block_comment_end.is_some() {
+                self.block_comment_end = base.block_comment_end.clone();
+            }
+    }
+    // ========================================================================
+    fn check_descent(&self,
+                     ls: &BTreeMap<String, Language>,
+                     descent: &mut Vec<String>)
+                     -> Result<(), Error> {
+        if descent.contains(&self.name) {
+            return Err(InvalidConfigError(format!(
+                "::column79::language::Language::check_descent(...): \
+                 name = \"{}\": cyclic dependencies", self.name)));
+        }
+        descent.push(self.name.clone());
+        if let Some(ref base) = self.base {
+            if !ls.contains_key(base) {
                 return Err(InvalidConfigError(format!(
-                    "::column79::language::Language::new(...): \
-                     name = \"{}\" base = \"{}\": cyclic dependencies",
-                    common.name, base_name)));
+                    "::column79::language::Language::check_descent(...): \
+                     name = \"{}\", base = \"{}\": invalid base",
+                    self.name, base)));
             }
-            if !langs.contains_key(&base_name) {
-                let l = Language::new(srcs, &base_name, descent, langs)?;
-                match langs.insert(base_name.clone(), l) {
-                    Some(_)     => {
-                        return Err(InvalidConfigError(format!(
-                            "::column79::language::Language::new(...): \
-                             name = \"{}\": languages base: insert failed",
-                            base_name)))
-                    }
-                    None        => (),
-                }
-            }
-            let base = langs.get(&base_name).unwrap();
-            common.extend(&base.common.clone());
+            let _ = ls.get(base).unwrap().check_descent(ls, descent)?;
+        }
+        Ok(())
+    }
+    // ------------------------------------------------------------------------
+    pub fn from_src(src: LanguageSrc, languages: &BTreeMap<String, Language>)
+                    -> Result<Self, Error> {
+        let mut ret     = Language::default();
+        if let Some(x)  = src.name               { ret.name = x; }
+        ret.base        = src.base;
+        if let Some(x)  = src.extensions         { ret.extensions = x; }
+        ret.line_comment_begin  = src.line_comment_begin;
+        ret.block_comment_begin = src.block_comment_begin;
+        ret.block_comment_end   = src.block_comment_end;
+        if let Some(x)  = src.sublanguages       { ret.sublanguages = x; }
+
+        ret.check_descent(languages, &mut Vec::default())?;
+
+        if ret.base.is_some() {
+            let base = ret.base.clone().unwrap();
+            ret.extend(languages.get(&base).unwrap());
         }
 
-        for ref i in &src.common.sublanguages {
-            if !langs.contains_key(i.clone()) {
-                let l = Language::new(srcs, i, &mut Vec::new(), langs)?;
-                match langs.insert((*i).clone(), l) {
-                    Some(_)     => {
-                        return Err(InvalidConfigError(format!(
-                            "::column79::language::Language::new(...): \
-                             name = \"{}\": sublanguages: insert failed", i)))
-                    }
-                    None        => (),
-                }
-            }
-        }
-
-        Ok(Language {
-            re_line:    Regex::new(&format!(
-                r##"^(.*?{}\s*)(.*)$"##,
-                common.lcb.clone().unwrap_or(String::new())))
-                .map_err(|_| {
-                    InvalidConfigError(format!(
-                        "::column79::language::Language::new(...): \
-                         name = \"{}\": regex line comment", common.name))
-                })?,
-            re_block:   Regex::new(&format!(
-                r##"^(.*?{}\s*)(.*?)(\s*{})$"##,
-                common.bcb.clone().unwrap_or(String::new()),
-                common.bce.clone().unwrap_or(String::new())))
-                .map_err(|_| {
-                    InvalidConfigError(format!(
-                        "::column79::language::Language::new(...): \
-                         name = \"{}\": regex block comment", common.name))
-                })?,
-            common:     common,
-        })
+        Ok(ret)
     }
     // ========================================================================
-    pub fn check_path<'a>(&'a self, path: &::std::path::PathBuf,
-                          languages: &'a BTreeMap<String, Language>)
-                          -> Option<&'a Language> {
-        if match path.extension() {
-            Some(ext)           => match ext.to_os_string().into_string() {
-                Ok(ref s)       => self.common.exts.contains(s),
-                Err(_)          => false,
-            },
-            None                => false,
-        } {
-            Some(self)
-        } else {
-            for ref i in self.common.sublanguages.clone() {
-                match languages.get(i).unwrap().check_path(path, languages) {
-                    x@Some(_)   => return x,
-                    None        => (),
-                }
+    pub fn re_line_captures<'t>(&self, line: &'t str) -> Option<Captures<'t>> {
+        if let Some(ref lcb) = self.line_comment_begin {
+            if let Some(ref mut re) = *self.re_line.borrow_mut() {
+                return re.captures(line);
             }
+            let re = Regex::new(&format!(r##"^(.*?{}\s*)(.*)$"##, lcb))
+                .expect("re_line_captures");
+            let ret = re.captures(line);
+            *self.re_line.borrow_mut() = Some(re);
+            ret
+        } else {
             None
         }
     }
-}
-// ////////////////////////////////////////////////////////////////////////////
-pub fn parse_languages(slices: &[Value],
-                       languages: &mut BTreeMap<String, Language>)
-                       -> Result<(), Error> {
-    let mut srcs = BTreeMap::new();
-    for i in slices {
-        let table = i.as_table().ok_or(InvalidConfigError(format!(
-            "::column79::language::parse_languages(...): \
-             as_table {:?}", i)))?;
-        let src = LanguageSrc::new(table)?;
-        let name = src.common.name.clone();
-
-        if srcs.contains_key(&name.clone()) {  // checks for redefine in slices
-            return Err(InvalidConfigError(format!(
-                "::column79::language::parse_languages: \
-                 name = \"{}\": srcs: already exists", name.clone())))
-        }
-
-        match srcs.insert(name.clone(), src.clone()) {
-            Some(_)     => {
-                return Err(InvalidConfigError(format!(
-                    "::column79::language::parse_languages: \
-                     name = \"{}\": srcs: insert failed", name)))
+    // ------------------------------------------------------------------------
+    pub fn re_block_captures<'t>(&self, line: &'t str)
+                                 -> Option<Captures<'t>> {
+        if let Some(ref bcb) = self.block_comment_begin {
+            if let Some(ref bce) = self.block_comment_end {
+                if let Some(ref mut re) = *self.re_block.borrow_mut() {
+                    return re.captures(line);
+                }
+                let re = Regex::new(&format!(r##"^(.*?{}\s*)(.*?)(\s*{})$"##,
+                                             bcb, bce))
+                    .expect("re_block_captures");
+                let ret = re.captures(line);
+                *self.re_block.borrow_mut() = Some(re);
+                ret
+            } else {
+                None
             }
-            None        => (),
+        } else {
+            None
         }
     }
-
-    for k in srcs.keys() {  // checks for redefine in languages
-        if languages.contains_key(k) {
-            return Err(InvalidConfigError(format!(
-                "::column79::language::parse_languages: \
-                 name = \"{}\": languages: already exists", k)))
-        }
-    }
-
-    for k in srcs.keys() {
-        if languages.contains_key(k) {  // throw sublanguages
-            continue;
-        }
-        let l = Language::new(&srcs, k, &mut Vec::new(), languages)?;
-        match languages.insert(k.clone(), l) {
-            Some(_)     => {
-                return Err(InvalidConfigError(format!(
-                    "::column79::language::parse_languages: \
-                     name = \"{}\": languages: insert failed", k)))
+    // ========================================================================
+    pub fn check_path_<'a>(&'a self,
+                           p: &::std::path::PathBuf,
+                           ls: &'a BTreeMap<String, Language>)
+                           -> Option<&'a Language> {
+        for i in self.sublanguages.iter() {
+            if let x@Some(_) = ls.get(i).unwrap().check_path(p, ls) {
+                return x
             }
-            None        => (),
+        }
+        None
+    }
+    // ------------------------------------------------------------------------
+    pub fn check_path<'a>(&'a self,
+                          path: &::std::path::PathBuf,
+                          languages: &'a BTreeMap<String, Language>)
+                          -> Option<&'a Language> {
+        if let Some(ext) = path.extension() {
+            if let Ok(ref s) = ext.to_os_string().into_string() {
+                if self.extensions.contains(s) {
+                    Some(self)
+                } else {
+                    self.check_path_(path, languages)
+                }
+            } else {
+                self.check_path_(path, languages)
+            }
+        } else {
+            self.check_path_(path, languages)
         }
     }
-
-    Ok(())
 }

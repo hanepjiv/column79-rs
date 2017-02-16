@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2016/11/12
+//  @date 2017/02/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -20,32 +20,48 @@ use                     error::Error::{ IOError,
                                         ParseConfigError,
                                         InvalidConfigError };
 use                     flags;
-use                     language::{ Language, parse_languages, };
+use                     language::{ LanguageSrc, Language, };
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
+/// struct ConfigSrc
+#[derive( Debug, Deserialize, )]
+pub struct ConfigSrc {
+    /// column
+    pub column:                         Option<usize>,
+    /// separator_threshold
+    pub separator_threshold:            Option<usize>,
+    /// ask
+    pub ask:                            Option<bool>,
+    /// language
+    pub language:                       Option<String>,
+    /// languages
+    pub languages:                      Option<Vec<LanguageSrc>>,
+}
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Config
 #[derive( Debug, Clone, )]
 pub struct Config {
     /// column
-    pub column:         usize,
-    /// septhr
-    pub septhr:         usize,
-    /// language
-    pub language:       String,
-    /// languages
-    pub languages:      BTreeMap<String, Language>,
+    pub column:                         usize,
+    /// separator_threshold
+    pub separator_threshold:            usize,
     /// flags
-    pub flags:          flags::Flags,
+    pub flags:                          flags::Flags,
+    /// language
+    pub language:                       String,
+    /// languages
+    pub languages:                      BTreeMap<String, Language>,
 }
 // ============================================================================
 impl Default for Config {
     fn default() -> Self {
         Config {
-            column:     79,
-            septhr:     12,
-            language:   String::from("cargo"),
-            languages:  BTreeMap::new(),
-            flags:      flags::Flags::empty(),
+            column:                     79,
+            separator_threshold:        12,
+            flags:                      flags::Flags::empty(),
+            language:                   String::from("cargo"),
+            languages:                  BTreeMap::new(),
         }
     }
 }
@@ -60,98 +76,55 @@ impl Config {
     }
     // ========================================================================
     pub fn import(&mut self, path: &OsString) -> Result<(), Error> {
-        let table;
-        {
-            let mut src = String::new();
-            let mut parser;
-            {
-                let _ = File::open(path.clone())
-                    .and_then(|mut f| { f.read_to_string(&mut src) })
-                    .map_err(|e| IOError(
-                        format!("::column79::config::Config::import({:?}): \
-                                 open", path),
-                        e))?;
-                parser = ::toml::Parser::new(&src);
+        let mut source = String::new();
+        let _ = File::open(path.clone())
+            .and_then(|mut f| { f.read_to_string(&mut source) })
+            .map_err(|e| IOError(
+                format!("::column79::config::Config::import({:?}): open",
+                        path), e))?;
+        let src: ConfigSrc = ::toml::from_str(&source)
+            .map_err(|e| ParseConfigError(
+                format!("::column79::config::Config::import({:?}): parse",
+                        path), e))?;
+        if let Some(x) = src.column { self.column = x; }
+        if let Some(x) = src.separator_threshold {
+            self.separator_threshold = x;
+        }
+        if let Some(x) = src.ask { if x {
+            self.flags.remove(flags::NOASK);
+        } else {
+            self.flags.insert(flags::NOASK);
+        } } else {
+            self.flags.remove(flags::NOASK);
+        }
+        if let Some(x) = src.language { self.language = x; }
+        if let Some(xs) = src.languages { for x in xs {
+            let l = Language::from_src(x, &self.languages)?;
+            if let Some(_) = self.languages.insert(l.peek_name().clone(), l){
+                return Err(InvalidConfigError(format!(
+                    "::column79::language::Config::import(...): \
+                     languages base: insert failed")));
             }
-            table = parser.parse()
-                .ok_or(ParseConfigError(
-                    format!("::column79::config::Config::import({:?}): \
-                             parse", path),
-                    parser.errors))?;
-        }
-        {
-            let column = match table.get("column") {
-                None            => None,
-                Some(c)         => match c.as_integer() {
-                    None        => {
-                        return Err(InvalidConfigError(format!(
-                            "::column79::config::Config::import({:?}): \
-                             column is not integer", path)));
-                    },
-                    Some(v)     => Some(v as usize)
-                }
-            };
-            if column.is_some() { self.column = column.unwrap(); }
-        }
-        {
-            let septhr = match table.get("separator_threshold") {
-                None            => None,
-                Some(c)         => match c.as_integer() {
-                    None        => {
-                        return Err(InvalidConfigError(format!(
-                            "::column79::config::Config::import({:?}): \
-                             separator_threshold is not integer", path)));
-                    },
-                    Some(v)     => Some(v as usize)
-                }
-            };
-            if septhr.is_some() { self.septhr = septhr.unwrap(); }
-        }
-        {
-            let language = match table.get("language") {
-                None            => None,
-                Some(c)         => match c.as_str() {
-                    None        => {
-                        return Err(InvalidConfigError(format!(
-                            "::column79::config::Config::import({:?}): \
-                             language is not integer", path)));
-                    },
-                    Some(v)     => Some(String::from(v))
-                }
-            };
-            if language.is_some() { self.language = language.unwrap(); }
-        }
-        {
-            let values = match table.get("languages") {
-                None            => None,
-                Some(c)         => match c.as_slice() {
-                    None        => {
-                        return Err(InvalidConfigError(format!(
-                            "::column79::config::Config::import({:?}): \
-                             languages is not slice", path)));
-                    },
-                    Some(v)     => Some(v)
-                }
-            };
-            if values.is_some() {
-                parse_languages(&values.unwrap(), &mut self.languages)?;
-            }
-        }
+        } }
         Ok(())
     }
     // ========================================================================
     pub fn validation(&self) -> Result<(), Error> {
-        match self.languages.get(&self.language) {
-            Some(_)     => Ok(()),
-            None        => Err(InvalidConfigError(format!(
+        if self.languages.get(&self.language).is_none() {
+            Err(InvalidConfigError(format!(
                 "::column79::config::Config::validation(&self): \
-                 language not found {}", self.language))),
+                 language not found {}", self.language)))
+        } else {
+            Ok(())
         }
     }
     // ========================================================================
     pub fn check_path(&self, path: &::std::path::PathBuf)
                       -> Option<&Language> {
-        self.languages.get(&self.language).unwrap().
-            check_path(path, &self.languages)
+        if let Some(lang) = self.languages.get(&self.language) {
+            lang.check_path(path, &self.languages)
+        } else {
+            None
+        }
     }
 }

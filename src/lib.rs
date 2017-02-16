@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2017/01/09
+//  @date 2017/02/16
 
 //! # Examples
 //!
@@ -89,6 +89,8 @@
 #[macro_use] extern     crate bitflags;
 #[macro_use] extern     crate log;
 extern                  crate regex;
+#[macro_use] extern     crate serde;
+#[macro_use] extern     crate serde_derive;
 extern                  crate tempfile;
 extern                  crate toml;
 // use  =======================================================================
@@ -218,9 +220,15 @@ impl Column79 {
             Config::new(&config_default_path.clone().into_os_string())?;
         config.import(&config_user_path.clone().into_os_string())?;
 
-        if column.is_some()     { config.column         = column.unwrap() };
-        if septhr.is_some()     { config.septhr         = septhr.unwrap() };
-        if language.is_some()   { config.language       = language.unwrap() };
+        if column.is_some() {
+            config.column               = column.unwrap()
+        };
+        if septhr.is_some() {
+            config.separator_threshold  = septhr.unwrap()
+        };
+        if language.is_some() {
+            config.language             = language.unwrap()
+        };
         config.flags.insert(flags);
 
         config.validation()?;

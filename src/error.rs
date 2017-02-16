@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2017/01/09
+//  @date 2017/02/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -18,7 +18,7 @@ pub enum Error {
     /// IOError
     IOError(String, ::std::io::Error),
     /// ParseConfigError
-    ParseConfigError(String, Vec<::toml::ParserError>),
+    ParseConfigError(String, ::toml::de::Error),
     /// InvalidConfigError
     InvalidConfigError(String),
     /// InspectError
@@ -43,7 +43,7 @@ impl ::std::error::Error for Error {
     fn cause(&self) -> Option<&::std::error::Error> { match *self {
         Error::Column79Error(_)                 => None,
         Error::IOError(_, ref e)                => Some(e),
-        Error::ParseConfigError(_, _)           => None,
+        Error::ParseConfigError(_, ref e)       => Some(e),
         Error::InvalidConfigError(_)            => None,
         Error::InspectError(_)                  => None,
     } }

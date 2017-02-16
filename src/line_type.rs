@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2017/02/15
+//  @date 2017/02/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -56,7 +56,7 @@ impl LineType {
     } }
     // ========================================================================
     pub fn is_separator(conf: &Config, body: &String) -> bool {
-        let t = conf.septhr;
+        let t = conf.separator_threshold;
         if body.len() < t { return false; }
         let mut s = body.chars().rev();
         let b = s.nth(0).unwrap();
