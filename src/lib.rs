@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2017/02/16
+//  @date 2017/03/28
 
 //! # Examples
 //!
@@ -60,7 +60,6 @@
     no_mangle_const_items,
     overlapping_inherent_impls,
     super_or_self_in_global_path,
-    transmute_from_fn_item_types,
     unused_allocation,
     unused_assignments,
     unused_attributes,
