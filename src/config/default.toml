@@ -45,7 +45,7 @@ extensions              = ["ac", "am"]
 [[languages]]
 name                    = "cmake"
 base                    = "sh"
-extensions              = ["txt"]
+extensions              = ["txt", "cmake"]
 # -----------------------------------------------------------------------------
 [[languages]]
 name                    = "python"

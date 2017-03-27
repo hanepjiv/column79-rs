@@ -13,15 +13,15 @@ homepage        = "https://github.com/hanepjiv/column79-rs"
 repository      = "https://github.com/hanepjiv/column79-rs.git"
 # =============================================================================
 [dependencies]
-bitflags        = { default-features = false, version = "^0.8.0" }
-env_logger      = { default-features = false, version = "^0.4.1" }
+bitflags        = { default-features = false, version = "^0.8.2" }
+env_logger      = { default-features = false, version = "^0.4.2" }
 getopts         = { default-features = false, version = "^0.2.14" }
-log             = { default-features = false, version = "^0.3.6" }
+log             = { default-features = false, version = "^0.3.7" }
 regex           = { default-features = false, version = "^0.2.1" }
-serde           = { default-features = false, version = "^0.9.9" }
-serde_derive    = { default-features = false, version = "^0.9.9" }
+serde           = { default-features = false, version = "^0.9.11" }
+serde_derive    = { default-features = false, version = "^0.9.11" }
 tempfile        = { default-features = false, version = "^2.1.5" }
-toml            = { default-features = false, version = "^0.3.0" }
+toml            = { default-features = false, version = "^0.3.1" }
 # =============================================================================
 [[bin]]
 name            = "column79"
