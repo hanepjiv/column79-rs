@@ -100,3 +100,10 @@ extensions              = ["lua"]
 line_comment_begin      = "--"
 block_comment_begin     = "--[["
 block_comment_end       = "]]--"
+# -----------------------------------------------------------------------------
+[[languages]]
+name                    = "nim"
+extensions              = ["nim"]
+line_comment_begin      = "#"
+block_comment_begin     = "#["
+block_comment_end       = "]#"

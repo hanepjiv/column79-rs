@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2017/03/28
+//  @date 2017/04/07
 
 //! # Examples
 //!
@@ -58,7 +58,6 @@
     lifetime_underscore,
     mutable_transmutes,
     no_mangle_const_items,
-    overlapping_inherent_impls,
     super_or_self_in_global_path,
     unused_allocation,
     unused_assignments,
