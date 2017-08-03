@@ -5,8 +5,8 @@ name            = "column79"
 version         = "0.1.4"
 authors         = ["hanepjiv <hanepjiv@gmail.com>"]
 license         = "MIT/Apache-2.0"
-keywords        = ["utility"]
-description     = ""
+keywords        = ["tool", "development"]
+description     = "Source code column checker."
 readme          = "README.md"
 documentation   = "https://github.com/hanepjiv/column79-rs/wiki"
 homepage        = "https://github.com/hanepjiv/column79-rs"
@@ -18,10 +18,10 @@ env_logger      = { default-features = false, version = "^0.4.3" }
 getopts         = { default-features = false, version = "^0.2.14" }
 log             = { default-features = false, version = "^0.3.8" }
 regex           = { default-features = false, version = "^0.2.2" }
-serde           = { default-features = false, version = "^1.0.7" }
-serde_derive    = { default-features = false, version = "^1.0.7" }
-tempfile        = { default-features = false, version = "^2.1.5" }
-toml            = { default-features = false, version = "^0.4.1" }
+serde           = { default-features = false, version = "^1.0.11" }
+serde_derive    = { default-features = false, version = "^1.0.11" }
+tempfile        = { default-features = false, version = "^2.1.6" }
+toml            = { default-features = false, version = "^0.4.4" }
 # =============================================================================
 [[bin]]
 name            = "column79"

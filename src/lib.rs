@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2017/04/07
+//  @date 2017/07/21
 
 //! # Examples
 //!
@@ -28,7 +28,6 @@
     deprecated,
     deprecated_attr,
     extra_requirement_in_impl,
-    hr_lifetime_in_assoc_type,
     improper_ctypes,
     non_camel_case_types,
     non_shorthand_field_patterns,
@@ -51,14 +50,9 @@
     unreachable_code,
     while_true,
     exceeding_bitshifts,
-    illegal_floating_point_constant_pattern,
-    illegal_struct_or_enum_constant_pattern,
-    inaccessible_extern_crate,
     invalid_type_param_default,
-    lifetime_underscore,
     mutable_transmutes,
     no_mangle_const_items,
-    super_or_self_in_global_path,
     unused_allocation,
     unused_assignments,
     unused_attributes,
