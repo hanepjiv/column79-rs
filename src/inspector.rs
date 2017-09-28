@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2017/02/16
+//  @date 2017/09/28
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -314,7 +314,7 @@ impl <'a> Inspector for Replacer<'a> {
                 let mut extension = path.extension().unwrap().to_os_string();
                 extension.push(".backup");
                 let mut path_back = path.clone();
-                path_back.set_extension(extension);
+                let _ = path_back.set_extension(extension);
                 println!("* backup: {:?}", path_back.clone().into_os_string());
                 let _ = ::std::fs::rename(path, path_back)
                     .map_err(|e| IOError(format!(
