@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2017/07/21
+//  @date 2017/10/04
 
 //! # Examples
 //!
@@ -85,7 +85,7 @@ extern                  crate column79;
 // use  =======================================================================
 use                     ::std::path::PathBuf;
 // ----------------------------------------------------------------------------
-use                     ::column79::{ flags, Command, Column79, };
+use                     ::column79::{ Flags, Command, Column79, };
 // mod  =======================================================================
 #[macro_use] mod        unwrap;
 // ////////////////////////////////////////////////////////////////////////////
@@ -151,8 +151,8 @@ fn main() {
         None
     };
 
-    let mut fs = flags::Flags::empty();
-    if matches.opt_present("no-ask") { fs.insert(flags::NOASK); }
+    let mut fs = Flags::empty();
+    if matches.opt_present("no-ask") { fs.insert(Flags::NOASK); }
 
     unwrap!(Column79::run(command, input, language, column, septhr, fs));
 }

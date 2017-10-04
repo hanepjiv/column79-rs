@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2017/07/21
+//  @date 2017/10/04
 
 //! # Examples
 //!
@@ -92,11 +92,12 @@ use                     ::std::fs::File;
 use                     config::Config;
 pub use                 error::Error;
 use                     error::Error::{ IOError, Column79Error, };
+pub use                 flags::Flags;
 use                     inspector::{ Inspector, Checker, Replacer, };
 // mod  =======================================================================
 mod                     error;
 mod                     ask;
-pub mod                 flags;
+mod                     flags;
 mod                     config;
 mod                     line_type;
 mod                     language;
@@ -171,7 +172,7 @@ impl Column79 {
                language:        Option<String>,
                column:          Option<usize>,
                septhr:          Option<usize>,
-               flags:           flags::Flags) -> Result<(), Error> {
+               flags:           Flags) -> Result<(), Error> {
         // config_dir  --------------------------------------------------------
         let mut config_dir =
             ::std::env::home_dir().ok_or(Column79Error(format!(
@@ -280,7 +281,7 @@ impl Column79 {
             return Column79::create_config(self.config_user_path.clone(),
                                            CONFIG_USER);
         }
-        if self.config.flags.contains(flags::NOASK) {
+        if self.config.flags.contains(Flags::NOASK) {
             return Column79::create_config(self.config_user_path.clone(),
                                            CONFIG_USER);
         }

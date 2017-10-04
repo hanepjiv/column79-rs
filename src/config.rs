@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2017/02/16
+//  @date 2017/10/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -19,7 +19,7 @@ use                     error::Error;
 use                     error::Error::{ IOError,
                                         ParseConfigError,
                                         InvalidConfigError };
-use                     flags;
+use                     flags::Flags;
 use                     language::{ LanguageSrc, Language, };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -47,7 +47,7 @@ pub struct Config {
     /// separator_threshold
     pub separator_threshold:            usize,
     /// flags
-    pub flags:                          flags::Flags,
+    pub flags:                          Flags,
     /// language
     pub language:                       String,
     /// languages
@@ -59,7 +59,7 @@ impl Default for Config {
         Config {
             column:                     79,
             separator_threshold:        12,
-            flags:                      flags::Flags::empty(),
+            flags:                      Flags::empty(),
             language:                   String::from("cargo"),
             languages:                  BTreeMap::new(),
         }
@@ -91,11 +91,11 @@ impl Config {
             self.separator_threshold = x;
         }
         if let Some(x) = src.ask { if x {
-            self.flags.remove(flags::NOASK);
+            self.flags.remove(Flags::NOASK);
         } else {
-            self.flags.insert(flags::NOASK);
+            self.flags.insert(Flags::NOASK);
         } } else {
-            self.flags.remove(flags::NOASK);
+            self.flags.remove(Flags::NOASK);
         }
         if let Some(x) = src.language { self.language = x; }
         if let Some(xs) = src.languages { for x in xs {
