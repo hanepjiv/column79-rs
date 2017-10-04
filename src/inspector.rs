@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2017/09/28
+//  @date 2017/10/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -22,7 +22,7 @@ use                     ::regex::Regex;
 use                     error::Error;
 use                     error::Error::{ IOError, InspectError, };
 use                     config::Config;
-use                     flags;
+use                     flags::Flags;
 use                     line_type::LineType;
 use                     language::Language;
 // ////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ pub trait Inspector: ::std::fmt::Debug {
     /// ask
     fn ask(&self, config : &Config, msg: &str, default: bool)
            -> Result<bool, Error> {
-        if config.flags.contains(flags::NOASK) { return Ok(default); }
+        if config.flags.contains(Flags::NOASK) { return Ok(default); }
         ::ask::ask(msg, default)
     }
     // ========================================================================
