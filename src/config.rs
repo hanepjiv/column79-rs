@@ -6,62 +6,60 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2017/10/04
+//  @date 2017/10/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use                     ::std::ffi::OsString;
-use                     ::std::fs::File;
-use                     ::std::io::Read;
-use                     ::std::collections::BTreeMap;
+use std::ffi::OsString;
+use std::fs::File;
+use std::io::Read;
+use std::collections::BTreeMap;
 // ----------------------------------------------------------------------------
-use                     error::Error;
-use                     error::Error::{ IOError,
-                                        ParseConfigError,
-                                        InvalidConfigError };
-use                     flags::Flags;
-use                     language::{ LanguageSrc, Language, };
+use error::Error;
+use error::Error::{IOError, ParseConfigError, InvalidConfigError};
+use flags::Flags;
+use language::{LanguageSrc, Language};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct ConfigSrc
-#[derive( Debug, Deserialize, )]
+#[derive(Debug, Deserialize)]
 pub struct ConfigSrc {
     /// column
-    pub column:                         Option<usize>,
+    pub column: Option<usize>,
     /// separator_threshold
-    pub separator_threshold:            Option<usize>,
+    pub separator_threshold: Option<usize>,
     /// ask
-    pub ask:                            Option<bool>,
+    pub ask: Option<bool>,
     /// language
-    pub language:                       Option<String>,
+    pub language: Option<String>,
     /// languages
-    pub languages:                      Option<Vec<LanguageSrc>>,
+    pub languages: Option<Vec<LanguageSrc>>,
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Config
-#[derive( Debug, Clone, )]
+#[derive(Debug, Clone)]
 pub struct Config {
     /// column
-    pub column:                         usize,
+    pub column: usize,
     /// separator_threshold
-    pub separator_threshold:            usize,
+    pub separator_threshold: usize,
     /// flags
-    pub flags:                          Flags,
+    pub flags: Flags,
     /// language
-    pub language:                       String,
+    pub language: String,
     /// languages
-    pub languages:                      BTreeMap<String, Language>,
+    pub languages: BTreeMap<String, Language>,
 }
 // ============================================================================
 impl Default for Config {
     fn default() -> Self {
         Config {
-            column:                     79,
-            separator_threshold:        12,
-            flags:                      Flags::empty(),
-            language:                   String::from("cargo"),
-            languages:                  BTreeMap::new(),
+            column: 79,
+            separator_threshold: 12,
+            flags: Flags::empty(),
+            language: String::from("cargo"),
+            languages: BTreeMap::new(),
         }
     }
 }
@@ -77,35 +75,61 @@ impl Config {
     // ========================================================================
     pub fn import(&mut self, path: &OsString) -> Result<(), Error> {
         let mut source = String::new();
-        let _ = File::open(path.clone())
-            .and_then(|mut f| { f.read_to_string(&mut source) })
-            .map_err(|e| IOError(
-                format!("::column79::config::Config::import({:?}): open",
-                        path), e))?;
-        let src: ConfigSrc = ::toml::from_str(&source)
-            .map_err(|e| ParseConfigError(
-                format!("::column79::config::Config::import({:?}): parse",
-                        path), e))?;
-        if let Some(x) = src.column { self.column = x; }
+        let _ =
+            File::open(path.clone())
+                .and_then(|mut f| f.read_to_string(&mut source))
+                .map_err(|e| {
+                    IOError(
+                        format!(
+                            "::column79::config::Config::import({:?}): open",
+                            path
+                        ),
+                        e,
+                    )
+                })?;
+        let src: ConfigSrc =
+            ::toml::from_str(&source).map_err(|e| {
+                ParseConfigError(
+                    format!(
+                        "::column79::config::Config::import({:?}): parse",
+                        path
+                    ),
+                    e,
+                )
+            })?;
+        if let Some(x) = src.column {
+            self.column = x;
+        }
         if let Some(x) = src.separator_threshold {
             self.separator_threshold = x;
         }
-        if let Some(x) = src.ask { if x {
-            self.flags.remove(Flags::NOASK);
+        if let Some(x) = src.ask {
+            if x {
+                self.flags.remove(Flags::NOASK);
+            } else {
+                self.flags.insert(Flags::NOASK);
+            }
         } else {
-            self.flags.insert(Flags::NOASK);
-        } } else {
             self.flags.remove(Flags::NOASK);
         }
-        if let Some(x) = src.language { self.language = x; }
-        if let Some(xs) = src.languages { for x in xs {
-            let l = Language::from_src(x, &self.languages)?;
-            if let Some(_) = self.languages.insert(l.peek_name().clone(), l){
-                return Err(InvalidConfigError(format!(
-                    "::column79::language::Config::import(...): \
-                     languages base: insert failed")));
+        if let Some(x) = src.language {
+            self.language = x;
+        }
+        if let Some(xs) = src.languages {
+            for x in xs {
+                let l = Language::from_src(x, &self.languages)?;
+                if let Some(_) = self.languages.insert(
+                    l.peek_name().clone(),
+                    l,
+                )
+                {
+                    return Err(InvalidConfigError(format!(
+                        "::column79::language::Config::import(...): \
+                     languages base: insert failed"
+                    )));
+                }
             }
-        } }
+        }
         Ok(())
     }
     // ========================================================================
@@ -113,14 +137,18 @@ impl Config {
         if self.languages.get(&self.language).is_none() {
             Err(InvalidConfigError(format!(
                 "::column79::config::Config::validation(&self): \
-                 language not found {}", self.language)))
+                 language not found {}",
+                self.language
+            )))
         } else {
             Ok(())
         }
     }
     // ========================================================================
-    pub fn check_path(&self, path: &::std::path::PathBuf)
-                      -> Option<&Language> {
+    pub fn check_path(
+        &self,
+        path: &::std::path::PathBuf,
+    ) -> Option<&Language> {
         if let Some(lang) = self.languages.get(&self.language) {
             lang.check_path(path, &self.languages)
         } else {

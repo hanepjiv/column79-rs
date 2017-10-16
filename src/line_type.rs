@@ -6,16 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2017/02/16
+//  @date 2017/10/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use                     config::Config;
-use                     language::Language;
+use config::Config;
+use language::Language;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum LineType
-#[derive( Debug, Clone, )]
+#[derive(Debug, Clone)]
 pub enum LineType {
     /// LineComment
     LineComment(String, String),
@@ -31,47 +31,64 @@ pub enum LineType {
 // ============================================================================
 impl LineType {
     // ========================================================================
-    pub fn head(&self) -> Option<&String> {match *self {
-        LineType::LineComment(ref head, _)              => Some(&head),
-        LineType::LineSeparator(ref head, _)            => Some(&head),
-        LineType::BlockComment(ref head, _, _)          => Some(&head),
-        LineType::BlockSeparator(ref head, _, _)        => Some(&head),
-        LineType::Other                                 => None,
-    } }
+    pub fn head(&self) -> Option<&String> {
+        match *self {
+            LineType::LineComment(ref head, _) => Some(&head),
+            LineType::LineSeparator(ref head, _) => Some(&head),
+            LineType::BlockComment(ref head, _, _) => Some(&head),
+            LineType::BlockSeparator(ref head, _, _) => Some(&head),
+            LineType::Other => None,
+        }
+    }
     // ------------------------------------------------------------------------
-    pub fn body(&self) -> Option<&String> { match *self {
-        LineType::LineComment(_, ref body)              => Some(&body),
-        LineType::LineSeparator( _, ref body)           => Some(&body),
-        LineType::BlockComment(_, ref body, _)          => Some(&body),
-        LineType::BlockSeparator(_, ref body, _)        => Some(&body),
-        LineType::Other                                 => None,
-    } }
+    pub fn body(&self) -> Option<&String> {
+        match *self {
+            LineType::LineComment(_, ref body) => Some(&body),
+            LineType::LineSeparator(_, ref body) => Some(&body),
+            LineType::BlockComment(_, ref body, _) => Some(&body),
+            LineType::BlockSeparator(_, ref body, _) => Some(&body),
+            LineType::Other => None,
+        }
+    }
     // ------------------------------------------------------------------------
-    pub fn foot(&self) -> Option<&String> { match *self {
-        LineType::LineComment(_, _)                     => None,
-        LineType::LineSeparator( _, _)                  => None,
-        LineType::BlockComment(_, _, ref foot)          => Some(&foot),
-        LineType::BlockSeparator(_, _, ref foot)        => Some(&foot),
-        LineType::Other                                 => None,
-    } }
+    pub fn foot(&self) -> Option<&String> {
+        match *self {
+            LineType::LineComment(_, _) => None,
+            LineType::LineSeparator(_, _) => None,
+            LineType::BlockComment(_, _, ref foot) => Some(&foot),
+            LineType::BlockSeparator(_, _, ref foot) => Some(&foot),
+            LineType::Other => None,
+        }
+    }
     // ========================================================================
     pub fn is_separator(conf: &Config, body: &String) -> bool {
         let t = conf.separator_threshold;
-        if body.len() < t { return false; }
+        if body.len() < t {
+            return false;
+        }
         let mut s = body.chars().rev();
         let b = s.nth(0).unwrap();
         let mut c = 0usize;
         for i in s {
-            if b != i { return false; }
+            if b != i {
+                return false;
+            }
             c += 1usize;
-            if c >= t { break; }
+            if c >= t {
+                break;
+            }
         }
         true
     }
     // ========================================================================
-    pub fn is_line_comment(conf: &Config, lang: &Language, line: &str)
-                           -> Option<LineType> {
-        if !lang.has_line_comment() { return None; }
+    pub fn is_line_comment(
+        conf: &Config,
+        lang: &Language,
+        line: &str,
+    ) -> Option<LineType> {
+        if !lang.has_line_comment() {
+            return None;
+        }
         lang.re_line_captures(line).map(|c| -> LineType {
             let head = String::from(c.get(1).unwrap().as_str());
             let body = String::from(c.get(2).unwrap().as_str());
@@ -83,9 +100,14 @@ impl LineType {
         })
     }
     // ------------------------------------------------------------------------
-    pub fn is_block_comment(conf: &Config, lang: &Language, line: &str)
-                            -> Option<LineType> {
-        if !lang.has_block_comment() { return None; }
+    pub fn is_block_comment(
+        conf: &Config,
+        lang: &Language,
+        line: &str,
+    ) -> Option<LineType> {
+        if !lang.has_block_comment() {
+            return None;
+        }
         lang.re_block_captures(line).map(|c| -> LineType {
             let head = String::from(c.get(1).unwrap().as_str());
             let body = String::from(c.get(2).unwrap().as_str());
@@ -100,10 +122,12 @@ impl LineType {
     // ========================================================================
     pub fn new(conf: &Config, lang: &Language, line: &str) -> LineType {
         match LineType::is_block_comment(conf, lang, line) {
-            Some(l)     => l,
-            None        => match LineType::is_line_comment(conf, lang, line) {
-                Some(b) => b,
-                None    => LineType::Other,
+            Some(l) => l,
+            None => {
+                match LineType::is_line_comment(conf, lang, line) {
+                    Some(b) => b,
+                    None => LineType::Other,
+                }
             }
         }
     }

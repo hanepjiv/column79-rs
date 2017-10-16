@@ -6,12 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2017/02/16
+//  @date 2017/10/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
-#[derive( Debug, )]
+#[derive(Debug)]
 pub enum Error {
     /// Column79Error
     Column79Error(String),
@@ -32,19 +32,23 @@ impl ::std::fmt::Display for Error {
 }
 // ============================================================================
 impl ::std::error::Error for Error {
-    fn description(&self) -> &str { match *self {
-        Error::Column79Error(ref m)             => m.as_str(),
-        Error::IOError(ref m, _)                => m.as_str(),
-        Error::ParseConfigError(ref m, _)       => m.as_str(),
-        Error::InvalidConfigError(ref m)        => m.as_str(),
-        Error::InspectError(ref m)              => m.as_str(),
-    } }
+    fn description(&self) -> &str {
+        match *self {
+            Error::Column79Error(ref m) => m.as_str(),
+            Error::IOError(ref m, _) => m.as_str(),
+            Error::ParseConfigError(ref m, _) => m.as_str(),
+            Error::InvalidConfigError(ref m) => m.as_str(),
+            Error::InspectError(ref m) => m.as_str(),
+        }
+    }
     // ========================================================================
-    fn cause(&self) -> Option<&::std::error::Error> { match *self {
-        Error::Column79Error(_)                 => None,
-        Error::IOError(_, ref e)                => Some(e),
-        Error::ParseConfigError(_, ref e)       => Some(e),
-        Error::InvalidConfigError(_)            => None,
-        Error::InspectError(_)                  => None,
-    } }
+    fn cause(&self) -> Option<&::std::error::Error> {
+        match *self {
+            Error::Column79Error(_) => None,
+            Error::IOError(_, ref e) => Some(e),
+            Error::ParseConfigError(_, ref e) => Some(e),
+            Error::InvalidConfigError(_) => None,
+            Error::InspectError(_) => None,
+        }
+    }
 }

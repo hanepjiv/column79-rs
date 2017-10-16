@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2017/10/04
+//  @date 2017/10/16
 
 //! # Examples
 //!
@@ -83,15 +83,19 @@ extern                  crate env_logger;
 extern                  crate getopts;
 extern                  crate column79;
 // use  =======================================================================
-use                     ::std::path::PathBuf;
+use std::path::PathBuf;
 // ----------------------------------------------------------------------------
-use                     ::column79::{ Flags, Command, Column79, };
+use column79::{Flags, Command, Column79};
 // mod  =======================================================================
-#[macro_use] mod        unwrap;
+#[macro_use]
+mod unwrap;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 fn print_usage(opts: &::getopts::Options, program: &str) {
-    print!("{}", opts.usage(&format!(r##"Usage:
+    print!(
+        "{}",
+        opts.usage(&format!(
+            r##"Usage:
     {0} Command [Input] [Options]
 
 Command:
@@ -100,7 +104,10 @@ Command:
     replace     replace the result of the checked
 
 Input:
-    ./          current directory (default)"##, program)));
+    ./          current directory (default)"##,
+            program
+        ))
+    );
 }
 // ============================================================================
 fn main() {
@@ -111,9 +118,12 @@ fn main() {
     let _ = opts.optflag("h", "help", "print this help menu")
         .optopt("c", "column", "set column number", "NUM")
         .optopt("t", "threshold", "set separator threshold number", "NUM")
-        .optopt("l", "language",
-                "set language LANG=('cargo'|'rust'|'c'|'c++'|...)",
-                "LANG")
+        .optopt(
+            "l",
+            "language",
+            "set language LANG=('cargo'|'rust'|'c'|'c++'|...)",
+            "LANG",
+        )
         .optflag("", "no-ask", "will not be asked to allow");
 
     let matches = unwrap!(opts.parse(&args[1..]));
@@ -152,7 +162,9 @@ fn main() {
     };
 
     let mut fs = Flags::empty();
-    if matches.opt_present("no-ask") { fs.insert(Flags::NOASK); }
+    if matches.opt_present("no-ask") {
+        fs.insert(Flags::NOASK);
+    }
 
     unwrap!(Column79::run(command, input, language, column, septhr, fs));
 }
