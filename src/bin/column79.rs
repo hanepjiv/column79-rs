@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2017/10/16
+//  @date 2017/11/03
 
 //! # Examples
 //!
@@ -78,10 +78,10 @@
     trivial_numeric_casts,
 )]
 // extern  ====================================================================
-extern                  crate env_logger;
+extern crate env_logger;
 // ----------------------------------------------------------------------------
-extern                  crate getopts;
-extern                  crate column79;
+extern crate getopts;
+extern crate column79;
 // use  =======================================================================
 use std::path::PathBuf;
 // ----------------------------------------------------------------------------

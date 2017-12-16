@@ -13,13 +13,13 @@ homepage        = "https://github.com/hanepjiv/column79-rs"
 repository      = "https://github.com/hanepjiv/column79-rs.git"
 # =============================================================================
 [dependencies]
-bitflags        = { default-features = false, version = "^1.0.0" }
+bitflags        = { default-features = false, version = "^1.0.1" }
 env_logger      = { default-features = false, version = "^0.4.3" }
 getopts         = { default-features = false, version = "^0.2.15" }
 log             = { default-features = false, version = "^0.3.8" }
-regex           = { default-features = false, version = "^0.2.2" }
-serde           = { default-features = false, version = "^1.0.15" }
-serde_derive    = { default-features = false, version = "^1.0.15" }
+regex           = { default-features = false, version = "^0.2.3" }
+serde           = { default-features = false, version = "^1.0.24" }
+serde_derive    = { default-features = false, version = "^1.0.24" }
 tempfile        = { default-features = false, version = "^2.2.0" }
 toml            = { default-features = false, version = "^0.4.5" }
 # =============================================================================
