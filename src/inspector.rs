@@ -12,7 +12,7 @@
 // use  =======================================================================
 use std::path::PathBuf;
 use std::fs::File;
-use std::io::{Seek, SeekFrom, BufRead, BufReader, BufWriter, Write};
+use std::io::{BufRead, BufReader, BufWriter, Seek, SeekFrom, Write};
 // ----------------------------------------------------------------------------
 use tempfile::tempfile;
 use regex::Regex;
@@ -57,7 +57,12 @@ pub trait Inspector: ::std::fmt::Debug {
     }
     // ========================================================================
     /// println_line
-    fn println_line(&self, path: &PathBuf, row: usize, line: &str) -> Result<(), Error> {
+    fn println_line(
+        &self,
+        path: &PathBuf,
+        row: usize,
+        line: &str,
+    ) -> Result<(), Error> {
         println!(
             "{}({}): {} : {}",
             path.clone().into_os_string().into_string().unwrap(),
@@ -69,7 +74,12 @@ pub trait Inspector: ::std::fmt::Debug {
     }
     // ========================================================================
     /// ask
-    fn ask(&self, config: &Config, msg: &str, default: bool) -> Result<bool, Error> {
+    fn ask(
+        &self,
+        config: &Config,
+        msg: &str,
+        default: bool,
+    ) -> Result<bool, Error> {
         if config.flags.contains(Flags::NOASK) {
             return Ok(default);
         }
@@ -77,12 +87,22 @@ pub trait Inspector: ::std::fmt::Debug {
     }
     // ========================================================================
     /// check_type
-    fn check_type(&self, lang: &Language, column: usize, line_type: &LineType, line: &str) -> bool {
+    fn check_type(
+        &self,
+        lang: &Language,
+        column: usize,
+        line_type: &LineType,
+        line: &str,
+    ) -> bool {
         match *line_type {
             LineType::LineComment(_, _) => column >= line.len(),
             LineType::LineSeparator(_, _) => column == line.len(),
-            LineType::BlockComment(_, _, _) => column >= line.len() && !lang.has_line_comment(),
-            LineType::BlockSeparator(_, _, _) => column == line.len() && !lang.has_line_comment(),
+            LineType::BlockComment(_, _, _) => {
+                column >= line.len() && !lang.has_line_comment()
+            }
+            LineType::BlockSeparator(_, _, _) => {
+                column == line.len() && !lang.has_line_comment()
+            }
             LineType::Other => column >= line.len(),
         }
     }
@@ -155,8 +175,7 @@ impl<'a> Replacer<'a> {
                         "::column79::inspector::Replacer::line_separator: \
                          path = \"{:?}\", row = {}: \
                          pop",
-                        path,
-                        row
+                        path, row
                     )))?;
                 }
                 Ok((true, s))
@@ -179,8 +198,10 @@ impl<'a> Replacer<'a> {
     // ========================================================================
     /// make_line
     fn make_line(&self, lang: &Language, line_type: &LineType) -> String {
-        let mut s = Regex::new(&format!(r"(.*){}(.*)", lang.peek_bcb().clone().unwrap()))
-            .unwrap()
+        let mut s = Regex::new(&format!(
+            r"(.*){}(.*)",
+            lang.peek_bcb().clone().unwrap()
+        )).unwrap()
             .replace(
                 &line_type.head().unwrap(),
                 format!(r"$1{}$2", lang.peek_lcb().clone().unwrap()).as_str(),
@@ -191,7 +212,11 @@ impl<'a> Replacer<'a> {
     }
     // ========================================================================
     /// make_line_separator
-    fn make_line_separator(&self, lang: &Language, line_type: &LineType) -> String {
+    fn make_line_separator(
+        &self,
+        lang: &Language,
+        line_type: &LineType,
+    ) -> String {
         let c = self.config.column;
         let mut s = self.make_line(lang, line_type);
         let d = s.len() as isize - c as isize;
@@ -239,20 +264,21 @@ impl<'a> Replacer<'a> {
         let has_line = lang.has_line_comment();
         let body = line_type.body().unwrap();
         if c == l {
-            if has_line && self.ask(self.config, "* convert to line comment?", true)? {
+            if has_line
+                && self.ask(self.config, "* convert to line comment?", true)?
+            {
                 let s = self.make_line_separator(lang, line_type);
                 Ok((true, s))
             } else {
                 Ok((false, String::from(line)))
             }
         } else if c < l {
-            if has_line &&
-                self.ask(
+            if has_line
+                && self.ask(
                     self.config,
                     "* convert to line comment with shrink?",
                     true,
-                )?
-            {
+                )? {
                 let s = self.make_line_separator(lang, line_type);
                 Ok((true, s))
             } else if self.ask(self.config, "* shrink?", true)? {
@@ -263,8 +289,7 @@ impl<'a> Replacer<'a> {
                         "::column79::inspector::Replacer::block_separator : \
                          path = \"{:?}\", row = {}: \
                          pop",
-                        path,
-                        row
+                        path, row
                     )))?;
                 }
                 s.push_str(line_type.foot().unwrap());
@@ -273,13 +298,12 @@ impl<'a> Replacer<'a> {
                 Ok((false, String::from(line)))
             }
         } else {
-            if has_line &&
-                self.ask(
+            if has_line
+                && self.ask(
                     self.config,
                     "* convert to line comment with expand?",
                     true,
-                )?
-            {
+                )? {
                 let s = self.make_line_separator(lang, line_type);
                 Ok((true, s))
             } else if self.ask(self.config, "* expand?", true)? {
@@ -335,8 +359,9 @@ impl<'a> Inspector for Replacer<'a> {
                         LineType::BlockSeparator(_, _, _) => {
                             self.block_separator(lang, path, row, l_type, l)
                         }
-                        LineType::LineComment(_, _) |
-                        LineType::Other => Ok((false, String::from(l))),
+                        LineType::LineComment(_, _) | LineType::Other => {
+                            Ok((false, String::from(l)))
+                        }
                     }?
                 };
                 s.push('\n');
@@ -346,8 +371,7 @@ impl<'a> Inspector for Replacer<'a> {
                             "::column79::inspector::Replacer::inspect : \
                              path = \"{:?}\" \
                              tempfile.write(\"{}\")",
-                            path,
-                            s
+                            path, s
                         ),
                         e,
                     )

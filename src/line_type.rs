@@ -123,12 +123,10 @@ impl LineType {
     pub fn new(conf: &Config, lang: &Language, line: &str) -> LineType {
         match LineType::is_block_comment(conf, lang, line) {
             Some(l) => l,
-            None => {
-                match LineType::is_line_comment(conf, lang, line) {
-                    Some(b) => b,
-                    None => LineType::Other,
-                }
-            }
+            None => match LineType::is_line_comment(conf, lang, line) {
+                Some(b) => b,
+                None => LineType::Other,
+            },
         }
     }
 }

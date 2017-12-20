@@ -19,9 +19,8 @@ pub fn ask(msg: &str, default: bool) -> Result<bool, Error> {
         IOError(
             format!(
                 "::column79::ask::ask({}, {}): \
-                                      write_all",
-                msg,
-                default
+                 write_all",
+                msg, default
             ),
             e,
         )
@@ -32,9 +31,8 @@ pub fn ask(msg: &str, default: bool) -> Result<bool, Error> {
             IOError(
                 format!(
                     "::column79::ask::ask({}, {}): \
-                                      write y/n",
-                    msg,
-                    default
+                     write y/n",
+                    msg, default
                 ),
                 e,
             )
@@ -43,9 +41,8 @@ pub fn ask(msg: &str, default: bool) -> Result<bool, Error> {
         IOError(
             format!(
                 "::column79::ask::ask({}, {}): \
-                                      flush",
-                msg,
-                default
+                 flush",
+                msg, default
             ),
             e,
         )
@@ -56,9 +53,8 @@ pub fn ask(msg: &str, default: bool) -> Result<bool, Error> {
         IOError(
             format!(
                 "::column79::ask::ask({}, {}): \
-                                      read_line",
-                msg,
-                default
+                 read_line",
+                msg, default
             ),
             e,
         )

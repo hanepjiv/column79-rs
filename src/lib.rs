@@ -15,78 +15,36 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
-#![deny(
-    fat_ptr_transmutes,
-    missing_docs,
-    unstable_features,
-    unused_extern_crates,
-    unused_import_braces,
-    unused_qualifications,
-    unused_results,
-    variant_size_differences,
-    const_err,
-    deprecated,
-    deprecated_attr,
-    extra_requirement_in_impl,
-    improper_ctypes,
-    non_camel_case_types,
-    non_shorthand_field_patterns,
-    non_snake_case,
-    non_upper_case_globals,
-    no_mangle_generic_items,
-    overflowing_literals,
-    path_statements,
-    patterns_in_fns_without_body,
-    plugin_as_library,
-    private_in_public,
-    private_no_mangle_fns,
-    private_no_mangle_statics,
-    renamed_and_removed_lints,
-    safe_extern_statics,
-    stable_features,
-    unconditional_recursion,
-    unions_with_drop_fields,
-    unknown_lints,
-    unreachable_code,
-    while_true,
-    exceeding_bitshifts,
-    invalid_type_param_default,
-    mutable_transmutes,
-    no_mangle_const_items,
-    unused_allocation,
-    unused_assignments,
-    unused_attributes,
-    unused_comparisons,
-    unused_features,
-    unused_imports,
-    unused_must_use,
-    unused_mut,
-    unused_parens,
-    unused_unsafe,
-    unknown_crate_types,
-)]
-#![warn(
-    dead_code,
-    missing_copy_implementations,
-    missing_debug_implementations,
-    unused_variables,
-)]
-#![allow(
-    box_pointers,
-    unsafe_code,
-    trivial_casts,
-    trivial_numeric_casts,
-)]
+#![deny(anonymous_parameters, box_pointers, missing_copy_implementations,
+        missing_debug_implementations, missing_docs, trivial_casts,
+        trivial_numeric_casts, unsafe_code, unstable_features,
+        unused_extern_crates, unused_import_braces, unused_qualifications,
+        unused_results, variant_size_differences, const_err, dead_code,
+        deprecated, illegal_floating_point_literal_pattern, improper_ctypes,
+        late_bound_lifetime_arguments, non_camel_case_types,
+        non_shorthand_field_patterns, non_snake_case, non_upper_case_globals,
+        no_mangle_generic_items, overflowing_literals, path_statements,
+        patterns_in_fns_without_body, plugin_as_library, private_in_public,
+        private_no_mangle_fns, private_no_mangle_statics,
+        renamed_and_removed_lints, stable_features, unconditional_recursion,
+        unions_with_drop_fields, unknown_lints, unreachable_code,
+        unreachable_patterns, unused_allocation, unused_assignments,
+        unused_attributes, unused_comparisons, unused_doc_comment,
+        unused_features, unused_imports, unused_macros, unused_must_use,
+        unused_mut, unused_parens, unused_unsafe, unused_variables,
+        while_true)]
+#![warn(dead_code)]
+#![allow(box_pointers, unsafe_code, trivial_casts, trivial_numeric_casts)]
 // extern  ====================================================================
+extern crate regex;
+extern crate tempfile;
+extern crate toml;
 #[macro_use]
-extern  crate bitflags;
+extern crate bitflags;
 #[macro_use]
-extern  crate log;
-extern                  crate regex;
+extern crate log;
 #[macro_use]
-extern  crate serde_derive;
-extern                  crate tempfile;
-extern                  crate toml;
+extern crate serde_derive;
 // use  =======================================================================
 use std::path::PathBuf;
 use std::io::Write;
@@ -94,9 +52,9 @@ use std::fs::File;
 // ----------------------------------------------------------------------------
 use config::Config;
 pub use error::Error;
-use error::Error::{IOError, Column79Error};
+use error::Error::{Column79Error, IOError};
 pub use flags::Flags;
-use inspector::{Inspector, Checker, Replacer};
+use inspector::{Checker, Inspector, Replacer};
 // mod  =======================================================================
 mod error;
 mod ask;
@@ -204,20 +162,30 @@ impl Column79 {
                 input
             )))?;
         config_dir.push(CONFIG_DIRNAME);
-        config_dir.push(::std::env::current_exe().map_err(|e| IOError(format!(
-            "::column79::lib::Column79::run(..., \"{:?}\", ...): \
-             ::std::env::current_exe(): failed", input), e))?
-                        .file_name()
-                        .ok_or(Column79Error(format!(
-                            "::column79::lib::Column79::run(\"{:?}\"): \
-                             ::std::env::current_exe().file_name(): \
-                             not found", input)))?);
+        config_dir.push(::std::env::current_exe()
+            .map_err(|e| {
+                IOError(
+                    format!(
+                        "::column79::lib::Column79::run(..., \"{:?}\", ...): \
+                         ::std::env::current_exe(): failed",
+                        input
+                    ),
+                    e,
+                )
+            })?
+            .file_name()
+            .ok_or(Column79Error(format!(
+                "::column79::lib::Column79::run(\"{:?}\"): \
+                 ::std::env::current_exe().file_name(): \
+                 not found",
+                input
+            )))?);
         if !config_dir.exists() {
             ::std::fs::create_dir_all(config_dir.clone()).map_err(|e| {
                 IOError(
                     format!(
                         "::column79::lib::Column79::run(\"{:?}\"): \
-                     ::std::fs::current_dir_all(): failed",
+                         ::std::fs::current_dir_all(): failed",
                         input
                     ),
                     e,
@@ -286,19 +254,18 @@ impl Column79 {
             IOError(
                 format!(
                     "::column79::lib::Column79::walk(\"{:?}\", ...): \
-             ::std::fs::read_dir(...): \
-             failed",
+                     ::std::fs::read_dir(...): \
+                     failed",
                     path
                 ),
                 e,
             )
-        })?
-        {
+        })? {
             let entry = i.map_err(|e| {
                 IOError(
                     format!(
                         "::column79::lib::Column79::walk(\"{:?}\", ...): \
-                 entry(...): failed",
+                         entry(...): failed",
                         path
                     ),
                     e,
@@ -308,7 +275,7 @@ impl Column79 {
                 IOError(
                     format!(
                         "::column79::lib::Column79::walk(\"{:?}\", ...): \
-                 file_type(...): failed",
+                         file_type(...): failed",
                         path
                     ),
                     e,

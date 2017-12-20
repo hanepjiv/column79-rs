@@ -13,7 +13,7 @@
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 // ----------------------------------------------------------------------------
-use regex::{Regex, Captures};
+use regex::{Captures, Regex};
 // ----------------------------------------------------------------------------
 use super::error::Error;
 use super::error::Error::InvalidConfigError;
@@ -85,18 +85,17 @@ impl Language {
     // ========================================================================
     /// extend
     pub fn extend(&mut self, base: &Language) {
-        if self.line_comment_begin.is_none() &&
-            base.line_comment_begin.is_some()
+        if self.line_comment_begin.is_none()
+            && base.line_comment_begin.is_some()
         {
             self.line_comment_begin = base.line_comment_begin.clone();
         }
-        if self.block_comment_begin.is_none() &&
-            base.block_comment_begin.is_some()
+        if self.block_comment_begin.is_none()
+            && base.block_comment_begin.is_some()
         {
             self.block_comment_begin = base.block_comment_begin.clone();
         }
-        if self.block_comment_end.is_none() &&
-            base.block_comment_end.is_some()
+        if self.block_comment_end.is_none() && base.block_comment_end.is_some()
         {
             self.block_comment_end = base.block_comment_end.clone();
         }
@@ -120,8 +119,7 @@ impl Language {
                 return Err(InvalidConfigError(format!(
                     "::column79::language::Language::check_descent(...): \
                      name = \"{}\", base = \"{}\": invalid base",
-                    self.name,
-                    base
+                    self.name, base
                 )));
             }
             let _ = ls.get(base).unwrap().check_descent(ls, descent)?;
@@ -182,9 +180,10 @@ impl Language {
                 if let Some(ref mut re) = *self.re_block.borrow_mut() {
                     return re.captures(line);
                 }
-                let re = Regex::new(
-                    &format!(r##"^(.*?{}\s*)(.*?)(\s*{})$"##, bcb, bce),
-                ).expect("re_block_captures");
+                let re = Regex::new(&format!(
+                    r##"^(.*?{}\s*)(.*?)(\s*{})$"##,
+                    bcb, bce
+                )).expect("re_block_captures");
                 let ret = re.captures(line);
                 *self.re_block.borrow_mut() = Some(re);
                 ret

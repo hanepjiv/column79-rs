@@ -16,9 +16,9 @@ use std::io::Read;
 use std::collections::BTreeMap;
 // ----------------------------------------------------------------------------
 use error::Error;
-use error::Error::{IOError, ParseConfigError, InvalidConfigError};
+use error::Error::{IOError, InvalidConfigError, ParseConfigError};
 use flags::Flags;
-use language::{LanguageSrc, Language};
+use language::{Language, LanguageSrc};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct ConfigSrc
@@ -75,28 +75,26 @@ impl Config {
     // ========================================================================
     pub fn import(&mut self, path: &OsString) -> Result<(), Error> {
         let mut source = String::new();
-        let _ =
-            File::open(path.clone())
-                .and_then(|mut f| f.read_to_string(&mut source))
-                .map_err(|e| {
-                    IOError(
-                        format!(
-                            "::column79::config::Config::import({:?}): open",
-                            path
-                        ),
-                        e,
-                    )
-                })?;
-        let src: ConfigSrc =
-            ::toml::from_str(&source).map_err(|e| {
-                ParseConfigError(
+        let _ = File::open(path.clone())
+            .and_then(|mut f| f.read_to_string(&mut source))
+            .map_err(|e| {
+                IOError(
                     format!(
-                        "::column79::config::Config::import({:?}): parse",
+                        "::column79::config::Config::import({:?}): open",
                         path
                     ),
                     e,
                 )
             })?;
+        let src: ConfigSrc = ::toml::from_str(&source).map_err(|e| {
+            ParseConfigError(
+                format!(
+                    "::column79::config::Config::import({:?}): parse",
+                    path
+                ),
+                e,
+            )
+        })?;
         if let Some(x) = src.column {
             self.column = x;
         }
@@ -118,14 +116,12 @@ impl Config {
         if let Some(xs) = src.languages {
             for x in xs {
                 let l = Language::from_src(x, &self.languages)?;
-                if let Some(_) = self.languages.insert(
-                    l.peek_name().clone(),
-                    l,
-                )
+                if let Some(_) =
+                    self.languages.insert(l.peek_name().clone(), l)
                 {
                     return Err(InvalidConfigError(format!(
                         "::column79::language::Config::import(...): \
-                     languages base: insert failed"
+                         languages base: insert failed"
                     )));
                 }
             }
