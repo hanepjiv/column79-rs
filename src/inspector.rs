@@ -18,7 +18,6 @@ use tempfile::tempfile;
 use regex::Regex;
 // ----------------------------------------------------------------------------
 use error::Error;
-use error::Error::{IOError, InspectError};
 use config::Config;
 use flags::Flags;
 use line_type::LineType;
@@ -42,9 +41,7 @@ pub trait Inspector: ::std::fmt::Debug {
     where
         F: FnMut(usize, &LineType, &str) -> Result<(), Error>,
     {
-        let file_in = File::open(path).map_err(|e| {
-            IOError(format!("::column79::inspector: open \"{:?}\"", path), e)
-        })?;
+        let file_in = File::open(path)?;
         let fin = BufReader::new(&file_in);
         let mut row = 0usize;
         for line in fin.lines() {
@@ -171,7 +168,7 @@ impl<'a> Replacer<'a> {
             if self.ask(self.config, "* shrink?", true)? {
                 let mut s = String::from(line);
                 for _ in 0..(l - c) {
-                    let _ = s.pop().ok_or(InspectError(format!(
+                    let _ = s.pop().ok_or(Error::Inspect(format!(
                         "::column79::inspector::Replacer::line_separator: \
                          path = \"{:?}\", row = {}: \
                          pop",
@@ -285,7 +282,7 @@ impl<'a> Replacer<'a> {
                 let mut s = line_type.head().unwrap().clone();
                 s.push_str(body);
                 for _ in 0..(l - c) {
-                    let _ = s.pop().ok_or(InspectError(format!(
+                    let _ = s.pop().ok_or(Error::Inspect(format!(
                         "::column79::inspector::Replacer::block_separator : \
                          path = \"{:?}\", row = {}: \
                          pop",
@@ -327,17 +324,7 @@ impl<'a> Inspector for Replacer<'a> {
     /// inspect
     fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error> {
         let c = self.config.column;
-        let mut file_tmp = tempfile().map_err(|e| {
-            IOError(
-                format!(
-                    "::column79::inspector::Replacer::inspect : \
-                     path = \"{:?}\" \
-                     tempfile",
-                    path
-                ),
-                e,
-            )
-        })?;
+        let mut file_tmp = tempfile()?;
         let mut ftmp = BufWriter::new(&mut file_tmp);
         let mut fixes = false;
         let _ = self.inspect_impl(
@@ -365,34 +352,14 @@ impl<'a> Inspector for Replacer<'a> {
                     }?
                 };
                 s.push('\n');
-                let _ = ftmp.write(s.as_ref()).map_err(|e| {
-                    IOError(
-                        format!(
-                            "::column79::inspector::Replacer::inspect : \
-                             path = \"{:?}\" \
-                             tempfile.write(\"{}\")",
-                            path, s
-                        ),
-                        e,
-                    )
-                })?;
+                let _ = ftmp.write(s.as_ref())?;
                 fixes |= f;
                 Ok(())
             },
         )?;
         if fixes {
             let file_tmp = ftmp.into_inner().unwrap();
-            let _ = file_tmp.seek(SeekFrom::Start(0)).map_err(|e| {
-                IOError(
-                    format!(
-                        "::column79::inspector::Replacer::inspect : \
-                         path = \"{:?}\" \
-                         tempfile.seek",
-                        path
-                    ),
-                    e,
-                )
-            })?;
+            let _ = file_tmp.seek(SeekFrom::Start(0))?;
             let mut ftmp = BufReader::new(file_tmp);
             {
                 // backup
@@ -401,37 +368,11 @@ impl<'a> Inspector for Replacer<'a> {
                 let mut path_back = path.clone();
                 let _ = path_back.set_extension(extension);
                 println!("* backup: {:?}", path_back.clone().into_os_string());
-                let _ = ::std::fs::rename(path, path_back).map_err(|e| {
-                    IOError(
-                        format!(
-                            "::column79::inspector::Replacer::inspect : \
-                             ::std::fs::rename(\"{:?}\", ...)",
-                            path
-                        ),
-                        e,
-                    )
-                })?;
+                let _ = ::std::fs::rename(path, path_back)?;
             }
-            let mut file_new = File::create(path).map_err(|e| {
-                IOError(
-                    format!(
-                        "::column79::inspector::Replacer::inspect : \
-                         File::create(\"{:?}\")",
-                        path
-                    ),
-                    e,
-                )
-            })?;
+            let mut file_new = File::create(path)?;
             let mut fnew = BufWriter::new(&mut file_new);
-            let _ = ::std::io::copy(&mut ftmp, &mut fnew).map_err(|e| {
-                IOError(
-                    format!(
-                        "::column79::inspector::Replacer::inspect : \
-                         ::std::io::copy(...)"
-                    ),
-                    e,
-                )
-            })?;
+            let _ = ::std::io::copy(&mut ftmp, &mut fnew)?;
             println!("* replace: {:?}", path.clone().into_os_string());
         }
         Ok(())

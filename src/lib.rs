@@ -52,7 +52,6 @@ use std::fs::File;
 // ----------------------------------------------------------------------------
 use config::Config;
 pub use error::Error;
-use error::Error::{Column79Error, IOError};
 pub use flags::Flags;
 use inspector::{Checker, Inspector, Replacer};
 // mod  =======================================================================
@@ -121,28 +120,8 @@ impl Column79 {
         path: PathBuf,
         config: &'static str,
     ) -> Result<(), Error> {
-        let mut f = File::create(path.clone()).map_err(|e| {
-            IOError(
-                format!(
-                    "::column79::lib::Column79::create_config(\"{:?}\", ...): \
-             ::std::fs::File::create(...): \
-             failed",
-                    path
-                ),
-                e,
-            )
-        })?;
-        f.write_all(config.as_ref()).map_err(|e| {
-            IOError(
-                format!(
-                    "::column79::lib::Column79::create_config(\"{:?}\", ...): \
-             ::std::fs::File::write_all(...): \
-             failed",
-                    path
-                ),
-                e,
-            )
-        })
+        let mut f = File::create(path.clone())?;
+        Ok(f.write_all(config.as_ref())?)
     }
     // ========================================================================
     /// run
@@ -156,41 +135,22 @@ impl Column79 {
     ) -> Result<(), Error> {
         // config_dir  --------------------------------------------------------
         let mut config_dir =
-            ::std::env::home_dir().ok_or(Column79Error(format!(
+            ::std::env::home_dir().ok_or(Error::Column79(format!(
                 "::column79::lib::Column79::run(\"{:?}\"): \
                  ::std::env::home_dir(): not found",
                 input
             )))?;
         config_dir.push(CONFIG_DIRNAME);
-        config_dir.push(::std::env::current_exe()
-            .map_err(|e| {
-                IOError(
-                    format!(
-                        "::column79::lib::Column79::run(..., \"{:?}\", ...): \
-                         ::std::env::current_exe(): failed",
-                        input
-                    ),
-                    e,
-                )
-            })?
+        config_dir.push(::std::env::current_exe()?
             .file_name()
-            .ok_or(Column79Error(format!(
+            .ok_or(Error::Column79(format!(
                 "::column79::lib::Column79::run(\"{:?}\"): \
                  ::std::env::current_exe().file_name(): \
                  not found",
                 input
             )))?);
         if !config_dir.exists() {
-            ::std::fs::create_dir_all(config_dir.clone()).map_err(|e| {
-                IOError(
-                    format!(
-                        "::column79::lib::Column79::run(\"{:?}\"): \
-                         ::std::fs::current_dir_all(): failed",
-                        input
-                    ),
-                    e,
-                )
-            })?
+            ::std::fs::create_dir_all(config_dir.clone())?
         }
         // config_default_path  -----------------------------------------------
         let mut config_default_path = config_dir.clone();
@@ -234,7 +194,7 @@ impl Column79 {
             config: config,
         };
         match c79.command {
-            Command::Unknown => Err(Column79Error(format!(
+            Command::Unknown => Err(Error::Column79(format!(
                 "::column79::lib::Column79::run: \
                  invalid command {:?}",
                 c79.command
@@ -250,37 +210,9 @@ impl Column79 {
     where
         T: Inspector,
     {
-        for i in ::std::fs::read_dir(path).map_err(|e| {
-            IOError(
-                format!(
-                    "::column79::lib::Column79::walk(\"{:?}\", ...): \
-                     ::std::fs::read_dir(...): \
-                     failed",
-                    path
-                ),
-                e,
-            )
-        })? {
-            let entry = i.map_err(|e| {
-                IOError(
-                    format!(
-                        "::column79::lib::Column79::walk(\"{:?}\", ...): \
-                         entry(...): failed",
-                        path
-                    ),
-                    e,
-                )
-            })?;
-            let ftype = entry.file_type().map_err(|e| {
-                IOError(
-                    format!(
-                        "::column79::lib::Column79::walk(\"{:?}\", ...): \
-                         file_type(...): failed",
-                        path
-                    ),
-                    e,
-                )
-            })?;
+        for i in ::std::fs::read_dir(path)? {
+            let entry = i?;
+            let ftype = entry.file_type()?;
             if ftype.is_dir() {
                 let _ = self.walk(&entry.path(), inspector)?;
                 continue;
@@ -337,10 +269,4 @@ impl Column79 {
     fn replace(&self) -> Result<(), Error> {
         self.walk(&self.input, &Replacer::new(&self.config))
     }
-}
-// ////////////////////////////////////////////////////////////////////////////
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {}
 }

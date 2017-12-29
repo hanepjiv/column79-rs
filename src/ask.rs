@@ -12,58 +12,17 @@
 use std::io::Write;
 // ----------------------------------------------------------------------------
 use error::Error;
-use error::Error::IOError;
 // ////////////////////////////////////////////////////////////////////////////
 pub fn ask(msg: &str, default: bool) -> Result<bool, Error> {
-    let _ = ::std::io::stdout().write_all(msg.as_ref()).map_err(|e| {
-        IOError(
-            format!(
-                "::column79::ask::ask({}, {}): \
-                 write_all",
-                msg, default
-            ),
-            e,
-        )
-    })?;
-    let _ = ::std::io::stdout()
-        .write_all(if default { b" [Y/n]: " } else { b" [y/N]: " })
-        .map_err(|e| {
-            IOError(
-                format!(
-                    "::column79::ask::ask({}, {}): \
-                     write y/n",
-                    msg, default
-                ),
-                e,
-            )
-        })?;
-    let _ = ::std::io::stdout().flush().map_err(|e| {
-        IOError(
-            format!(
-                "::column79::ask::ask({}, {}): \
-                 flush",
-                msg, default
-            ),
-            e,
-        )
-    })?;
-
+    let _ = ::std::io::stdout().write_all(msg.as_ref())?;
+    let _ = ::std::io::stdout().write_all(if default { b" [Y/n]: " } else { b" [y/N]: " })?;
+    let _ = ::std::io::stdout().flush()?;
     let mut line = String::new();
-    let _ = ::std::io::stdin().read_line(&mut line).map_err(|e| {
-        IOError(
-            format!(
-                "::column79::ask::ask({}, {}): \
-                 read_line",
-                msg, default
-            ),
-            e,
-        )
-    })?;
-
+    let _ = ::std::io::stdin().read_line(&mut line)?;
     match line.to_lowercase().trim() {
         "" => Ok(default),
-        "y" => Ok(true),
-        "n" => Ok(false),
+        "y" | "yes" => Ok(true),
+        "n" | "no" => Ok(false),
         _ => ask(msg, default),
     }
 }

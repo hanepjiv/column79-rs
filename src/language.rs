@@ -16,7 +16,6 @@ use std::collections::BTreeMap;
 use regex::{Captures, Regex};
 // ----------------------------------------------------------------------------
 use super::error::Error;
-use super::error::Error::InvalidConfigError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct LanguageSrc
@@ -107,7 +106,7 @@ impl Language {
         descent: &mut Vec<String>,
     ) -> Result<(), Error> {
         if descent.contains(&self.name) {
-            return Err(InvalidConfigError(format!(
+            return Err(Error::InvalidConfig(format!(
                 "::column79::language::Language::check_descent(...): \
                  name = \"{}\": cyclic dependencies",
                 self.name
@@ -116,7 +115,7 @@ impl Language {
         descent.push(self.name.clone());
         if let Some(ref base) = self.base {
             if !ls.contains_key(base) {
-                return Err(InvalidConfigError(format!(
+                return Err(Error::InvalidConfig(format!(
                     "::column79::language::Language::check_descent(...): \
                      name = \"{}\", base = \"{}\": invalid base",
                     self.name, base

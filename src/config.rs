@@ -16,7 +16,6 @@ use std::io::Read;
 use std::collections::BTreeMap;
 // ----------------------------------------------------------------------------
 use error::Error;
-use error::Error::{IOError, InvalidConfigError, ParseConfigError};
 use flags::Flags;
 use language::{Language, LanguageSrc};
 // ////////////////////////////////////////////////////////////////////////////
@@ -73,28 +72,11 @@ impl Config {
         Ok(config)
     }
     // ========================================================================
+    /// import
     pub fn import(&mut self, path: &OsString) -> Result<(), Error> {
         let mut source = String::new();
-        let _ = File::open(path.clone())
-            .and_then(|mut f| f.read_to_string(&mut source))
-            .map_err(|e| {
-                IOError(
-                    format!(
-                        "::column79::config::Config::import({:?}): open",
-                        path
-                    ),
-                    e,
-                )
-            })?;
-        let src: ConfigSrc = ::toml::from_str(&source).map_err(|e| {
-            ParseConfigError(
-                format!(
-                    "::column79::config::Config::import({:?}): parse",
-                    path
-                ),
-                e,
-            )
-        })?;
+        let _ = File::open(path.clone()).and_then(|mut f| f.read_to_string(&mut source))?;
+        let src: ConfigSrc = ::toml::from_str(&source)?;
         if let Some(x) = src.column {
             self.column = x;
         }
@@ -116,10 +98,9 @@ impl Config {
         if let Some(xs) = src.languages {
             for x in xs {
                 let l = Language::from_src(x, &self.languages)?;
-                if let Some(_) =
-                    self.languages.insert(l.peek_name().clone(), l)
+                if let Some(_) = self.languages.insert(l.peek_name().clone(), l)
                 {
-                    return Err(InvalidConfigError(format!(
+                    return Err(Error::InvalidConfig(format!(
                         "::column79::language::Config::import(...): \
                          languages base: insert failed"
                     )));
@@ -129,9 +110,10 @@ impl Config {
         Ok(())
     }
     // ========================================================================
+    /// validation
     pub fn validation(&self) -> Result<(), Error> {
         if self.languages.get(&self.language).is_none() {
-            Err(InvalidConfigError(format!(
+            Err(Error::InvalidConfig(format!(
                 "::column79::config::Config::validation(&self): \
                  language not found {}",
                 self.language
@@ -141,6 +123,7 @@ impl Config {
         }
     }
     // ========================================================================
+    /// check_path
     pub fn check_path(
         &self,
         path: &::std::path::PathBuf,

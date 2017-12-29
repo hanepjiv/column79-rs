@@ -73,7 +73,9 @@ fn main() {
 
     let args: Vec<String> = ::std::env::args().collect();
     let mut opts = ::getopts::Options::new();
-    let _ = opts.optflag("h", "help", "print this help menu")
+    let _ = opts
+        .optflag("v", "version", "print version")
+        .optflag("h", "help", "print this help menu")
         .optopt("c", "column", "set column number", "NUM")
         .optopt("t", "threshold", "set separator threshold number", "NUM")
         .optopt(
@@ -83,46 +85,40 @@ fn main() {
             "LANG",
         )
         .optflag("", "no-ask", "will not be asked to allow");
-
     let matches = unwrap!(opts.parse(&args[1..]));
-
+    if matches.opt_present("v") {
+        return println!("{}", concat!(module_path!(), " v", env!("CARGO_PKG_VERSION")));
+    }
     if matches.free.is_empty() || matches.opt_present("h") {
         return print_usage(&opts, args[0].as_ref());
     }
-
     let command = Command::from(matches.free[0].as_ref());
     if Command::Unknown == command {
         return print_usage(&opts, args[0].as_ref());
     }
-
     let input = if 1usize == matches.free.len() {
         unwrap!(::std::env::current_dir())
     } else {
         PathBuf::from(matches.free[1].clone())
     };
-
     let column = if matches.opt_present("c") {
         Some(unwrap!(unwrap!(matches.opt_str("c")).parse::<usize>()))
     } else {
         None
     };
-
     let septhr = if matches.opt_present("t") {
         Some(unwrap!(unwrap!(matches.opt_str("t")).parse::<usize>()))
     } else {
         None
     };
-
     let language = if matches.opt_present("l") {
         Some(unwrap!(matches.opt_str("l")))
     } else {
         None
     };
-
     let mut fs = Flags::empty();
     if matches.opt_present("no-ask") {
         fs.insert(Flags::NOASK);
     }
-
     unwrap!(Column79::run(command, input, language, column, septhr, fs));
 }

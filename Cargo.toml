@@ -1,33 +1,34 @@
 # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
 [package]
-name            = "column79"
-version         = "0.1.8"
-authors         = ["hanepjiv <hanepjiv@gmail.com>"]
-license         = "MIT/Apache-2.0"
-keywords        = ["tool", "development"]
-description     = "Source code column checker."
-readme          = "README.md"
-documentation   = "https://github.com/hanepjiv/column79-rs/wiki"
-homepage        = "https://github.com/hanepjiv/column79-rs"
-repository      = "https://github.com/hanepjiv/column79-rs.git"
+name                    = "column79"
+version                 = "0.2.0"
+authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
+license                 = "MIT/Apache-2.0"
+keywords                = ["tool", "development"]
+description             = "Source code column checker."
+readme                  = "README.md"
+documentation           = "https://github.com/hanepjiv/column79-rs/wiki"
+homepage                = "https://github.com/hanepjiv/column79-rs"
+repository              = "https://github.com/hanepjiv/column79-rs.git"
+publish                 = false
 # =============================================================================
 [dependencies]
-bitflags        = { default-features = false, version = "^1.0.1" }
-env_logger      = { default-features = false, version = "^0.4.3" }
-getopts         = { default-features = false, version = "^0.2.15" }
-log             = { default-features = false, version = "^0.3.8" }
-regex           = { default-features = false, version = "^0.2.3" }
-serde           = { default-features = false, version = "^1.0.24" }
-serde_derive    = { default-features = false, version = "^1.0.24" }
-tempfile        = { default-features = false, version = "^2.2.0" }
-toml            = { default-features = false, version = "^0.4.5" }
+bitflags                = { default-features = false, version = "^1.0.1" }
+env_logger              = { default-features = false, version = "^0.4.3" }
+getopts                 = { default-features = false, version = "^0.2.15" }
+log                     = { default-features = false, version = "^0.4.0" }
+regex                   = { default-features = false, version = "^0.2.3" }
+serde                   = { default-features = false, version = "^1.0.26" }
+serde_derive            = { default-features = false, version = "^1.0.26" }
+tempfile                = { default-features = false, version = "^2.2.0" }
+toml                    = { default-features = false, version = "^0.4.5" }
 # =============================================================================
 [[bin]]
-name            = "column79"
-test            = true
-doctest         = true
-bench           = false
-doc             = false
-plugin          = false
-harness         = true
+name                    = "column79"
+test                    = true
+doctest                 = true
+bench                   = false
+doc                     = false
+plugin                  = false
+harness                 = true
