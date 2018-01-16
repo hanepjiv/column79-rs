@@ -73,8 +73,7 @@ fn main() {
 
     let args: Vec<String> = ::std::env::args().collect();
     let mut opts = ::getopts::Options::new();
-    let _ = opts
-        .optflag("v", "version", "print version")
+    let _ = opts.optflag("v", "version", "print version")
         .optflag("h", "help", "print this help menu")
         .optopt("c", "column", "set column number", "NUM")
         .optopt("t", "threshold", "set separator threshold number", "NUM")
@@ -87,7 +86,10 @@ fn main() {
         .optflag("", "no-ask", "will not be asked to allow");
     let matches = unwrap!(opts.parse(&args[1..]));
     if matches.opt_present("v") {
-        return println!("{}", concat!(module_path!(), " v", env!("CARGO_PKG_VERSION")));
+        return println!(
+            "{}",
+            concat!(module_path!(), " v", env!("CARGO_PKG_VERSION"))
+        );
     }
     if matches.free.is_empty() || matches.opt_present("h") {
         return print_usage(&opts, args[0].as_ref());

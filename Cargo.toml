@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.0"
+version                 = "0.2.1"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["tool", "development"]
@@ -17,10 +17,10 @@ publish                 = false
 bitflags                = { default-features = false, version = "^1.0.1" }
 env_logger              = { default-features = false, version = "^0.4.3" }
 getopts                 = { default-features = false, version = "^0.2.15" }
-log                     = { default-features = false, version = "^0.4.0" }
-regex                   = { default-features = false, version = "^0.2.3" }
-serde                   = { default-features = false, version = "^1.0.26" }
-serde_derive            = { default-features = false, version = "^1.0.26" }
+log                     = { default-features = false, version = "^0.4.1" }
+regex                   = { default-features = false, version = "^0.2.5" }
+serde                   = { default-features = false, version = "^1.0.27" }
+serde_derive            = { default-features = false, version = "^1.0.27" }
 tempfile                = { default-features = false, version = "^2.2.0" }
 toml                    = { default-features = false, version = "^0.4.5" }
 # =============================================================================

@@ -36,15 +36,15 @@
 #![warn(dead_code)]
 #![allow(box_pointers, unsafe_code, trivial_casts, trivial_numeric_casts)]
 // extern  ====================================================================
-extern crate regex;
-extern crate tempfile;
-extern crate toml;
 #[macro_use]
 extern crate bitflags;
 #[macro_use]
 extern crate log;
+extern crate regex;
 #[macro_use]
 extern crate serde_derive;
+extern crate tempfile;
+extern crate toml;
 // use  =======================================================================
 use std::path::PathBuf;
 use std::io::Write;
@@ -141,14 +141,14 @@ impl Column79 {
                 input
             )))?;
         config_dir.push(CONFIG_DIRNAME);
-        config_dir.push(::std::env::current_exe()?
-            .file_name()
-            .ok_or(Error::Column79(format!(
+        config_dir.push(::std::env::current_exe()?.file_name().ok_or(
+            Error::Column79(format!(
                 "::column79::lib::Column79::run(\"{:?}\"): \
                  ::std::env::current_exe().file_name(): \
                  not found",
                 input
-            )))?);
+            )),
+        )?);
         if !config_dir.exists() {
             ::std::fs::create_dir_all(config_dir.clone())?
         }

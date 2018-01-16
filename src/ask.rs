@@ -15,7 +15,11 @@ use error::Error;
 // ////////////////////////////////////////////////////////////////////////////
 pub fn ask(msg: &str, default: bool) -> Result<bool, Error> {
     let _ = ::std::io::stdout().write_all(msg.as_ref())?;
-    let _ = ::std::io::stdout().write_all(if default { b" [Y/n]: " } else { b" [y/N]: " })?;
+    let _ = ::std::io::stdout().write_all(if default {
+        b" [Y/n]: "
+    } else {
+        b" [y/N]: "
+    })?;
     let _ = ::std::io::stdout().flush()?;
     let mut line = String::new();
     let _ = ::std::io::stdin().read_line(&mut line)?;

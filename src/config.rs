@@ -75,7 +75,8 @@ impl Config {
     /// import
     pub fn import(&mut self, path: &OsString) -> Result<(), Error> {
         let mut source = String::new();
-        let _ = File::open(path.clone()).and_then(|mut f| f.read_to_string(&mut source))?;
+        let _ = File::open(path.clone())
+            .and_then(|mut f| f.read_to_string(&mut source))?;
         let src: ConfigSrc = ::toml::from_str(&source)?;
         if let Some(x) = src.column {
             self.column = x;
@@ -98,7 +99,8 @@ impl Config {
         if let Some(xs) = src.languages {
             for x in xs {
                 let l = Language::from_src(x, &self.languages)?;
-                if let Some(_) = self.languages.insert(l.peek_name().clone(), l)
+                if let Some(_) =
+                    self.languages.insert(l.peek_name().clone(), l)
                 {
                     return Err(Error::InvalidConfig(format!(
                         "::column79::language::Config::import(...): \
