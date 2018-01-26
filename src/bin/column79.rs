@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2017/11/03
+//  @date 2018/01/26
 
 //! # Examples
 //!
@@ -69,7 +69,7 @@ Input:
 }
 // ============================================================================
 fn main() {
-    let _ = env_logger::init().unwrap();
+    env_logger::init();
 
     let args: Vec<String> = ::std::env::args().collect();
     let mut opts = ::getopts::Options::new();
