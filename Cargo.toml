@@ -15,10 +15,10 @@ publish                 = false
 # =============================================================================
 [dependencies]
 bitflags                = { default-features = false, version = "^1.0.1" }
-env_logger              = { default-features = false, version = "^0.5.3" }
+env_logger              = { default-features = false, version = "^0.5.4" }
 getopts                 = { default-features = false, version = "^0.2.17" }
 log                     = { default-features = false, version = "^0.4.1" }
-regex                   = { default-features = false, version = "^0.2.5" }
+regex                   = { default-features = false, version = "^0.2.6" }
 serde                   = { default-features = false, version = "^1.0.27" }
 serde_derive            = { default-features = false, version = "^1.0.27" }
 tempfile                = { default-features = false, version = "^2.2.0" }
