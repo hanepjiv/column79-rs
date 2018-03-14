@@ -18,9 +18,9 @@ bitflags                = { default-features = false, version = "^1.0.1" }
 env_logger              = { default-features = false, version = "^0.5.5" }
 getopts                 = { default-features = false, version = "^0.2.17" }
 log                     = { default-features = false, version = "^0.4.1" }
-regex                   = { default-features = false, version = "^0.2.7" }
-serde                   = { default-features = false, version = "^1.0.28" }
-serde_derive            = { default-features = false, version = "^1.0.28" }
+regex                   = { default-features = false, version = "^0.2.9" }
+serde                   = { default-features = false, version = "^1.0.32" }
+serde_derive            = { default-features = false, version = "^1.0.32" }
 tempfile                = { default-features = false, version = "^2.2.0" }
 toml                    = { default-features = false, version = "^0.4.5" }
 # =============================================================================

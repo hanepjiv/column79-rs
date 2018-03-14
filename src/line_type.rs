@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2017/10/16
+//  @date 2018/03/14
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -33,20 +33,20 @@ impl LineType {
     // ========================================================================
     pub fn head(&self) -> Option<&String> {
         match *self {
-            LineType::LineComment(ref head, _) => Some(&head),
-            LineType::LineSeparator(ref head, _) => Some(&head),
-            LineType::BlockComment(ref head, _, _) => Some(&head),
-            LineType::BlockSeparator(ref head, _, _) => Some(&head),
+            LineType::LineComment(ref head, _) => Some(head),
+            LineType::LineSeparator(ref head, _) => Some(head),
+            LineType::BlockComment(ref head, _, _) => Some(head),
+            LineType::BlockSeparator(ref head, _, _) => Some(head),
             LineType::Other => None,
         }
     }
     // ------------------------------------------------------------------------
     pub fn body(&self) -> Option<&String> {
         match *self {
-            LineType::LineComment(_, ref body) => Some(&body),
-            LineType::LineSeparator(_, ref body) => Some(&body),
-            LineType::BlockComment(_, ref body, _) => Some(&body),
-            LineType::BlockSeparator(_, ref body, _) => Some(&body),
+            LineType::LineComment(_, ref body) => Some(body),
+            LineType::LineSeparator(_, ref body) => Some(body),
+            LineType::BlockComment(_, ref body, _) => Some(body),
+            LineType::BlockSeparator(_, ref body, _) => Some(body),
             LineType::Other => None,
         }
     }
@@ -55,25 +55,23 @@ impl LineType {
         match *self {
             LineType::LineComment(_, _) => None,
             LineType::LineSeparator(_, _) => None,
-            LineType::BlockComment(_, _, ref foot) => Some(&foot),
-            LineType::BlockSeparator(_, _, ref foot) => Some(&foot),
+            LineType::BlockComment(_, _, ref foot) => Some(foot),
+            LineType::BlockSeparator(_, _, ref foot) => Some(foot),
             LineType::Other => None,
         }
     }
     // ========================================================================
-    pub fn is_separator(conf: &Config, body: &String) -> bool {
+    pub fn is_separator(conf: &Config, body: &str) -> bool {
         let t = conf.separator_threshold;
         if body.len() < t {
             return false;
         }
         let mut s = body.chars().rev();
         let b = s.nth(0).unwrap();
-        let mut c = 0usize;
-        for i in s {
+        for (c, i) in s.enumerate() {
             if b != i {
                 return false;
             }
-            c += 1usize;
             if c >= t {
                 break;
             }

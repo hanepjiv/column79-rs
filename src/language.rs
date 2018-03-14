@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2017/10/16
+//  @date 2018/03/14
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -199,7 +199,7 @@ impl Language {
         p: &::std::path::PathBuf,
         ls: &'a BTreeMap<String, Language>,
     ) -> Option<&'a Language> {
-        for i in self.sublanguages.iter() {
+        for i in &self.sublanguages {
             if let x @ Some(_) = ls.get(i).unwrap().check_path(p, ls) {
                 return x;
             }

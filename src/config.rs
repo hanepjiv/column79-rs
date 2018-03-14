@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2017/12/16
+//  @date 2018/03/14
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -99,13 +99,12 @@ impl Config {
         if let Some(xs) = src.languages {
             for x in xs {
                 let l = Language::from_src(x, &self.languages)?;
-                if let Some(_) =
-                    self.languages.insert(l.peek_name().clone(), l)
-                {
-                    return Err(Error::InvalidConfig(format!(
+                if self.languages.insert(l.peek_name().clone(), l).is_some() {
+                    return Err(Error::InvalidConfig(
                         "::column79::language::Config::import(...): \
                          languages base: insert failed"
-                    )));
+                            .to_string(),
+                    ));
                 }
             }
         }

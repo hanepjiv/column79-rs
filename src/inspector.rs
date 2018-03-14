@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2017/10/05
+//  @date 2018/03/14
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -43,9 +43,7 @@ pub trait Inspector: ::std::fmt::Debug {
     {
         let file_in = File::open(path)?;
         let fin = BufReader::new(&file_in);
-        let mut row = 0usize;
-        for line in fin.lines() {
-            row += 1usize;
+        for (row, line) in fin.lines().enumerate() {
             let l = &String::from(line.unwrap().trim_right());
             let line_type = LineType::new(conf, lang, l);
             func(row, &line_type, l)?
@@ -117,7 +115,7 @@ impl<'a> Checker<'a> {
     // ========================================================================
     /// new
     pub fn new(config: &'a Config) -> Self {
-        Checker { config: config }
+        Checker { config }
     }
 }
 // ============================================================================
@@ -148,7 +146,7 @@ impl<'a> Replacer<'a> {
     // ========================================================================
     /// new
     pub fn new(config: &'a Config) -> Self {
-        Replacer { config: config }
+        Replacer { config }
     }
     // ========================================================================
     /// line_separator
@@ -168,28 +166,28 @@ impl<'a> Replacer<'a> {
             if self.ask(self.config, "* shrink?", true)? {
                 let mut s = String::from(line);
                 for _ in 0..(l - c) {
-                    let _ = s.pop().ok_or(Error::Inspect(format!(
+                    let _ = s.pop().ok_or_else(|| {
+                        Error::Inspect(format!(
                         "::column79::inspector::Replacer::line_separator: \
                          path = \"{:?}\", row = {}: \
                          pop",
                         path, row
-                    )))?;
+                    ))
+                    })?;
                 }
                 Ok((true, s))
             } else {
                 Ok((false, String::from(line)))
             }
+        } else if self.ask(self.config, "* expand?", true)? {
+            let mut s = String::from(line);
+            let b = body.chars().rev().nth(0).unwrap();
+            for _ in 0..(c - l) {
+                s.push(b)
+            }
+            Ok((true, s))
         } else {
-            if self.ask(self.config, "* expand?", true)? {
-                let mut s = String::from(line);
-                let b = body.chars().rev().nth(0).unwrap();
-                for _ in 0..(c - l) {
-                    s.push(b)
-                }
-                Ok((true, s))
-            } else {
-                Ok((false, String::from(line)))
-            }
+            Ok((false, String::from(line)))
         }
     }
     // ========================================================================
@@ -200,7 +198,7 @@ impl<'a> Replacer<'a> {
             lang.peek_bcb().clone().unwrap()
         )).unwrap()
             .replace(
-                &line_type.head().unwrap(),
+                line_type.head().unwrap(),
                 format!(r"$1{}$2", lang.peek_lcb().clone().unwrap()).as_str(),
             )
             .into_owned();
@@ -282,39 +280,39 @@ impl<'a> Replacer<'a> {
                 let mut s = line_type.head().unwrap().clone();
                 s.push_str(body);
                 for _ in 0..(l - c) {
-                    let _ = s.pop().ok_or(Error::Inspect(format!(
+                    let _ = s.pop().ok_or_else(|| {
+                        Error::Inspect(format!(
                         "::column79::inspector::Replacer::block_separator : \
                          path = \"{:?}\", row = {}: \
                          pop",
                         path, row
-                    )))?;
+                    ))
+                    })?;
                 }
                 s.push_str(line_type.foot().unwrap());
                 Ok((true, s))
             } else {
                 Ok((false, String::from(line)))
             }
+        } else if has_line
+            && self.ask(
+                self.config,
+                "* convert to line comment with expand?",
+                true,
+            )? {
+            let s = self.make_line_separator(lang, line_type);
+            Ok((true, s))
+        } else if self.ask(self.config, "* expand?", true)? {
+            let mut s = line_type.head().unwrap().clone();
+            s.push_str(body);
+            let b = body.chars().rev().nth(0).unwrap();
+            for _ in 0..(c - l) {
+                s.push(b)
+            }
+            s.push_str(line_type.foot().unwrap());
+            Ok((true, s))
         } else {
-            if has_line
-                && self.ask(
-                    self.config,
-                    "* convert to line comment with expand?",
-                    true,
-                )? {
-                let s = self.make_line_separator(lang, line_type);
-                Ok((true, s))
-            } else if self.ask(self.config, "* expand?", true)? {
-                let mut s = line_type.head().unwrap().clone();
-                s.push_str(body);
-                let b = body.chars().rev().nth(0).unwrap();
-                for _ in 0..(c - l) {
-                    s.push(b)
-                }
-                s.push_str(line_type.foot().unwrap());
-                Ok((true, s))
-            } else {
-                Ok((false, String::from(line)))
-            }
+            Ok((false, String::from(line)))
         }
     }
 }
