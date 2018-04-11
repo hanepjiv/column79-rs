@@ -10,10 +10,10 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
+use std::collections::BTreeMap;
 use std::ffi::OsString;
 use std::fs::File;
 use std::io::Read;
-use std::collections::BTreeMap;
 // ----------------------------------------------------------------------------
 use error::Error;
 use flags::Flags;
@@ -99,7 +99,10 @@ impl Config {
         if let Some(xs) = src.languages {
             for x in xs {
                 let l = Language::from_src(x, &self.languages)?;
-                if self.languages.insert(l.peek_name().clone(), l).is_some() {
+                if self.languages
+                    .insert(l.peek_name().clone(), l)
+                    .is_some()
+                {
                     return Err(Error::InvalidConfig(
                         "::column79::language::Config::import(...): \
                          languages base: insert failed"

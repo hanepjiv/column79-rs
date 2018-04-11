@@ -15,24 +15,25 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
-#![deny(anonymous_parameters, box_pointers, missing_copy_implementations,
-        missing_debug_implementations, missing_docs, trivial_casts,
-        trivial_numeric_casts, unsafe_code, unstable_features,
-        unused_extern_crates, unused_import_braces, unused_qualifications,
-        unused_results, variant_size_differences, const_err, dead_code,
-        deprecated, illegal_floating_point_literal_pattern, improper_ctypes,
-        late_bound_lifetime_arguments, non_camel_case_types,
-        non_shorthand_field_patterns, non_snake_case, non_upper_case_globals,
-        no_mangle_generic_items, overflowing_literals, path_statements,
-        patterns_in_fns_without_body, plugin_as_library, private_in_public,
-        private_no_mangle_fns, private_no_mangle_statics,
-        renamed_and_removed_lints, stable_features, unconditional_recursion,
-        unions_with_drop_fields, unknown_lints, unreachable_code,
-        unreachable_patterns, unused_allocation, unused_assignments,
-        unused_attributes, unused_comparisons, unused_doc_comment,
-        unused_features, unused_imports, unused_macros, unused_must_use,
-        unused_mut, unused_parens, unused_unsafe, unused_variables,
-        while_true)]
+#![deny(
+    anonymous_parameters, box_pointers, missing_copy_implementations,
+    missing_debug_implementations, missing_docs, trivial_casts,
+    trivial_numeric_casts, unsafe_code, unstable_features,
+    unused_extern_crates, unused_import_braces, unused_qualifications,
+    unused_results, variant_size_differences, const_err, dead_code, deprecated,
+    illegal_floating_point_literal_pattern, improper_ctypes,
+    late_bound_lifetime_arguments, non_camel_case_types,
+    non_shorthand_field_patterns, non_snake_case, non_upper_case_globals,
+    no_mangle_generic_items, overflowing_literals, path_statements,
+    patterns_in_fns_without_body, plugin_as_library, private_in_public,
+    private_no_mangle_fns, private_no_mangle_statics,
+    renamed_and_removed_lints, stable_features, unconditional_recursion,
+    unions_with_drop_fields, unknown_lints, unreachable_code,
+    unreachable_patterns, unused_allocation, unused_assignments,
+    unused_attributes, unused_comparisons, unused_doc_comment, unused_features,
+    unused_imports, unused_macros, unused_must_use, unused_mut, unused_parens,
+    unused_unsafe, unused_variables, while_true
+)]
 #![warn(dead_code)]
 #![allow(box_pointers, unsafe_code, trivial_casts, trivial_numeric_casts)]
 // extern  ====================================================================
@@ -46,22 +47,22 @@ extern crate serde_derive;
 extern crate tempfile;
 extern crate toml;
 // use  =======================================================================
-use std::path::PathBuf;
-use std::io::Write;
 use std::fs::File;
+use std::io::Write;
+use std::path::PathBuf;
 // ----------------------------------------------------------------------------
 use config::Config;
 pub use error::Error;
 pub use flags::Flags;
 use inspector::{Checker, Inspector, Replacer};
 // mod  =======================================================================
-mod error;
 mod ask;
-mod flags;
 mod config;
-mod line_type;
-mod language;
+mod error;
+mod flags;
 mod inspector;
+mod language;
+mod line_type;
 // define  ====================================================================
 const CONFIG_DIRNAME: &str = ".config";
 const CONFIG_DEFAULT_PATH: &str = "default.toml";
@@ -142,16 +143,16 @@ impl Column79 {
             ))
         })?;
         config_dir.push(CONFIG_DIRNAME);
-        config_dir.push(::std::env::current_exe()?.file_name().ok_or_else(
-            || {
+        config_dir.push(::std::env::current_exe()?
+            .file_name()
+            .ok_or_else(|| {
                 Error::Column79(format!(
                     "::column79::lib::Column79::run(\"{:?}\"): \
                      ::std::env::current_exe().file_name(): \
                      not found",
                     input
                 ))
-            },
-        )?);
+            })?);
         if !config_dir.exists() {
             ::std::fs::create_dir_all(config_dir.clone())?
         }
@@ -245,7 +246,10 @@ impl Column79 {
                 CONFIG_USER,
             );
         }
-        if ::ask::ask("Do you want to overwrite your user config?", false)? {
+        if ::ask::ask(
+            "Do you want to overwrite your user config?",
+            false,
+        )? {
             return Column79::create_config(
                 &self.config_user_path,
                 CONFIG_USER,

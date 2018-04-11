@@ -10,18 +10,18 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::path::PathBuf;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Seek, SeekFrom, Write};
+use std::path::PathBuf;
 // ----------------------------------------------------------------------------
-use tempfile::tempfile;
 use regex::Regex;
+use tempfile::tempfile;
 // ----------------------------------------------------------------------------
-use error::Error;
 use config::Config;
+use error::Error;
 use flags::Flags;
-use line_type::LineType;
 use language::Language;
+use line_type::LineType;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait Inspector
@@ -60,7 +60,10 @@ pub trait Inspector: ::std::fmt::Debug {
     ) -> Result<(), Error> {
         println!(
             "{}({}): {} : {}",
-            path.clone().into_os_string().into_string().unwrap(),
+            path.clone()
+                .into_os_string()
+                .into_string()
+                .unwrap(),
             row,
             line.len(),
             line
@@ -124,13 +127,18 @@ impl<'a> Inspector for Checker<'a> {
     /// inspect
     fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error> {
         let c = self.config.column;
-        self.inspect_impl(self.config, lang, path, &mut |row, line_type, l| {
-            if self.check_type(lang, c, line_type, l) {
-                Ok(())
-            } else {
-                self.println_line(path, row, l)
-            }
-        })
+        self.inspect_impl(
+            self.config,
+            lang,
+            path,
+            &mut |row, line_type, l| {
+                if self.check_type(lang, c, line_type, l) {
+                    Ok(())
+                } else {
+                    self.println_line(path, row, l)
+                }
+            },
+        )
     }
 }
 // ////////////////////////////////////////////////////////////////////////////
@@ -220,7 +228,13 @@ impl<'a> Replacer<'a> {
                 let _ = s.pop();
             }
         } else if 0 > d {
-            let b = line_type.body().unwrap().chars().rev().nth(0).unwrap();
+            let b = line_type
+                .body()
+                .unwrap()
+                .chars()
+                .rev()
+                .nth(0)
+                .unwrap();
             for _ in 0..-d {
                 s.push(b)
             }
@@ -365,7 +379,10 @@ impl<'a> Inspector for Replacer<'a> {
                 extension.push(".backup");
                 let mut path_back = path.clone();
                 let _ = path_back.set_extension(extension);
-                println!("* backup: {:?}", path_back.clone().into_os_string());
+                println!(
+                    "* backup: {:?}",
+                    path_back.clone().into_os_string()
+                );
                 let _ = ::std::fs::rename(path, path_back)?;
             }
             let mut file_new = File::create(path)?;
