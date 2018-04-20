@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2018/03/14
+//  @date 2018/04/20
 
 //! # Examples
 //!
@@ -122,7 +122,8 @@ impl Column79 {
         config: &'static str,
     ) -> Result<(), Error> {
         let mut f = File::create(path)?;
-        Ok(f.write_all(config.as_ref())?)
+        f.write_all(config.as_ref())?;
+        Ok(())
     }
     // ========================================================================
     /// run
@@ -215,7 +216,7 @@ impl Column79 {
             let entry = i?;
             let ftype = entry.file_type()?;
             if ftype.is_dir() {
-                let _ = self.walk(&entry.path(), inspector)?;
+                self.walk(&entry.path(), inspector)?;
                 continue;
             }
             let entry_path = &entry.path();

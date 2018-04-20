@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2018/01/26
+//  @date 2018/04/20
 
 //! # Examples
 //!
@@ -92,10 +92,11 @@ fn main() {
         .optflag("", "no-ask", "will not be asked to allow");
     let matches = unwrap!(opts.parse(&args[1..]));
     if matches.opt_present("v") {
-        return println!(
-            "{}",
-            concat!(module_path!(), " v", env!("CARGO_PKG_VERSION"))
-        );
+        println!(concat!(
+            module_path!(),
+            " v",
+            env!("CARGO_PKG_VERSION")
+        ));
     }
     if matches.free.is_empty() || matches.opt_present("h") {
         return print_usage(&opts, args[0].as_ref());

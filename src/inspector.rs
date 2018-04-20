@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2018/03/14
+//  @date 2018/04/20
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -339,7 +339,7 @@ impl<'a> Inspector for Replacer<'a> {
         let mut file_tmp = tempfile()?;
         let mut ftmp = BufWriter::new(&mut file_tmp);
         let mut fixes = false;
-        let _ = self.inspect_impl(
+        self.inspect_impl(
             self.config,
             lang,
             path,
@@ -383,7 +383,7 @@ impl<'a> Inspector for Replacer<'a> {
                     "* backup: {:?}",
                     path_back.clone().into_os_string()
                 );
-                let _ = ::std::fs::rename(path, path_back)?;
+                ::std::fs::rename(path, path_back)?;
             }
             let mut file_new = File::create(path)?;
             let mut fnew = BufWriter::new(&mut file_new);

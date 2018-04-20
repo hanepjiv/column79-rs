@@ -14,15 +14,15 @@ repository              = "https://github.com/hanepjiv/column79-rs.git"
 publish                 = false
 # =============================================================================
 [dependencies]
-bitflags                = { default-features = false, version = "^1.0.1" }
-env_logger              = { default-features = false, version = "^0.5.6" }
-getopts                 = { default-features = false, version = "^0.2.17" }
-log                     = { default-features = false, version = "^0.4.1" }
-regex                   = { default-features = false, version = "^0.2.10" }
-serde                   = { default-features = false, version = "^1.0.37" }
-serde_derive            = { default-features = false, version = "^1.0.37" }
-tempfile                = { default-features = false, version = "^3.0.0" }
-toml                    = { default-features = false, version = "^0.4.6" }
+bitflags                = { default-features = false, version = "^1.0" }
+env_logger              = { default-features = false, version = "^0.5" }
+getopts                 = { default-features = false, version = "^0.2" }
+log                     = { default-features = false, version = "^0.4" }
+regex                   = { default-features = false, version = "^0.2" }
+serde                   = { default-features = false, version = "^1.0" }
+serde_derive            = { default-features = false, version = "^1.0" }
+tempfile                = { default-features = false, version = "^3.0" }
+toml                    = { default-features = false, version = "^0.4" }
 # =============================================================================
 [[bin]]
 name                    = "column79"

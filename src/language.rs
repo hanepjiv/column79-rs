@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2018/03/14
+//  @date 2018/04/20
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -121,7 +121,7 @@ impl Language {
                     self.name, base
                 )));
             }
-            let _ = ls.get(base)
+            ls.get(base)
                 .unwrap()
                 .check_descent(ls, descent)?;
         }
