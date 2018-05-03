@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.2"
+version                 = "0.2.3"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["tool", "development"]
@@ -26,6 +26,7 @@ toml                    = { default-features = false, version = "^0.4" }
 # =============================================================================
 [[bin]]
 name                    = "column79"
+path                    = "./src/column79/main.rs"
 test                    = true
 doctest                 = true
 bench                   = false
