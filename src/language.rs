@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2018/04/20
+//  @date 2018/05/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -20,27 +20,27 @@ use super::error::Error;
 // ============================================================================
 /// struct LanguageSrc
 #[derive(Debug, Deserialize)]
-pub struct LanguageSrc {
+pub(crate) struct LanguageSrc {
     /// name
-    pub name: Option<String>,
+    pub(crate) name: Option<String>,
     /// base
-    pub base: Option<String>,
+    pub(crate) base: Option<String>,
     /// extensions
-    pub extensions: Option<Vec<String>>,
+    pub(crate) extensions: Option<Vec<String>>,
     /// line_comment_begin
-    pub line_comment_begin: Option<String>,
+    pub(crate) line_comment_begin: Option<String>,
     /// block_comment_begin
-    pub block_comment_begin: Option<String>,
+    pub(crate) block_comment_begin: Option<String>,
     /// block_comment_end
-    pub block_comment_end: Option<String>,
+    pub(crate) block_comment_end: Option<String>,
     /// sublanguages
-    pub sublanguages: Option<Vec<String>>,
+    pub(crate) sublanguages: Option<Vec<String>>,
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Language
 #[derive(Debug, Clone, Default)]
-pub struct Language {
+pub(crate) struct Language {
     /// name
     name: String,
     /// base
@@ -63,27 +63,27 @@ pub struct Language {
 // ============================================================================
 impl Language {
     // ========================================================================
-    pub fn peek_name(&self) -> &String {
+    pub(crate) fn peek_name(&self) -> &String {
         &self.name
     }
-    pub fn peek_lcb(&self) -> &Option<String> {
+    pub(crate) fn peek_lcb(&self) -> &Option<String> {
         &self.line_comment_begin
     }
-    pub fn peek_bcb(&self) -> &Option<String> {
+    pub(crate) fn peek_bcb(&self) -> &Option<String> {
         &self.block_comment_begin
     }
-    // pub fn peek_bce(&self)  -> &Option<String>  { &self.block_comment_end }
+    // pub(crate) fn peek_bce(&self)  -> &Option<String>  { &self.block_comment_end }
     // ========================================================================
-    pub fn has_line_comment(&self) -> bool {
+    pub(crate) fn has_line_comment(&self) -> bool {
         self.line_comment_begin.is_some()
     }
     // ------------------------------------------------------------------------
-    pub fn has_block_comment(&self) -> bool {
+    pub(crate) fn has_block_comment(&self) -> bool {
         self.block_comment_begin.is_some() && self.block_comment_end.is_some()
     }
     // ========================================================================
     /// extend
-    pub fn extend(&mut self, base: &Language) {
+    pub(crate) fn extend(&mut self, base: &Language) {
         if self.line_comment_begin.is_none()
             && base.line_comment_begin.is_some()
         {
@@ -128,7 +128,7 @@ impl Language {
         Ok(())
     }
     // ------------------------------------------------------------------------
-    pub fn from_src(
+    pub(crate) fn from_src(
         src: LanguageSrc,
         languages: &BTreeMap<String, Language>,
     ) -> Result<Self, Error> {
@@ -157,7 +157,10 @@ impl Language {
         Ok(ret)
     }
     // ========================================================================
-    pub fn re_line_captures<'t>(&self, line: &'t str) -> Option<Captures<'t>> {
+    pub(crate) fn re_line_captures<'t>(
+        &self,
+        line: &'t str,
+    ) -> Option<Captures<'t>> {
         if let Some(ref lcb) = self.line_comment_begin {
             if let Some(ref mut re) = *self.re_line.borrow_mut() {
                 return re.captures(line);
@@ -172,7 +175,7 @@ impl Language {
         }
     }
     // ------------------------------------------------------------------------
-    pub fn re_block_captures<'t>(
+    pub(crate) fn re_block_captures<'t>(
         &self,
         line: &'t str,
     ) -> Option<Captures<'t>> {
@@ -196,7 +199,7 @@ impl Language {
         }
     }
     // ========================================================================
-    pub fn check_path_<'a>(
+    pub(crate) fn check_path_<'a>(
         &'a self,
         p: &::std::path::PathBuf,
         ls: &'a BTreeMap<String, Language>,
@@ -209,7 +212,7 @@ impl Language {
         None
     }
     // ------------------------------------------------------------------------
-    pub fn check_path<'a>(
+    pub(crate) fn check_path<'a>(
         &'a self,
         path: &::std::path::PathBuf,
         languages: &'a BTreeMap<String, Language>,

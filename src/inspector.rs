@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2018/04/20
+//  @date 2018/05/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -25,7 +25,7 @@ use line_type::LineType;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait Inspector
-pub trait Inspector: ::std::fmt::Debug {
+pub(crate) trait Inspector: ::std::fmt::Debug {
     // ========================================================================
     /// inspect
     fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error>;
@@ -109,7 +109,7 @@ pub trait Inspector: ::std::fmt::Debug {
 // ============================================================================
 /// struct Checker
 #[derive(Debug, Clone)]
-pub struct Checker<'a> {
+pub(crate) struct Checker<'a> {
     /// config
     config: &'a Config,
 }
@@ -117,7 +117,7 @@ pub struct Checker<'a> {
 impl<'a> Checker<'a> {
     // ========================================================================
     /// new
-    pub fn new(config: &'a Config) -> Self {
+    pub(crate) fn new(config: &'a Config) -> Self {
         Checker { config }
     }
 }
@@ -145,7 +145,7 @@ impl<'a> Inspector for Checker<'a> {
 // ============================================================================
 /// struct Replacer
 #[derive(Debug, Clone)]
-pub struct Replacer<'a> {
+pub(crate) struct Replacer<'a> {
     /// config
     config: &'a Config,
 }
@@ -153,7 +153,7 @@ pub struct Replacer<'a> {
 impl<'a> Replacer<'a> {
     // ========================================================================
     /// new
-    pub fn new(config: &'a Config) -> Self {
+    pub(crate) fn new(config: &'a Config) -> Self {
         Replacer { config }
     }
     // ========================================================================

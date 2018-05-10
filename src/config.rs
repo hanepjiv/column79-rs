@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2018/03/14
+//  @date 2018/05/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -22,33 +22,33 @@ use language::{Language, LanguageSrc};
 // ============================================================================
 /// struct ConfigSrc
 #[derive(Debug, Deserialize)]
-pub struct ConfigSrc {
+pub(crate) struct ConfigSrc {
     /// column
-    pub column: Option<usize>,
+    pub(crate) column: Option<usize>,
     /// separator_threshold
-    pub separator_threshold: Option<usize>,
+    pub(crate) separator_threshold: Option<usize>,
     /// ask
-    pub ask: Option<bool>,
+    pub(crate) ask: Option<bool>,
     /// language
-    pub language: Option<String>,
+    pub(crate) language: Option<String>,
     /// languages
-    pub languages: Option<Vec<LanguageSrc>>,
+    pub(crate) languages: Option<Vec<LanguageSrc>>,
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Config
 #[derive(Debug, Clone)]
-pub struct Config {
+pub(crate) struct Config {
     /// column
-    pub column: usize,
+    pub(crate) column: usize,
     /// separator_threshold
-    pub separator_threshold: usize,
+    pub(crate) separator_threshold: usize,
     /// flags
-    pub flags: Flags,
+    pub(crate) flags: Flags,
     /// language
-    pub language: String,
+    pub(crate) language: String,
     /// languages
-    pub languages: BTreeMap<String, Language>,
+    pub(crate) languages: BTreeMap<String, Language>,
 }
 // ============================================================================
 impl Default for Config {
@@ -66,14 +66,14 @@ impl Default for Config {
 impl Config {
     // ========================================================================
     /// new
-    pub fn new(path: &OsString) -> Result<Self, Error> {
+    pub(crate) fn new(path: &OsString) -> Result<Self, Error> {
         let mut config = Config::default();
         config.import(path)?;
         Ok(config)
     }
     // ========================================================================
     /// import
-    pub fn import(&mut self, path: &OsString) -> Result<(), Error> {
+    pub(crate) fn import(&mut self, path: &OsString) -> Result<(), Error> {
         let mut source = String::new();
         let _ = File::open(path.clone())
             .and_then(|mut f| f.read_to_string(&mut source))?;
@@ -115,7 +115,7 @@ impl Config {
     }
     // ========================================================================
     /// validation
-    pub fn validation(&self) -> Result<(), Error> {
+    pub(crate) fn validation(&self) -> Result<(), Error> {
         if self.languages.get(&self.language).is_none() {
             Err(Error::InvalidConfig(format!(
                 "::column79::config::Config::validation(&self): \
@@ -128,7 +128,7 @@ impl Config {
     }
     // ========================================================================
     /// check_path
-    pub fn check_path(
+    pub(crate) fn check_path(
         &self,
         path: &::std::path::PathBuf,
     ) -> Option<&Language> {

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2018/03/14
+//  @date 2018/05/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -16,7 +16,7 @@ use language::Language;
 // ============================================================================
 /// enum LineType
 #[derive(Debug, Clone)]
-pub enum LineType {
+pub(crate) enum LineType {
     /// LineComment
     LineComment(String, String),
     /// LineSeparator
@@ -31,7 +31,7 @@ pub enum LineType {
 // ============================================================================
 impl LineType {
     // ========================================================================
-    pub fn head(&self) -> Option<&String> {
+    pub(crate) fn head(&self) -> Option<&String> {
         match *self {
             LineType::LineComment(ref head, _) => Some(head),
             LineType::LineSeparator(ref head, _) => Some(head),
@@ -41,7 +41,7 @@ impl LineType {
         }
     }
     // ------------------------------------------------------------------------
-    pub fn body(&self) -> Option<&String> {
+    pub(crate) fn body(&self) -> Option<&String> {
         match *self {
             LineType::LineComment(_, ref body) => Some(body),
             LineType::LineSeparator(_, ref body) => Some(body),
@@ -51,7 +51,7 @@ impl LineType {
         }
     }
     // ------------------------------------------------------------------------
-    pub fn foot(&self) -> Option<&String> {
+    pub(crate) fn foot(&self) -> Option<&String> {
         match *self {
             LineType::LineComment(_, _) => None,
             LineType::LineSeparator(_, _) => None,
@@ -61,7 +61,7 @@ impl LineType {
         }
     }
     // ========================================================================
-    pub fn is_separator(conf: &Config, body: &str) -> bool {
+    pub(crate) fn is_separator(conf: &Config, body: &str) -> bool {
         let t = conf.separator_threshold;
         if body.len() < t {
             return false;
@@ -79,7 +79,7 @@ impl LineType {
         true
     }
     // ========================================================================
-    pub fn is_line_comment(
+    pub(crate) fn is_line_comment(
         conf: &Config,
         lang: &Language,
         line: &str,
@@ -99,7 +99,7 @@ impl LineType {
             })
     }
     // ------------------------------------------------------------------------
-    pub fn is_block_comment(
+    pub(crate) fn is_block_comment(
         conf: &Config,
         lang: &Language,
         line: &str,
@@ -120,7 +120,7 @@ impl LineType {
             })
     }
     // ========================================================================
-    pub fn new(conf: &Config, lang: &Language, line: &str) -> LineType {
+    pub(crate) fn new(conf: &Config, lang: &Language, line: &str) -> LineType {
         match LineType::is_block_comment(conf, lang, line) {
             Some(l) => l,
             None => match LineType::is_line_comment(conf, lang, line) {
