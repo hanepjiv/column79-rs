@@ -121,9 +121,7 @@ impl Language {
                     self.name, base
                 )));
             }
-            ls.get(base)
-                .unwrap()
-                .check_descent(ls, descent)?;
+            ls.get(base).unwrap().check_descent(ls, descent)?;
         }
         Ok(())
     }

@@ -87,16 +87,15 @@ impl LineType {
         if !lang.has_line_comment() {
             return None;
         }
-        lang.re_line_captures(line)
-            .map(|c| -> LineType {
-                let head = String::from(c.get(1).unwrap().as_str());
-                let body = String::from(c.get(2).unwrap().as_str());
-                if LineType::is_separator(conf, &body) {
-                    LineType::LineSeparator(head, body)
-                } else {
-                    LineType::LineComment(head, body)
-                }
-            })
+        lang.re_line_captures(line).map(|c| -> LineType {
+            let head = String::from(c.get(1).unwrap().as_str());
+            let body = String::from(c.get(2).unwrap().as_str());
+            if LineType::is_separator(conf, &body) {
+                LineType::LineSeparator(head, body)
+            } else {
+                LineType::LineComment(head, body)
+            }
+        })
     }
     // ------------------------------------------------------------------------
     pub(crate) fn is_block_comment(
@@ -107,17 +106,16 @@ impl LineType {
         if !lang.has_block_comment() {
             return None;
         }
-        lang.re_block_captures(line)
-            .map(|c| -> LineType {
-                let head = String::from(c.get(1).unwrap().as_str());
-                let body = String::from(c.get(2).unwrap().as_str());
-                let foot = String::from(c.get(3).unwrap().as_str());
-                if LineType::is_separator(conf, &body) {
-                    LineType::BlockSeparator(head, body, foot)
-                } else {
-                    LineType::BlockComment(head, body, foot)
-                }
-            })
+        lang.re_block_captures(line).map(|c| -> LineType {
+            let head = String::from(c.get(1).unwrap().as_str());
+            let body = String::from(c.get(2).unwrap().as_str());
+            let foot = String::from(c.get(3).unwrap().as_str());
+            if LineType::is_separator(conf, &body) {
+                LineType::BlockSeparator(head, body, foot)
+            } else {
+                LineType::BlockComment(head, body, foot)
+            }
+        })
     }
     // ========================================================================
     pub(crate) fn new(conf: &Config, lang: &Language, line: &str) -> LineType {
