@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2018/05/11
+//  @date 2018/05/13
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -212,10 +212,11 @@ impl Column79 {
     }
     // ========================================================================
     /// walk
-    fn walk<T>(&self, path: &PathBuf, inspector: &T) -> Result<(), Error>
-    where
-        T: Inspector,
-    {
+    fn walk(
+        &self,
+        path: &PathBuf,
+        inspector: &impl Inspector,
+    ) -> Result<(), Error> {
         for i in ::std::fs::read_dir(path)? {
             let entry = i?;
             let ftype = entry.file_type()?;

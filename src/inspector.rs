@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2018/05/11
+//  @date 2018/05/13
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -31,16 +31,13 @@ pub(crate) trait Inspector: ::std::fmt::Debug {
     fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error>;
     // ========================================================================
     /// inspect_impl
-    fn inspect_impl<F>(
+    fn inspect_impl(
         &self,
         conf: &Config,
         lang: &Language,
         path: &PathBuf,
-        func: &mut F,
-    ) -> Result<(), Error>
-    where
-        F: FnMut(usize, &LineType, &str) -> Result<(), Error>,
-    {
+        func: &mut impl FnMut(usize, &LineType, &str) -> Result<(), Error>,
+    ) -> Result<(), Error> {
         let file_in = File::open(path)?;
         let fin = BufReader::new(&file_in);
         for (row, line) in fin.lines().enumerate() {
