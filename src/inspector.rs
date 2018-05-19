@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2018/05/13
+//  @date 2018/05/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -41,9 +41,9 @@ pub(crate) trait Inspector: ::std::fmt::Debug {
         let file_in = File::open(path)?;
         let fin = BufReader::new(&file_in);
         for (row, line) in fin.lines().enumerate() {
-            let l = &String::from(line.unwrap().trim_right());
+            let l = &String::from(line.unwrap());
             let line_type = LineType::new(conf, lang, l);
-            func(row, &line_type, l)?
+            func(row + 1, &line_type, l)?
         }
         Ok(())
     }
@@ -57,7 +57,10 @@ pub(crate) trait Inspector: ::std::fmt::Debug {
     ) -> Result<(), Error> {
         println!(
             "{}({}): {} : {}",
-            path.clone().into_os_string().into_string().unwrap(),
+            path.clone()
+                .into_os_string()
+                .into_string()
+                .unwrap(),
             row,
             line.len(),
             line
@@ -121,13 +124,18 @@ impl<'a> Inspector for Checker<'a> {
     /// inspect
     fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error> {
         let c = self.config.column;
-        self.inspect_impl(self.config, lang, path, &mut |row, line_type, l| {
-            if self.check_type(lang, c, line_type, l) {
-                Ok(())
-            } else {
-                self.println_line(path, row, l)
-            }
-        })
+        self.inspect_impl(
+            self.config,
+            lang,
+            path,
+            &mut |row, line_type, l| {
+                if self.check_type(lang, c, line_type, l) {
+                    Ok(())
+                } else {
+                    self.println_line(path, row, l)
+                }
+            },
+        )
     }
 }
 // ////////////////////////////////////////////////////////////////////////////
@@ -217,7 +225,13 @@ impl<'a> Replacer<'a> {
                 let _ = s.pop();
             }
         } else if 0 > d {
-            let b = line_type.body().unwrap().chars().rev().nth(0).unwrap();
+            let b = line_type
+                .body()
+                .unwrap()
+                .chars()
+                .rev()
+                .nth(0)
+                .unwrap();
             for _ in 0..-d {
                 s.push(b)
             }
@@ -322,31 +336,36 @@ impl<'a> Inspector for Replacer<'a> {
         let mut file_tmp = tempfile()?;
         let mut ftmp = BufWriter::new(&mut file_tmp);
         let mut fixes = false;
-        self.inspect_impl(self.config, lang, path, &mut |row, l_type, l| {
-            let (f, mut s) = if self.check_type(lang, c, l_type, l) {
-                (false, String::from(l))
-            } else {
-                let _ = self.println_line(path, row, l);
-                match *l_type {
-                    LineType::LineSeparator(_, _) => {
-                        self.line_separator(lang, path, row, l_type, l)
-                    }
-                    LineType::BlockComment(_, _, _) => {
-                        self.block_comment(lang, path, row, l_type, l)
-                    }
-                    LineType::BlockSeparator(_, _, _) => {
-                        self.block_separator(lang, path, row, l_type, l)
-                    }
-                    LineType::LineComment(_, _) | LineType::Other => {
-                        Ok((false, String::from(l)))
-                    }
-                }?
-            };
-            s.push('\n');
-            let _ = ftmp.write(s.as_ref())?;
-            fixes |= f;
-            Ok(())
-        })?;
+        self.inspect_impl(
+            self.config,
+            lang,
+            path,
+            &mut |row, l_type, l| {
+                let (f, mut s) = if self.check_type(lang, c, l_type, l) {
+                    (false, String::from(l))
+                } else {
+                    let _ = self.println_line(path, row, l);
+                    match *l_type {
+                        LineType::LineSeparator(_, _) => {
+                            self.line_separator(lang, path, row, l_type, l)
+                        }
+                        LineType::BlockComment(_, _, _) => {
+                            self.block_comment(lang, path, row, l_type, l)
+                        }
+                        LineType::BlockSeparator(_, _, _) => {
+                            self.block_separator(lang, path, row, l_type, l)
+                        }
+                        LineType::LineComment(_, _) | LineType::Other => {
+                            Ok((false, String::from(l)))
+                        }
+                    }?
+                };
+                s.push('\n');
+                let _ = ftmp.write(s.as_ref())?;
+                fixes |= f;
+                Ok(())
+            },
+        )?;
         if fixes {
             let file_tmp = ftmp.into_inner().unwrap();
             let _ = file_tmp.seek(SeekFrom::Start(0))?;
@@ -357,7 +376,10 @@ impl<'a> Inspector for Replacer<'a> {
                 extension.push(".backup");
                 let mut path_back = path.clone();
                 let _ = path_back.set_extension(extension);
-                println!("* backup: {:?}", path_back.clone().into_os_string());
+                println!(
+                    "* backup: {:?}",
+                    path_back.clone().into_os_string()
+                );
                 ::std::fs::rename(path, path_back)?;
             }
             let mut file_new = File::create(path)?;
