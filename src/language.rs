@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2018/05/11
+//  @date 2018/05/20
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -72,7 +72,11 @@ impl Language {
     pub(crate) fn peek_bcb(&self) -> &Option<String> {
         &self.block_comment_begin
     }
-    // pub(crate) fn peek_bce(&self)  -> &Option<String>  { &self.block_comment_end }
+    /*
+    pub(crate) fn peek_bce(&self)  -> &Option<String>  {
+        &self.block_comment_end
+    }
+     */
     // ========================================================================
     pub(crate) fn has_line_comment(&self) -> bool {
         self.line_comment_begin.is_some()

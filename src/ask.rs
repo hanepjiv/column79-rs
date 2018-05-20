@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2018/05/11
+//  @date 2018/05/20
 
 // use  =======================================================================
 use std::io::Write;
@@ -23,7 +23,7 @@ pub(crate) fn ask(msg: &str, default: bool) -> Result<bool, Error> {
     ::std::io::stdout().flush()?;
     let mut line = String::new();
     let _ = ::std::io::stdin().read_line(&mut line)?;
-    match line.to_lowercase().trim() {
+    match line.trim().to_lowercase().as_str() {
         "" => Ok(default),
         "y" | "yes" => Ok(true),
         "n" | "no" => Ok(false),
