@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.5-alpha.1"
+version                 = "0.2.5-alpha.3"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["tool", "development"]
