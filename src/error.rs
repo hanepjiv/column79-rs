@@ -6,8 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2018/06/01
+//  @date 2018/06/22
 
+// ////////////////////////////////////////////////////////////////////////////
+// use  =======================================================================
+use std::error::Error as StdError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
@@ -57,11 +60,11 @@ impl From<::toml::de::Error> for Error {
 // ============================================================================
 impl ::std::fmt::Display for Error {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        write!(f, "{:?}", self)
+        <Self as ::std::fmt::Debug>::fmt(self, f)
     }
 }
 // ============================================================================
-impl ::std::error::Error for Error {
+impl StdError for Error {
     fn description(&self) -> &str {
         match *self {
             Error::EnvVar(ref e) => e.description(),
@@ -75,7 +78,7 @@ impl ::std::error::Error for Error {
         }
     }
     // ========================================================================
-    fn cause(&self) -> Option<&::std::error::Error> {
+    fn cause(&self) -> Option<&dyn StdError> {
         match *self {
             Error::EnvVar(ref e) => Some(e),
             Error::IO(ref e) => Some(e),
