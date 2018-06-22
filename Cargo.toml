@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.6-alpha.0"
+version                 = "0.2.6"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["tool", "development"]
@@ -11,7 +11,7 @@ readme                  = "README.md"
 documentation           = "https://github.com/hanepjiv/column79-rs/wiki"
 homepage                = "https://github.com/hanepjiv/column79-rs"
 repository              = "https://github.com/hanepjiv/column79-rs.git"
-publish                 = false
+publish                 = true
 # =============================================================================
 [dependencies]
 bitflags                = { default-features = false, version = "^1.0" }
