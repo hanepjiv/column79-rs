@@ -189,7 +189,8 @@ impl Language {
                 let re = Regex::new(&format!(
                     r##"^(.*?{}\s*)(.*?)(\s*{})$"##,
                     bcb, bce
-                )).expect("re_block_captures");
+                ))
+                .expect("re_block_captures");
                 let ret = re.captures(line);
                 *self.re_block.borrow_mut() = Some(re);
                 ret

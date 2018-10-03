@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2018/06/18
+//  @date 2018/10/03
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -17,11 +17,11 @@ use std::path::PathBuf;
 use regex::Regex;
 use tempfile::tempfile;
 // ----------------------------------------------------------------------------
-use config::Config;
-use error::Error;
-use flags::Flags;
-use language::Language;
-use line_type::LineType;
+use super::config::Config;
+use super::error::Error;
+use super::flags::Flags;
+use super::language::Language;
+use super::line_type::LineType;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait Inspector
@@ -57,10 +57,7 @@ pub(crate) trait Inspector: ::std::fmt::Debug {
     ) -> Result<(), Error> {
         println!(
             "{}({}): {} : {}",
-            path.clone()
-                .into_os_string()
-                .into_string()
-                .unwrap(),
+            path.clone().into_os_string().into_string().unwrap(),
             row,
             line.len(),
             line
@@ -78,7 +75,7 @@ pub(crate) trait Inspector: ::std::fmt::Debug {
         if config.flags.contains(Flags::NOASK) {
             return Ok(default);
         }
-        ::ask::ask(msg, default)
+        super::ask::ask(msg, default)
     }
     // ========================================================================
     /// check_type
@@ -124,18 +121,13 @@ impl<'a> Inspector for Checker<'a> {
     /// inspect
     fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error> {
         let c = self.config.column;
-        self.inspect_impl(
-            self.config,
-            lang,
-            path,
-            &mut |row, line_type, l| {
-                if self.check_type(lang, c, line_type, l) {
-                    Ok(())
-                } else {
-                    self.println_line(path, row, l)
-                }
-            },
-        )
+        self.inspect_impl(self.config, lang, path, &mut |row, line_type, l| {
+            if self.check_type(lang, c, line_type, l) {
+                Ok(())
+            } else {
+                self.println_line(path, row, l)
+            }
+        })
     }
 }
 // ////////////////////////////////////////////////////////////////////////////
@@ -201,12 +193,13 @@ impl<'a> Replacer<'a> {
         let mut s = Regex::new(&format!(
             r"(.*){}(.*)",
             lang.peek_bcb().clone().unwrap()
-        )).unwrap()
-            .replace(
-                line_type.head().unwrap(),
-                format!(r"$1{}$2", lang.peek_lcb().clone().unwrap()).as_str(),
-            )
-            .into_owned();
+        ))
+        .unwrap()
+        .replace(
+            line_type.head().unwrap(),
+            format!(r"$1{}$2", lang.peek_lcb().clone().unwrap()).as_str(),
+        )
+        .into_owned();
         s.push_str(line_type.body().unwrap());
         s
     }
@@ -225,13 +218,7 @@ impl<'a> Replacer<'a> {
                 let _ = s.pop();
             }
         } else if 0 > d {
-            let b = line_type
-                .body()
-                .unwrap()
-                .chars()
-                .rev()
-                .nth(0)
-                .unwrap();
+            let b = line_type.body().unwrap().chars().rev().nth(0).unwrap();
             for _ in 0..-d {
                 s.push(b)
             }
@@ -279,12 +266,11 @@ impl<'a> Replacer<'a> {
                 Ok((false, String::from(line)))
             }
         } else if c < l {
-            if has_line
-                && self.ask(
-                    self.config,
-                    "* convert to line comment with shrink?",
-                    true,
-                )? {
+            if has_line && self.ask(
+                self.config,
+                "* convert to line comment with shrink?",
+                true,
+            )? {
                 let s = self.make_line_separator(lang, line_type);
                 Ok((true, s))
             } else if self.ask(self.config, "* shrink?", true)? {
@@ -305,12 +291,11 @@ impl<'a> Replacer<'a> {
             } else {
                 Ok((false, String::from(line)))
             }
-        } else if has_line
-            && self.ask(
-                self.config,
-                "* convert to line comment with expand?",
-                true,
-            )? {
+        } else if has_line && self.ask(
+            self.config,
+            "* convert to line comment with expand?",
+            true,
+        )? {
             let s = self.make_line_separator(lang, line_type);
             Ok((true, s))
         } else if self.ask(self.config, "* expand?", true)? {
@@ -336,36 +321,31 @@ impl<'a> Inspector for Replacer<'a> {
         let mut file_tmp = tempfile()?;
         let mut ftmp = BufWriter::new(&mut file_tmp);
         let mut fixes = false;
-        self.inspect_impl(
-            self.config,
-            lang,
-            path,
-            &mut |row, l_type, l| {
-                let (f, mut s) = if self.check_type(lang, c, l_type, l) {
-                    (false, String::from(l))
-                } else {
-                    let _ = self.println_line(path, row, l);
-                    match *l_type {
-                        LineType::LineSeparator(_, _) => {
-                            self.line_separator(lang, path, row, l_type, l)
-                        }
-                        LineType::BlockComment(_, _, _) => {
-                            self.block_comment(lang, path, row, l_type, l)
-                        }
-                        LineType::BlockSeparator(_, _, _) => {
-                            self.block_separator(lang, path, row, l_type, l)
-                        }
-                        LineType::LineComment(_, _) | LineType::Other => {
-                            Ok((false, String::from(l)))
-                        }
-                    }?
-                };
-                s.push('\n');
-                let _ = ftmp.write(s.as_ref())?;
-                fixes |= f;
-                Ok(())
-            },
-        )?;
+        self.inspect_impl(self.config, lang, path, &mut |row, l_type, l| {
+            let (f, mut s) = if self.check_type(lang, c, l_type, l) {
+                (false, String::from(l))
+            } else {
+                let _ = self.println_line(path, row, l);
+                match *l_type {
+                    LineType::LineSeparator(_, _) => {
+                        self.line_separator(lang, path, row, l_type, l)
+                    }
+                    LineType::BlockComment(_, _, _) => {
+                        self.block_comment(lang, path, row, l_type, l)
+                    }
+                    LineType::BlockSeparator(_, _, _) => {
+                        self.block_separator(lang, path, row, l_type, l)
+                    }
+                    LineType::LineComment(_, _) | LineType::Other => {
+                        Ok((false, String::from(l)))
+                    }
+                }?
+            };
+            s.push('\n');
+            let _ = ftmp.write(s.as_ref())?;
+            fixes |= f;
+            Ok(())
+        })?;
         if fixes {
             let file_tmp = ftmp.into_inner().unwrap();
             let _ = file_tmp.seek(SeekFrom::Start(0))?;
@@ -376,10 +356,7 @@ impl<'a> Inspector for Replacer<'a> {
                 extension.push(".backup");
                 let mut path_back = path.clone();
                 let _ = path_back.set_extension(extension);
-                println!(
-                    "* backup: {:?}",
-                    path_back.clone().into_os_string()
-                );
+                println!("* backup: {:?}", path_back.clone().into_os_string());
                 ::std::fs::rename(path, path_back)?;
             }
             let mut file_new = File::create(path)?;

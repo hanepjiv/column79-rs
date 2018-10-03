@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.6"
+version                 = "0.2.7-alpha.1"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["tool", "development"]
@@ -11,25 +11,16 @@ readme                  = "README.md"
 documentation           = "https://github.com/hanepjiv/column79-rs/wiki"
 homepage                = "https://github.com/hanepjiv/column79-rs"
 repository              = "https://github.com/hanepjiv/column79-rs.git"
-publish                 = true
+publish                 = false
 # =============================================================================
 [dependencies]
-bitflags                = { default-features = false, version = "^1.0" }
-env_logger              = { default-features = false, version = "^0.5" }
-getopts                 = { default-features = false, version = "^0.2" }
-log                     = { default-features = false, version = "^0.4" }
-regex                   = { default-features =  true, version = "^1.0" }
-serde                   = { default-features = false, version = "^1.0" }
-serde_derive            = { default-features = false, version = "^1.0" }
-tempfile                = { default-features = false, version = "^3.0" }
-toml                    = { default-features = false, version = "^0.4" }
-# =============================================================================
-[[bin]]
-name                    = "column79"
-path                    = "./src/column79/main.rs"
-test                    = true
-doctest                 = true
-bench                   = false
-doc                     = false
-plugin                  = false
-harness                 = true
+bitflags                = { default-features = false, version = "1.0" }
+env_logger              = { default-features = false, version = "0.5" }
+getopts                 = { default-features = false, version = "0.2" }
+log                     = { default-features = false, version = "0.4" }
+regex                   = { default-features = true, version = "1.0" }
+serde                   = { default-features = false, version = "1.0" }
+serde_derive            = { default-features = false, version = "1.0" }
+tempfile                = { default-features = false, version = "3.0" }
+toml                    = { default-features = false, version = "0.4" }
+dirs                    = { default-features = false, version = "1.0" }

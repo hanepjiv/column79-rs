@@ -6,49 +6,103 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2018/06/22
+//  @date 2018/10/03
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
 // rustc 1.27.0 (3eda71b00 2018-06-19)
 #![deny(
-    absolute_paths_not_starting_with_crate, anonymous_parameters,
-    bare_trait_objects, missing_copy_implementations,
-    missing_debug_implementations, missing_docs, unstable_features,
-    unused_extern_crates, unused_import_braces, unused_qualifications,
-    unused_results, variant_size_differences, const_err, deprecated,
-    illegal_floating_point_literal_pattern, improper_ctypes,
-    incoherent_fundamental_impls, late_bound_lifetime_arguments,
-    non_camel_case_types, non_shorthand_field_patterns, non_snake_case,
-    non_upper_case_globals, no_mangle_generic_items, overflowing_literals,
-    path_statements, patterns_in_fns_without_body, plugin_as_library,
-    private_in_public, private_no_mangle_fns, private_no_mangle_statics,
-    safe_packed_borrows, stable_features, type_alias_bounds,
-    tyvar_behind_raw_pointer, unconditional_recursion, unions_with_drop_fields,
-    unknown_lints, unreachable_code, unreachable_patterns,
-    unstable_name_collisions, unused_allocation, unused_assignments,
-    unused_attributes, unused_comparisons, unused_doc_comments,
-    unused_features, unused_imports, unused_macros, unused_must_use,
-    unused_mut, unused_parens, unused_unsafe, unused_variables, while_true,
-    exceeding_bitshifts, invalid_type_param_default,
-    legacy_constructor_visibility, legacy_directory_ownership, legacy_imports,
-    missing_fragment_specifier, mutable_transmutes, no_mangle_const_items,
-    parenthesized_params_in_types_and_modules, pub_use_of_private_extern_crate,
-    safe_extern_statics, unknown_crate_types
+    absolute_paths_not_starting_with_crate,
+    anonymous_parameters,
+    bare_trait_objects,
+    missing_copy_implementations,
+    missing_debug_implementations,
+    missing_docs,
+    unstable_features,
+    unused_extern_crates,
+    unused_import_braces,
+    unused_qualifications,
+    unused_results,
+    variant_size_differences,
+    const_err,
+    deprecated,
+    illegal_floating_point_literal_pattern,
+    improper_ctypes,
+    incoherent_fundamental_impls,
+    late_bound_lifetime_arguments,
+    non_camel_case_types,
+    non_shorthand_field_patterns,
+    non_snake_case,
+    non_upper_case_globals,
+    no_mangle_generic_items,
+    overflowing_literals,
+    path_statements,
+    patterns_in_fns_without_body,
+    plugin_as_library,
+    private_in_public,
+    private_no_mangle_fns,
+    private_no_mangle_statics,
+    safe_packed_borrows,
+    stable_features,
+    type_alias_bounds,
+    tyvar_behind_raw_pointer,
+    unconditional_recursion,
+    unions_with_drop_fields,
+    unknown_lints,
+    unreachable_code,
+    unreachable_patterns,
+    unstable_name_collisions,
+    unused_allocation,
+    unused_assignments,
+    unused_attributes,
+    unused_comparisons,
+    unused_doc_comments,
+    unused_features,
+    unused_imports,
+    unused_macros,
+    unused_must_use,
+    unused_mut,
+    unused_parens,
+    unused_unsafe,
+    unused_variables,
+    while_true,
+    exceeding_bitshifts,
+    invalid_type_param_default,
+    legacy_constructor_visibility,
+    legacy_directory_ownership,
+    legacy_imports,
+    missing_fragment_specifier,
+    mutable_transmutes,
+    no_mangle_const_items,
+    parenthesized_params_in_types_and_modules,
+    pub_use_of_private_extern_crate,
+    safe_extern_statics,
+    unknown_crate_types
 )]
-#![warn(dead_code, deprecated, renamed_and_removed_lints, unreachable_pub)]
+#![warn(
+    dead_code,
+    deprecated,
+    renamed_and_removed_lints,
+    unreachable_pub
+)]
 #![allow(
-    box_pointers, elided_lifetimes_in_paths, single_use_lifetimes,
-    trivial_casts, trivial_numeric_casts, unsafe_code
+    box_pointers,
+    elided_lifetimes_in_paths,
+    single_use_lifetimes,
+    trivial_casts,
+    trivial_numeric_casts,
+    unsafe_code
 )]
 // extern  ====================================================================
 #[macro_use]
 extern crate bitflags;
 #[macro_use]
 extern crate log;
-extern crate regex;
 #[macro_use]
 extern crate serde_derive;
+// ----------------------------------------------------------------------------
+extern crate dirs;
+extern crate regex;
 extern crate tempfile;
 extern crate toml;
 // use  =======================================================================
@@ -56,10 +110,10 @@ use std::fs::File;
 use std::io::Write;
 use std::path::PathBuf;
 // ----------------------------------------------------------------------------
-use config::Config;
-pub use error::Error;
-pub use flags::Flags;
-use inspector::{Checker, Inspector, Replacer};
+use self::config::Config;
+pub use self::error::Error;
+pub use self::flags::Flags;
+use self::inspector::{Checker, Inspector, Replacer};
 // mod  =======================================================================
 mod ask;
 mod config;
@@ -141,7 +195,7 @@ impl Column79 {
         flags: Flags,
     ) -> Result<(), Error> {
         // config_dir  --------------------------------------------------------
-        let mut config_dir = ::std::env::home_dir().ok_or_else(|| {
+        let mut config_dir = ::dirs::home_dir().ok_or_else(|| {
             Error::Column79(format!(
                 "::column79::lib::Column79::run(\"{:?}\"): \
                  ::std::env::home_dir(): not found",
@@ -253,7 +307,8 @@ impl Column79 {
                 CONFIG_USER,
             );
         }
-        if ::ask::ask("Do you want to overwrite your user config?", false)? {
+        if self::ask::ask("Do you want to overwrite your user config?", false)?
+        {
             return Column79::create_config(
                 &self.config_user_path,
                 CONFIG_USER,
