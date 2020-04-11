@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2018/06/22
+//  @date 2020/04/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -59,26 +59,14 @@ impl From<::toml::de::Error> for Error {
 }
 // ============================================================================
 impl ::std::fmt::Display for Error {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         <Self as ::std::fmt::Debug>::fmt(self, f)
     }
 }
 // ============================================================================
 impl StdError for Error {
-    fn description(&self) -> &str {
-        match *self {
-            Error::EnvVar(ref e) => e.description(),
-            Error::IO(ref e) => e.description(),
-            Error::TOMLSer(ref e) => e.description(),
-            Error::TOMLDe(ref e) => e.description(),
-            Error::Column79(ref m) => m.as_str(),
-            Error::ParseConfig(ref m, _) => m.as_str(),
-            Error::InvalidConfig(ref m) => m.as_str(),
-            Error::Inspect(ref m) => m.as_str(),
-        }
-    }
     // ========================================================================
-    fn cause(&self) -> Option<&dyn StdError> {
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
         match *self {
             Error::EnvVar(ref e) => Some(e),
             Error::IO(ref e) => Some(e),
@@ -96,7 +84,7 @@ impl StdError for Error {
 #[cfg(test)]
 mod tests {
     // use  ===================================================================
-    use super::Error;
+    use crate::Error;
     // ========================================================================
     #[test]
     fn test_send() {

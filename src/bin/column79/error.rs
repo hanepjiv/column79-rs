@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/11
-//  @date 2018/06/22
+//  @date 2020/04/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -54,24 +54,14 @@ impl From<::column79::Error> for Error {
 // ============================================================================
 impl ::std::fmt::Display for Error {
     // ========================================================================
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         <Self as ::std::fmt::Debug>::fmt(self, f)
     }
 }
 // ============================================================================
 impl StdError for Error {
     // ========================================================================
-    fn description(&self) -> &str {
-        match *self {
-            Error::OptionNone(_) => "::column79::Error::OptionNone",
-            Error::GetOpts(ref e) => e.description(),
-            Error::StdIO(ref e) => e.description(),
-            Error::StdNumParseInt(ref e) => e.description(),
-            Error::Column79(ref e) => e.description(),
-        }
-    }
-    // ========================================================================
-    fn cause(&self) -> Option<&dyn StdError> {
+    fn cause(&self) -> Option<&(dyn StdError + 'static)> {
         match *self {
             Error::OptionNone(_) => None,
             Error::GetOpts(ref e) => Some(e),
@@ -90,7 +80,7 @@ pub(crate) type Result<T> = ::std::result::Result<T, Error>;
 #[cfg(test)]
 mod tests {
     // use  ===================================================================
-    use super::{Error, Result};
+    use crate::{Error, Result};
     // ========================================================================
     #[test]
     fn test_send() {

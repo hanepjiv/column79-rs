@@ -6,12 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2018/10/03
+//  @date 2020/04/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use super::config::Config;
-use super::language::Language;
+use crate::{config::Config, language::Language};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum LineType

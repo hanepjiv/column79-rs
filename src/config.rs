@@ -6,18 +6,19 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2018/10/03
+//  @date 2020/04/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::collections::BTreeMap;
-use std::ffi::OsString;
-use std::fs::File;
-use std::io::Read;
+use std::{collections::BTreeMap, ffi::OsString, fs::File, io::Read};
 // ----------------------------------------------------------------------------
-use super::error::Error;
-use super::flags::Flags;
-use super::language::{Language, LanguageSrc};
+use serde_derive::Deserialize;
+// ----------------------------------------------------------------------------
+use crate::{
+    error::Error,
+    flags::Flags,
+    language::{Language, LanguageSrc},
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct ConfigSrc

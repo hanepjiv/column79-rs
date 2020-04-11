@@ -6,22 +6,23 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2018/10/03
+//  @date 2020/04/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::fs::File;
-use std::io::{BufRead, BufReader, BufWriter, Seek, SeekFrom, Write};
-use std::path::PathBuf;
+use std::{
+    fs::File,
+    io::{BufRead, BufReader, BufWriter, Seek, SeekFrom, Write},
+    path::PathBuf,
+};
 // ----------------------------------------------------------------------------
 use regex::Regex;
 use tempfile::tempfile;
 // ----------------------------------------------------------------------------
-use super::config::Config;
-use super::error::Error;
-use super::flags::Flags;
-use super::language::Language;
-use super::line_type::LineType;
+use crate::{
+    config::Config, error::Error, flags::Flags, language::Language,
+    line_type::LineType,
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait Inspector
@@ -75,7 +76,7 @@ pub(crate) trait Inspector: ::std::fmt::Debug {
         if config.flags.contains(Flags::NOASK) {
             return Ok(default);
         }
-        super::ask::ask(msg, default)
+        crate::ask::ask(msg, default)
     }
     // ========================================================================
     /// check_type
@@ -116,7 +117,7 @@ impl<'a> Checker<'a> {
     }
 }
 // ============================================================================
-impl<'a> Inspector for Checker<'a> {
+impl Inspector for Checker<'_> {
     // ========================================================================
     /// inspect
     fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error> {
@@ -266,11 +267,13 @@ impl<'a> Replacer<'a> {
                 Ok((false, String::from(line)))
             }
         } else if c < l {
-            if has_line && self.ask(
-                self.config,
-                "* convert to line comment with shrink?",
-                true,
-            )? {
+            if has_line
+                && self.ask(
+                    self.config,
+                    "* convert to line comment with shrink?",
+                    true,
+                )?
+            {
                 let s = self.make_line_separator(lang, line_type);
                 Ok((true, s))
             } else if self.ask(self.config, "* shrink?", true)? {
@@ -291,11 +294,13 @@ impl<'a> Replacer<'a> {
             } else {
                 Ok((false, String::from(line)))
             }
-        } else if has_line && self.ask(
-            self.config,
-            "* convert to line comment with expand?",
-            true,
-        )? {
+        } else if has_line
+            && self.ask(
+                self.config,
+                "* convert to line comment with expand?",
+                true,
+            )?
+        {
             let s = self.make_line_separator(lang, line_type);
             Ok((true, s))
         } else if self.ask(self.config, "* expand?", true)? {
@@ -313,7 +318,7 @@ impl<'a> Replacer<'a> {
     }
 }
 // ============================================================================
-impl<'a> Inspector for Replacer<'a> {
+impl Inspector for Replacer<'_> {
     // ========================================================================
     /// inspect
     fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error> {

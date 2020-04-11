@@ -1,8 +1,9 @@
 # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
 [package]
+edition                 = "2018"
 name                    = "column79"
-version                 = "0.2.7-alpha.1"
+version                 = "0.2.8-alpha.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["tool", "development"]
@@ -15,12 +16,12 @@ publish                 = false
 # =============================================================================
 [dependencies]
 bitflags                = { default-features = false, version = "1.0" }
-env_logger              = { default-features = false, version = "0.5" }
+env_logger              = { default-features = false, version = "0.7" }
 getopts                 = { default-features = false, version = "0.2" }
 log                     = { default-features = false, version = "0.4" }
 regex                   = { default-features = true, version = "1.0" }
 serde                   = { default-features = false, version = "1.0" }
 serde_derive            = { default-features = false, version = "1.0" }
 tempfile                = { default-features = false, version = "3.0" }
-toml                    = { default-features = false, version = "0.4" }
-dirs                    = { default-features = false, version = "1.0" }
+toml                    = { default-features = false, version = "0.5" }
+dirs                    = { default-features = false, version = "2.0" }

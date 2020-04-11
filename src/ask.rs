@@ -6,12 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2018/10/03
+//  @date 2020/04/12
 
 // use  =======================================================================
 use std::io::Write;
 // ----------------------------------------------------------------------------
-use super::error::Error;
+use crate::error::Error;
 // ////////////////////////////////////////////////////////////////////////////
 pub(crate) fn ask(msg: &str, default: bool) -> Result<bool, Error> {
     ::std::io::stdout().write_all(msg.as_ref())?;
