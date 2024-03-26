@@ -6,14 +6,15 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2020/04/12
+//  @date 2024/03/26
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use std::{
+    cmp::Ordering::{Equal, Greater, Less},
     fs::File,
     io::{BufRead, BufReader, BufWriter, Seek, SeekFrom, Write},
-    path::PathBuf,
+    path::Path,
 };
 // ----------------------------------------------------------------------------
 use regex::Regex;
@@ -29,14 +30,14 @@ use crate::{
 pub(crate) trait Inspector: ::std::fmt::Debug {
     // ========================================================================
     /// inspect
-    fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error>;
+    fn inspect(&self, lang: &Language, path: &Path) -> Result<(), Error>;
     // ========================================================================
     /// inspect_impl
     fn inspect_impl(
         &self,
         conf: &Config,
         lang: &Language,
-        path: &PathBuf,
+        path: &Path,
         func: &mut impl FnMut(usize, &LineType, &str) -> Result<(), Error>,
     ) -> Result<(), Error> {
         let file_in = File::open(path)?;
@@ -52,13 +53,13 @@ pub(crate) trait Inspector: ::std::fmt::Debug {
     /// println_line
     fn println_line(
         &self,
-        path: &PathBuf,
+        path: &Path,
         row: usize,
         line: &str,
     ) -> Result<(), Error> {
         println!(
             "{}({}): {} : {}",
-            path.clone().into_os_string().into_string().unwrap(),
+            path.as_os_str().to_str().unwrap(),
             row,
             line.len(),
             line
@@ -120,7 +121,7 @@ impl<'a> Checker<'a> {
 impl Inspector for Checker<'_> {
     // ========================================================================
     /// inspect
-    fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error> {
+    fn inspect(&self, lang: &Language, path: &Path) -> Result<(), Error> {
         let c = self.config.column;
         self.inspect_impl(self.config, lang, path, &mut |row, line_type, l| {
             if self.check_type(lang, c, line_type, l) {
@@ -151,7 +152,7 @@ impl<'a> Replacer<'a> {
     fn line_separator(
         &self,
         _lang: &Language,
-        path: &PathBuf,
+        path: &Path,
         row: usize,
         line_type: &LineType,
         line: &str,
@@ -214,15 +215,20 @@ impl<'a> Replacer<'a> {
         let c = self.config.column;
         let mut s = self.make_line(lang, line_type);
         let d = s.len() as isize - c as isize;
-        if 0 < d {
-            for _ in 0..d {
-                let _ = s.pop();
+        match d.cmp(&0) {
+            Less => {
+                let b =
+                    line_type.body().unwrap().chars().rev().nth(0).unwrap();
+                for _ in 0..-d {
+                    s.push(b)
+                }
             }
-        } else if 0 > d {
-            let b = line_type.body().unwrap().chars().rev().nth(0).unwrap();
-            for _ in 0..-d {
-                s.push(b)
+            Greater => {
+                for _ in 0..d {
+                    let _ = s.pop();
+                }
             }
+            Equal => {}
         }
         s
     }
@@ -231,7 +237,7 @@ impl<'a> Replacer<'a> {
     fn block_comment(
         &self,
         lang: &Language,
-        _path: &PathBuf,
+        _path: &Path,
         _row: usize,
         line_type: &LineType,
         line: &str,
@@ -248,7 +254,7 @@ impl<'a> Replacer<'a> {
     fn block_separator(
         &self,
         lang: &Language,
-        path: &PathBuf,
+        path: &Path,
         row: usize,
         line_type: &LineType,
         line: &str,
@@ -321,7 +327,7 @@ impl<'a> Replacer<'a> {
 impl Inspector for Replacer<'_> {
     // ========================================================================
     /// inspect
-    fn inspect(&self, lang: &Language, path: &PathBuf) -> Result<(), Error> {
+    fn inspect(&self, lang: &Language, path: &Path) -> Result<(), Error> {
         let c = self.config.column;
         let mut file_tmp = tempfile()?;
         let mut ftmp = BufWriter::new(&mut file_tmp);
@@ -330,7 +336,7 @@ impl Inspector for Replacer<'_> {
             let (f, mut s) = if self.check_type(lang, c, l_type, l) {
                 (false, String::from(l))
             } else {
-                let _ = self.println_line(path, row, l);
+                drop(self.println_line(path, row, l));
                 match *l_type {
                     LineType::LineSeparator(_, _) => {
                         self.line_separator(lang, path, row, l_type, l)
@@ -359,15 +365,14 @@ impl Inspector for Replacer<'_> {
                 // backup
                 let mut extension = path.extension().unwrap().to_os_string();
                 extension.push(".backup");
-                let mut path_back = path.clone();
-                let _ = path_back.set_extension(extension);
-                println!("* backup: {:?}", path_back.clone().into_os_string());
+                let path_back = path.with_extension(extension);
+                println!("* backup: {:?}", path_back.as_os_str());
                 ::std::fs::rename(path, path_back)?;
             }
             let mut file_new = File::create(path)?;
             let mut fnew = BufWriter::new(&mut file_new);
             let _ = ::std::io::copy(&mut ftmp, &mut fnew)?;
-            println!("* replace: {:?}", path.clone().into_os_string());
+            println!("* replace: {:?}", path.as_os_str());
         }
         Ok(())
     }

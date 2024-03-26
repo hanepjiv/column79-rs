@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/11
-//  @date 2020/04/12
+//  @date 2024/03/26
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -55,7 +55,10 @@ impl From<::column79::Error> for Error {
 impl ::std::fmt::Display for Error {
     // ========================================================================
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        <Self as ::std::fmt::Debug>::fmt(self, f)
+        match self {
+            Error::OptionNone(txt) => txt.fmt(f),
+            _ => <Self as ::std::fmt::Debug>::fmt(self, f),
+        }
     }
 }
 // ============================================================================

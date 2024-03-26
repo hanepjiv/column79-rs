@@ -1,9 +1,9 @@
 # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
 [package]
-edition                 = "2018"
+edition                 = "2021"
 name                    = "column79"
-version                 = "0.2.8"
+version                 = "0.2.9-alpha.1"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["tool", "development"]
@@ -12,16 +12,20 @@ readme                  = "README.md"
 documentation           = "https://github.com/hanepjiv/column79-rs/wiki"
 homepage                = "https://github.com/hanepjiv/column79-rs"
 repository              = "https://github.com/hanepjiv/column79-rs.git"
-publish                 = true
+publish                 = false
 # =============================================================================
 [dependencies]
-bitflags                = { default-features = false, version = "1.0" }
-env_logger              = { default-features = false, version = "0.7" }
-getopts                 = { default-features = false, version = "0.2" }
-log                     = { default-features = false, version = "0.4" }
-regex                   = { default-features = true, version = "1.0" }
-serde                   = { default-features = false, version = "1.0" }
-serde_derive            = { default-features = false, version = "1.0" }
-tempfile                = { default-features = false, version = "3.0" }
-toml                    = { default-features = false, version = "0.5" }
-dirs                    = { default-features = false, version = "2.0" }
+bitflags                = { default-features = false, version = "^2" }
+env_logger              = { default-features = false, version = "^0.11" }
+getopts                 = { default-features = false, version = "^0.2" }
+log                     = { default-features = false, version = "^0.4" }
+regex                   = { default-features = true, version = "^1.0" }
+serde                   = { default-features = false, version = "^1.0" }
+serde_derive            = { default-features = false, version = "^1.0" }
+tempfile                = { default-features = false, version = "^3.0" }
+dirs                    = { default-features = false, version = "^5" }
+# -----------------------------------------------------------------------------
+[dependencies.toml]
+default-features        = false
+version                 = "^0.8"
+features                = ["parse"]
