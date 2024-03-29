@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2020/04/12
+//  @date 2024/03/30
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -91,16 +91,17 @@ impl Language {
         if self.line_comment_begin.is_none()
             && base.line_comment_begin.is_some()
         {
-            self.line_comment_begin = base.line_comment_begin.clone();
+            self.line_comment_begin.clone_from(&base.line_comment_begin);
         }
         if self.block_comment_begin.is_none()
             && base.block_comment_begin.is_some()
         {
-            self.block_comment_begin = base.block_comment_begin.clone();
+            self.block_comment_begin
+                .clone_from(&base.block_comment_begin);
         }
         if self.block_comment_end.is_none() && base.block_comment_end.is_some()
         {
-            self.block_comment_end = base.block_comment_end.clone();
+            self.block_comment_end.clone_from(&base.block_comment_end);
         }
     }
     // ========================================================================

@@ -3,7 +3,7 @@
 [package]
 edition                 = "2021"
 name                    = "column79"
-version                 = "0.2.9-alpha.1"
+version                 = "0.2.10-alpha.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["tool", "development"]

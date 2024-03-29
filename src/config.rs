@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2024/03/26
+//  @date 2024/03/30
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -114,7 +114,7 @@ impl Config {
     // ========================================================================
     /// validation
     pub(crate) fn validation(&self) -> Result<(), Error> {
-        if self.languages.get(&self.language).is_none() {
+        if !self.languages.contains_key(&self.language) {
             Err(Error::InvalidConfig(format!(
                 "::column79::config::Config::validation(&self): \
                  language not found {}",
