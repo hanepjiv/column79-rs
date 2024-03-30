@@ -16,7 +16,8 @@
     future_incompatible,
     let_underscore,
     nonstandard_style,
-    rust_2021_compatibility
+    rust_2021_compatibility,
+    unused
 )]
 #![warn(dead_code)]
 // mod  =======================================================================
