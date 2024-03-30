@@ -3,7 +3,7 @@
 [package]
 edition                 = "2021"
 name                    = "column79"
-version                 = "0.2.10-alpha.1"
+version                 = "0.2.10-alpha.2"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["tool", "development"]
@@ -19,10 +19,10 @@ bitflags                = { default-features = false, version = "^2" }
 env_logger              = { default-features = false, version = "^0.11" }
 getopts                 = { default-features = false, version = "^0.2" }
 log                     = { default-features = false, version = "^0.4" }
-regex                   = { default-features = true, version = "^1.0" }
-serde                   = { default-features = false, version = "^1.0" }
-serde_derive            = { default-features = false, version = "^1.0" }
-tempfile                = { default-features = false, version = "^3.0" }
+regex                   = { default-features = true, version = "^1" }
+serde                   = { default-features = false, version = "^1" }
+serde_derive            = { default-features = false, version = "^1" }
+tempfile                = { default-features = false, version = "^3" }
 dirs                    = { default-features = false, version = "^5" }
 # -----------------------------------------------------------------------------
 [dependencies.toml]
