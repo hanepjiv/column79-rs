@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/15
-//  @date 2024/03/26
+//  @date 2024/04/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -14,9 +14,10 @@ use bitflags::bitflags;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 bitflags! {
-    #[allow(missing_docs)]
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+    /// struct Flags
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct Flags: u32 {
-    #[allow(missing_docs)] const NOASK  = 0b0000_0001u32;
+    /// const NOASK
+    const NOASK = 0b0000_0001u32;
     }
 }

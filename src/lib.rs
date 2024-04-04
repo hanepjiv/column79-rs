@@ -6,19 +6,13 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2024/03/30
+//  @date 2024/04/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
-#![deny(
-    clippy::all,
-    warnings,
-    future_incompatible,
-    let_underscore,
-    nonstandard_style,
-    rust_2021_compatibility,
-    unused
-)]
+#![forbid(future_incompatible, let_underscore, rust_2021_compatibility)]
+#![deny(clippy::all, nonstandard_style)]
+#![warn(unused, warnings)]
 // mod  =======================================================================
 mod ask;
 mod config;
