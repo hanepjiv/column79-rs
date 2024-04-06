@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2024/03/30
+//  @date 2024/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -78,7 +78,7 @@ impl Config {
         let mut source = String::new();
         let _ = File::open(path.clone())
             .and_then(|mut f| f.read_to_string(&mut source))?;
-        let src: ConfigSrc = ::toml::from_str(&source)?;
+        let src: ConfigSrc = toml::from_str(&source)?;
         if let Some(x) = src.column {
             self.column = x;
         }
@@ -128,7 +128,7 @@ impl Config {
     /// check_path
     pub(crate) fn check_path(
         &self,
-        path: &::std::path::PathBuf,
+        path: &std::path::PathBuf,
     ) -> Option<&Language> {
         if let Some(lang) = self.languages.get(&self.language) {
             lang.check_path(path, &self.languages)

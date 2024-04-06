@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2024/03/26
+//  @date 2024/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -27,7 +27,7 @@ use crate::{
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait Inspector
-pub(crate) trait Inspector: ::std::fmt::Debug {
+pub(crate) trait Inspector: std::fmt::Debug {
     // ========================================================================
     /// inspect
     fn inspect(&self, lang: &Language, path: &Path) -> Result<(), Error>;
@@ -367,11 +367,11 @@ impl Inspector for Replacer<'_> {
                 extension.push(".backup");
                 let path_back = path.with_extension(extension);
                 println!("* backup: {:?}", path_back.as_os_str());
-                ::std::fs::rename(path, path_back)?;
+                std::fs::rename(path, path_back)?;
             }
             let mut file_new = File::create(path)?;
             let mut fnew = BufWriter::new(&mut file_new);
-            let _ = ::std::io::copy(&mut ftmp, &mut fnew)?;
+            let _ = std::io::copy(&mut ftmp, &mut fnew)?;
             println!("* replace: {:?}", path.as_os_str());
         }
         Ok(())

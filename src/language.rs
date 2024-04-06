@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2024/03/30
+//  @date 2024/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -205,7 +205,7 @@ impl Language {
     // ========================================================================
     pub(crate) fn check_path_<'a>(
         &'a self,
-        p: &::std::path::PathBuf,
+        p: &std::path::PathBuf,
         ls: &'a BTreeMap<String, Language>,
     ) -> Option<&'a Language> {
         for i in &self.sublanguages {
@@ -218,7 +218,7 @@ impl Language {
     // ------------------------------------------------------------------------
     pub(crate) fn check_path<'a>(
         &'a self,
-        path: &::std::path::PathBuf,
+        path: &std::path::PathBuf,
         languages: &'a BTreeMap<String, Language>,
     ) -> Option<&'a Language> {
         if let Some(ext) = path.extension() {
