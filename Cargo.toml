@@ -14,6 +14,10 @@ homepage                = "https://github.com/hanepjiv/column79-rs"
 repository              = "https://github.com/hanepjiv/column79-rs.git"
 publish                 = false
 # =============================================================================
+[profile.release]
+strip                   = true
+lto                     = true
+# =============================================================================
 [dependencies]
 bitflags                = { default-features = false, version = "^2" }
 env_logger              = { default-features = false, version = "^0.11" }
