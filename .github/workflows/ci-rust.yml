@@ -1,0 +1,26 @@
+# -*-coding:utf-8-unix;mode:yml-*-
+
+#  Copyright 2024 hanepjiv
+#  @author hanepjiv <hanepjiv@gmail.com>
+#  @copyright The MIT License (MIT) / Apache License Version 2.0
+#  @since 2024/11/10
+#  @date 2024/11/27
+
+name: CI Rust
+
+on:
+  schedule:
+    - cron: "0 11 * * 6"
+
+  push:
+    branches: [ "main" ]
+
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  call:
+    permissions:
+      contents: read
+      issues: write
+    uses: hanepjiv/ghact-rust/.github/workflows/ci-rust.yml@main

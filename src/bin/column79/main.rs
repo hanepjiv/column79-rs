@@ -6,32 +6,15 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2024/03/30
+//  @date 2024/11/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
-#![deny(
-    clippy::all,
-    warnings,
-    future_incompatible,
-    let_underscore,
-    nonstandard_style,
-    rust_2021_compatibility,
-    unused
-)]
+
 // mod  =======================================================================
 mod error;
 // use  =======================================================================
 use std::{env, path::PathBuf};
-// ----------------------------------------------------------------------------
-use bitflags as _;
-use dirs as _;
-use log as _;
-use regex as _;
-use serde as _;
-use serde_derive as _;
-use tempfile as _;
-use toml as _;
 // ----------------------------------------------------------------------------
 use self::error::{Error, Result};
 use column79::{Column79, Command, Flags};

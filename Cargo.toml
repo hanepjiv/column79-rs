@@ -3,10 +3,10 @@
 [package]
 edition                 = "2021"
 name                    = "column79"
-version                 = "0.2.10-alpha.5"
+version                 = "0.2.10-alpha.6"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT OR Apache-2.0"
-keywords                = ["tool", "development"]
+keywords                = ["tool", "developm1ent"]
 description             = "Source code column checker."
 readme                  = "README.md"
 documentation           = "https://github.com/hanepjiv/column79-rs/wiki"
@@ -19,17 +19,17 @@ strip                   = true
 lto                     = true
 # =============================================================================
 [dependencies]
-bitflags                = { default-features = false, version = "^2" }
-env_logger              = { default-features = false, version = "^0.11" }
-getopts                 = { default-features = false, version = "^0.2" }
-log                     = { default-features = false, version = "^0.4" }
-regex                   = { default-features = true, version = "^1" }
-serde                   = { default-features = false, version = "^1" }
-serde_derive            = { default-features = false, version = "^1" }
-tempfile                = { default-features = false, version = "^3" }
-dirs                    = { default-features = false, version = "^5" }
+bitflags                = { default-features = false, version = "2.6.0" }
+dirs                    = { default-features = false, version = "5.0.1" }
+env_logger              = { default-features = false, version = "0.11.5" }
+getopts                 = { default-features = false, version = "0.2.21" }
+log                     = { default-features = false, version = "0.4.22" }
+regex                   = { default-features = true,  version = "1.11.1" }
+serde                   = { default-features = false, version = "1.0.215" }
+serde_derive            = { default-features = false, version = "1.0.215" }
+tempfile                = { default-features = false, version = "3.14.0" }
 # -----------------------------------------------------------------------------
 [dependencies.toml]
 default-features        = false
-version                 = "^0.8"
+version                 = "0.8.19"
 features                = ["parse"]
