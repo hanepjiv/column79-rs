@@ -16,13 +16,13 @@ use std::error::Error as StdError;
 /// enum Error
 #[derive(Debug)]
 pub(crate) enum Error {
-    /// OptionNone
+    /// `OptionNone`
     OptionNone(String),
-    /// GetOpts
+    /// `GetOpts`
     GetOpts(::getopts::Fail),
-    /// StdIO
+    /// `StdIO`
     StdIO(::std::io::Error),
-    /// StdNumParseInt
+    /// `StdNumParseInt`
     StdNumParseInt(::std::num::ParseIntError),
     /// Column79
     Column79(::column79::Error),

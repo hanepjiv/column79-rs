@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2024/04/06
+//  @date 2024/12/02
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -18,7 +18,7 @@ use serde_derive::Deserialize;
 use crate::error::Error;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// struct LanguageSrc
+/// struct `LanguageSrc`
 #[derive(Debug, Deserialize)]
 pub(crate) struct LanguageSrc {
     /// name
@@ -27,11 +27,11 @@ pub(crate) struct LanguageSrc {
     pub(crate) base: Option<String>,
     /// extensions
     pub(crate) extensions: Option<Vec<String>>,
-    /// line_comment_begin
+    /// `line_comment_begin`
     pub(crate) line_comment_begin: Option<String>,
-    /// block_comment_begin
+    /// `block_comment_begin`
     pub(crate) block_comment_begin: Option<String>,
-    /// block_comment_end
+    /// `block_comment_end`
     pub(crate) block_comment_end: Option<String>,
     /// sublanguages
     pub(crate) sublanguages: Option<Vec<String>>,
@@ -47,17 +47,17 @@ pub(crate) struct Language {
     base: Option<String>,
     /// extensions
     extensions: Vec<String>,
-    /// line_comment_begin
+    /// `line_comment_begin`
     line_comment_begin: Option<String>,
-    /// block_comment_begin
+    /// `block_comment_begin`
     block_comment_begin: Option<String>,
-    /// block_comment_end
+    /// `block_comment_end`
     block_comment_end: Option<String>,
     /// sublanguages
     sublanguages: Vec<String>,
-    /// re_line
+    /// `re_line`
     re_line: RefCell<Option<Regex>>,
-    /// re_block
+    /// `re_block`
     re_block: RefCell<Option<Regex>>,
 }
 // ============================================================================
@@ -66,11 +66,11 @@ impl Language {
     pub(crate) fn peek_name(&self) -> &String {
         &self.name
     }
-    pub(crate) fn peek_lcb(&self) -> &Option<String> {
-        &self.line_comment_begin
+    pub(crate) fn peek_lcb(&self) -> Option<&String> {
+        self.line_comment_begin.as_ref()
     }
-    pub(crate) fn peek_bcb(&self) -> &Option<String> {
-        &self.block_comment_begin
+    pub(crate) fn peek_bcb(&self) -> Option<&String> {
+        self.block_comment_begin.as_ref()
     }
     /*
     pub(crate) fn peek_bce(&self)  -> &Option<String>  {
@@ -168,7 +168,7 @@ impl Language {
             if let Some(ref mut re) = *self.re_line.borrow_mut() {
                 return re.captures(line);
             }
-            let re = Regex::new(&format!(r##"^(.*?{}\s*)(.*)$"##, lcb))
+            let re = Regex::new(&format!(r"^(.*?{lcb}\s*)(.*)$"))
                 .expect("re_line_captures");
             let ret = re.captures(line);
             *self.re_line.borrow_mut() = Some(re);
@@ -187,11 +187,9 @@ impl Language {
                 if let Some(ref mut re) = *self.re_block.borrow_mut() {
                     return re.captures(line);
                 }
-                let re = Regex::new(&format!(
-                    r##"^(.*?{}\s*)(.*?)(\s*{})$"##,
-                    bcb, bce
-                ))
-                .expect("re_block_captures");
+                let re =
+                    Regex::new(&format!(r"^(.*?{bcb}\s*)(.*?)(\s*{bce})$"))
+                        .expect("re_block_captures");
                 let ret = re.captures(line);
                 *self.re_block.borrow_mut() = Some(re);
                 ret

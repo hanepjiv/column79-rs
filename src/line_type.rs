@@ -1,28 +1,28 @@
 // -*- mode:rust; coding:utf-8-unix; -*-
 
-//! line_type.rs
+//! `line_type.rs`
 
 //  Copyright 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2020/04/12
+//  @date 2024/12/02
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use crate::{config::Config, language::Language};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// enum LineType
+/// enum `LineType`
 #[derive(Debug, Clone)]
 pub(crate) enum LineType {
-    /// LineComment
+    /// `LineComment`
     LineComment(String, String),
-    /// LineSeparator
+    /// `LineSeparator`
     LineSeparator(String, String),
-    /// BlockComment
+    /// `BlockComment`
     BlockComment(String, String, String),
-    /// BlockSeparator
+    /// `BlockSeparator`
     BlockSeparator(String, String, String),
     /// Other
     Other,
@@ -32,31 +32,34 @@ impl LineType {
     // ========================================================================
     pub(crate) fn head(&self) -> Option<&String> {
         match *self {
-            LineType::LineComment(ref head, _) => Some(head),
-            LineType::LineSeparator(ref head, _) => Some(head),
-            LineType::BlockComment(ref head, _, _) => Some(head),
-            LineType::BlockSeparator(ref head, _, _) => Some(head),
+            LineType::LineComment(ref head, _)
+            | LineType::LineSeparator(ref head, _)
+            | LineType::BlockComment(ref head, _, _)
+            | LineType::BlockSeparator(ref head, _, _) => Some(head),
+
             LineType::Other => None,
         }
     }
     // ------------------------------------------------------------------------
     pub(crate) fn body(&self) -> Option<&String> {
         match *self {
-            LineType::LineComment(_, ref body) => Some(body),
-            LineType::LineSeparator(_, ref body) => Some(body),
-            LineType::BlockComment(_, ref body, _) => Some(body),
-            LineType::BlockSeparator(_, ref body, _) => Some(body),
+            LineType::LineComment(_, ref body)
+            | LineType::LineSeparator(_, ref body)
+            | LineType::BlockComment(_, ref body, _)
+            | LineType::BlockSeparator(_, ref body, _) => Some(body),
+
             LineType::Other => None,
         }
     }
     // ------------------------------------------------------------------------
     pub(crate) fn foot(&self) -> Option<&String> {
         match *self {
-            LineType::LineComment(_, _) => None,
-            LineType::LineSeparator(_, _) => None,
-            LineType::BlockComment(_, _, ref foot) => Some(foot),
-            LineType::BlockSeparator(_, _, ref foot) => Some(foot),
-            LineType::Other => None,
+            LineType::BlockComment(_, _, ref foot)
+            | LineType::BlockSeparator(_, _, ref foot) => Some(foot),
+
+            LineType::LineComment(_, _)
+            | LineType::LineSeparator(_, _)
+            | LineType::Other => None,
         }
     }
     // ========================================================================

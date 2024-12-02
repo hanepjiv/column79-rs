@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2024/04/06
+//  @date 2024/12/02
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -21,12 +21,12 @@ use crate::{
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// struct ConfigSrc
+/// struct `ConfigSrc`
 #[derive(Debug, Deserialize)]
 pub(crate) struct ConfigSrc {
     /// column
     pub(crate) column: Option<usize>,
-    /// separator_threshold
+    /// `separator_threshold`
     pub(crate) separator_threshold: Option<usize>,
     /// ask
     pub(crate) ask: Option<bool>,
@@ -42,7 +42,7 @@ pub(crate) struct ConfigSrc {
 pub(crate) struct Config {
     /// column
     pub(crate) column: usize,
-    /// separator_threshold
+    /// `separator_threshold`
     pub(crate) separator_threshold: usize,
     /// flags
     pub(crate) flags: Flags,
@@ -114,18 +114,18 @@ impl Config {
     // ========================================================================
     /// validation
     pub(crate) fn validation(&self) -> Result<(), Error> {
-        if !self.languages.contains_key(&self.language) {
+        if self.languages.contains_key(&self.language) {
+            Ok(())
+        } else {
             Err(Error::InvalidConfig(format!(
                 "::column79::config::Config::validation(&self): \
                  language not found {}",
                 self.language
             )))
-        } else {
-            Ok(())
         }
     }
     // ========================================================================
-    /// check_path
+    /// `check_path`
     pub(crate) fn check_path(
         &self,
         path: &std::path::PathBuf,

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2024/04/06
+//  @date 2024/12/02
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -32,7 +32,7 @@ pub(crate) trait Inspector: std::fmt::Debug {
     /// inspect
     fn inspect(&self, lang: &Language, path: &Path) -> Result<(), Error>;
     // ========================================================================
-    /// inspect_impl
+    /// `inspect_impl`
     fn inspect_impl(
         &self,
         conf: &Config,
@@ -45,12 +45,12 @@ pub(crate) trait Inspector: std::fmt::Debug {
         for (row, line) in fin.lines().enumerate() {
             let l = &line.unwrap();
             let line_type = LineType::new(conf, lang, l);
-            func(row + 1, &line_type, l)?
+            func(row + 1, &line_type, l)?;
         }
         Ok(())
     }
     // ========================================================================
-    /// println_line
+    /// `println_line`
     fn println_line(
         &self,
         path: &Path,
@@ -80,7 +80,7 @@ pub(crate) trait Inspector: std::fmt::Debug {
         crate::ask::ask(msg, default)
     }
     // ========================================================================
-    /// check_type
+    /// `check_type`
     fn check_type(
         &self,
         lang: &Language,
@@ -89,15 +89,16 @@ pub(crate) trait Inspector: std::fmt::Debug {
         line: &str,
     ) -> bool {
         match *line_type {
-            LineType::LineComment(_, _) => column >= line.len(),
-            LineType::LineSeparator(_, _) => column == line.len(),
+            LineType::LineComment(_, _)
+            | LineType::LineSeparator(_, _)
+            | LineType::Other => column >= line.len(),
+
             LineType::BlockComment(_, _, _) => {
                 column >= line.len() && !lang.has_line_comment()
             }
             LineType::BlockSeparator(_, _, _) => {
                 column == line.len() && !lang.has_line_comment()
             }
-            LineType::Other => column >= line.len(),
         }
     }
 }
@@ -148,7 +149,7 @@ impl<'a> Replacer<'a> {
         Replacer { config }
     }
     // ========================================================================
-    /// line_separator
+    /// `line_separator`
     fn line_separator(
         &self,
         _lang: &Language,
@@ -168,9 +169,8 @@ impl<'a> Replacer<'a> {
                     let _ = s.pop().ok_or_else(|| {
                         Error::Inspect(format!(
                         "::column79::inspector::Replacer::line_separator: \
-                         path = \"{:?}\", row = {}: \
-                         pop",
-                        path, row
+                         path = \"{path:?}\", row = {row}: \
+                         pop"
                     ))
                     })?;
                 }
@@ -182,7 +182,7 @@ impl<'a> Replacer<'a> {
             let mut s = String::from(line);
             let b = body.chars().rev().nth(0).unwrap();
             for _ in 0..(c - l) {
-                s.push(b)
+                s.push(b);
             }
             Ok((true, s))
         } else {
@@ -190,37 +190,36 @@ impl<'a> Replacer<'a> {
         }
     }
     // ========================================================================
-    /// make_line
-    fn make_line(&self, lang: &Language, line_type: &LineType) -> String {
-        let mut s = Regex::new(&format!(
-            r"(.*){}(.*)",
-            lang.peek_bcb().clone().unwrap()
-        ))
-        .unwrap()
-        .replace(
-            line_type.head().unwrap(),
-            format!(r"$1{}$2", lang.peek_lcb().clone().unwrap()).as_str(),
-        )
-        .into_owned();
+    /// `make_line`
+    fn make_line(lang: &Language, line_type: &LineType) -> String {
+        let mut s =
+            Regex::new(&format!(r"(.*){}(.*)", lang.peek_bcb().unwrap()))
+                .unwrap()
+                .replace(
+                    line_type.head().unwrap(),
+                    format!(r"$1{}$2", lang.peek_lcb().unwrap()).as_str(),
+                )
+                .into_owned();
         s.push_str(line_type.body().unwrap());
         s
     }
     // ========================================================================
-    /// make_line_separator
+    /// `make_line_separator`
+    #[allow(clippy::cast_possible_wrap)]
     fn make_line_separator(
         &self,
         lang: &Language,
         line_type: &LineType,
     ) -> String {
         let c = self.config.column;
-        let mut s = self.make_line(lang, line_type);
+        let mut s = Self::make_line(lang, line_type);
         let d = s.len() as isize - c as isize;
         match d.cmp(&0) {
             Less => {
                 let b =
                     line_type.body().unwrap().chars().rev().nth(0).unwrap();
                 for _ in 0..-d {
-                    s.push(b)
+                    s.push(b);
                 }
             }
             Greater => {
@@ -233,7 +232,7 @@ impl<'a> Replacer<'a> {
         s
     }
     // ========================================================================
-    /// block_comment
+    /// `block_comment`
     fn block_comment(
         &self,
         lang: &Language,
@@ -242,15 +241,15 @@ impl<'a> Replacer<'a> {
         line_type: &LineType,
         line: &str,
     ) -> Result<(bool, String), Error> {
-        if !self.ask(self.config, "* convert to line comment?", true)? {
-            Ok((false, String::from(line)))
-        } else {
-            let s = self.make_line(lang, line_type);
+        if self.ask(self.config, "* convert to line comment?", true)? {
+            let s = Self::make_line(lang, line_type);
             Ok((true, s))
+        } else {
+            Ok((false, String::from(line)))
         }
     }
     // ========================================================================
-    /// block_separator
+    /// `block_separator`
     fn block_separator(
         &self,
         lang: &Language,
@@ -289,9 +288,8 @@ impl<'a> Replacer<'a> {
                     let _ = s.pop().ok_or_else(|| {
                         Error::Inspect(format!(
                         "::column79::inspector::Replacer::block_separator : \
-                         path = \"{:?}\", row = {}: \
-                         pop",
-                        path, row
+                         path = \"{path:?}\", row = {row}: \
+                         pop"
                     ))
                     })?;
                 }
@@ -314,7 +312,7 @@ impl<'a> Replacer<'a> {
             s.push_str(body);
             let b = body.chars().rev().nth(0).unwrap();
             for _ in 0..(c - l) {
-                s.push(b)
+                s.push(b);
             }
             s.push_str(line_type.foot().unwrap());
             Ok((true, s))

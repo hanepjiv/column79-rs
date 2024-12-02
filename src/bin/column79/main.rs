@@ -24,7 +24,7 @@ fn print_usage(opts: &::getopts::Options) {
     print!(
         "{}",
         opts.usage(&format!(
-            r##"Usage:
+            r"Usage:
     {0} Command [Input] [Options]
 
 Command:
@@ -33,7 +33,7 @@ Command:
     replace     replace the result of the checked
 
 Input:
-    ./          current directory (default)"##,
+    ./          current directory (default)",
             module_path!()
         ))
     );

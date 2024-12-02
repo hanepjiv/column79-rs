@@ -1,18 +1,22 @@
 # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
 [package]
-edition                 = "2021"
 name                    = "column79"
-version                 = "0.2.10-alpha.6"
+version                 = "0.2.10-alpha.7"
+publish                 = false
+
+description             = "Source code column checker."
+keywords                = ["tool", "developm1ent"]
+categories              = ["text-processing"]
+
+edition                 = "2021"
+rust-version            = "1.83.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT OR Apache-2.0"
-keywords                = ["tool", "developm1ent"]
-description             = "Source code column checker."
 readme                  = "README.md"
 documentation           = "https://github.com/hanepjiv/column79-rs/wiki"
 homepage                = "https://github.com/hanepjiv/column79-rs"
 repository              = "https://github.com/hanepjiv/column79-rs.git"
-publish                 = false
 # =============================================================================
 [profile.release]
 strip                   = true

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2024/04/06
+//  @date 2024/12/02
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -16,19 +16,19 @@ use std::error::Error as StdError;
 /// enum Error
 #[derive(Debug)]
 pub enum Error {
-    /// EnvVar
+    /// `EnvVar`
     EnvVar(std::env::VarError),
     /// IO
     IO(std::io::Error),
-    /// TOMLSer
+    /// `TOMLSer`
     TOMLSer(toml::ser::Error),
-    /// TOMLDe
+    /// `TOMLDe`
     TOMLDe(toml::de::Error),
+    /// `ParseConfig`
+    ParseConfig(String, toml::de::Error),
     /// Column79
     Column79(String),
-    /// ParseConfig
-    ParseConfig(String, toml::de::Error),
-    /// InvalidConfig
+    /// `InvalidConfig`
     InvalidConfig(String),
     /// Inspect
     Inspect(String),
@@ -71,11 +71,12 @@ impl StdError for Error {
             Error::EnvVar(ref e) => Some(e),
             Error::IO(ref e) => Some(e),
             Error::TOMLSer(ref e) => Some(e),
-            Error::TOMLDe(ref e) => Some(e),
-            Error::Column79(_) => None,
-            Error::ParseConfig(_, ref e) => Some(e),
-            Error::InvalidConfig(_) => None,
-            Error::Inspect(_) => None,
+
+            Error::TOMLDe(ref e) | Error::ParseConfig(_, ref e) => Some(e),
+
+            Error::Column79(_)
+            | Error::InvalidConfig(_)
+            | Error::Inspect(_) => None,
         }
     }
 }

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2024/11/27
+//  @date 2024/12/02
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -69,11 +69,11 @@ pub struct Column79 {
     command: Command,
     /// input
     input: PathBuf,
-    /// config_dir
+    /// `config_dir`
     config_dir: PathBuf,
-    /// config_default_path
+    /// `config_default_path`
     config_default_path: PathBuf,
-    /// config_user_path
+    /// `config_user_path`
     config_user_path: PathBuf,
     /// Config
     config: Config,
@@ -81,12 +81,13 @@ pub struct Column79 {
 // ============================================================================
 impl Column79 {
     // ========================================================================
-    /// as_config_dir
+    /// `as_config_dir`
+    #[must_use]
     pub fn as_config_dir(&self) -> &PathBuf {
         &self.config_dir
     }
     // ========================================================================
-    /// create_config_default
+    /// `create_config_default`
     fn create_config(
         path: &PathBuf,
         config: &'static str,
@@ -97,6 +98,14 @@ impl Column79 {
     }
     // ========================================================================
     /// run
+    ///
+    /// # Errors
+    ///
+    /// `Error::Column79`
+    ///
+    /// # Panics
+    ///
+    /// `unwrap`: never failed
     pub fn run(
         command: Command,
         input: PathBuf,
@@ -108,36 +117,34 @@ impl Column79 {
         // config_dir  --------------------------------------------------------
         let mut config_dir = dirs::home_dir().ok_or_else(|| {
             Error::Column79(format!(
-                "::column79::lib::Column79::run(\"{:?}\"): \
-                 ::std::env::home_dir(): not found",
-                input
+                "::column79::lib::Column79::run(\"{input:?}\"): \
+                 ::std::env::home_dir(): not found"
             ))
         })?;
         config_dir.push(CONFIG_DIRNAME);
         config_dir.push(std::env::current_exe()?.file_name().ok_or_else(
             || {
                 Error::Column79(format!(
-                    "::column79::lib::Column79::run(\"{:?}\"): \
+                    "::column79::lib::Column79::run(\"{input:?}\"): \
                      ::std::env::current_exe().file_name(): \
-                     not found",
-                    input
+                     not found"
                 ))
             },
         )?);
         if !config_dir.exists() {
-            std::fs::create_dir_all(config_dir.clone())?
+            std::fs::create_dir_all(config_dir.clone())?;
         }
         // config_default_path  -----------------------------------------------
         let mut config_default_path = config_dir.clone();
         config_default_path.push(CONFIG_DEFAULT_PATH);
         if !config_default_path.exists() {
-            Column79::create_config(&config_default_path, CONFIG_DEFAULT)?
+            Column79::create_config(&config_default_path, CONFIG_DEFAULT)?;
         }
         // config_user_path  --------------------------------------------------
         let mut config_user_path = config_dir.clone();
         config_user_path.push(CONFIG_USER_PATH);
         if !config_user_path.exists() {
-            Column79::create_config(&config_user_path, CONFIG_USER)?
+            Column79::create_config(&config_user_path, CONFIG_USER)?;
         }
 
         let mut config =
@@ -145,13 +152,13 @@ impl Column79 {
         config.import(&config_user_path.clone().into_os_string())?;
 
         if column.is_some() {
-            config.column = column.unwrap()
+            config.column = column.unwrap();
         };
         if septhr.is_some() {
-            config.separator_threshold = septhr.unwrap()
+            config.separator_threshold = septhr.unwrap();
         };
         if language.is_some() {
-            config.language = language.unwrap()
+            config.language = language.unwrap();
         };
         config.flags.insert(flags);
 
@@ -197,7 +204,7 @@ impl Column79 {
                     language.peek_name(),
                     entry_path
                 );
-                inspector.inspect(language, entry_path)?
+                inspector.inspect(language, entry_path)?;
             }
         }
         Ok(())
