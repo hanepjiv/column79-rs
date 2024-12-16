@@ -130,10 +130,9 @@ impl Config {
         &self,
         path: &std::path::PathBuf,
     ) -> Option<&Language> {
-        if let Some(lang) = self.languages.get(&self.language) {
-            lang.check_path(path, &self.languages)
-        } else {
-            None
+        match self.languages.get(&self.language) {
+            Some(lang) => lang.check_path(path, &self.languages),
+            _ => None,
         }
     }
 }
