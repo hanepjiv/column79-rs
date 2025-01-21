@@ -6,15 +6,24 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2024/11/27
+//  @date 2025/01/21
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
-
+#![doc = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/README.md"))]
 // mod  =======================================================================
 mod error;
 // use  =======================================================================
 use std::{env, path::PathBuf};
+// ----------------------------------------------------------------------------
+use bitflags as _;
+use dirs as _;
+use log as _;
+use regex as _;
+use serde as _;
+use serde_derive as _;
+use tempfile as _;
+use toml as _;
 // ----------------------------------------------------------------------------
 use self::error::{Error, Result};
 use column79::{Column79, Command, Flags};

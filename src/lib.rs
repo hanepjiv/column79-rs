@@ -6,11 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2024/12/02
+//  @date 2025/01/21
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
-
+#![doc = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/README.md"))]
 // mod  =======================================================================
 mod ask;
 mod config;
@@ -22,6 +22,8 @@ mod line_type;
 // use  =======================================================================
 use std::{fs::File, io::Write, path::PathBuf};
 // ----------------------------------------------------------------------------
+use env_logger as _;
+use getopts as _;
 use log::info;
 // ----------------------------------------------------------------------------
 use self::config::Config;
