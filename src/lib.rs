@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/01/21
+//  @date 2025/01/31
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -155,13 +155,13 @@ impl Column79 {
 
         if column.is_some() {
             config.column = column.unwrap();
-        };
+        }
         if septhr.is_some() {
             config.separator_threshold = septhr.unwrap();
-        };
+        }
         if language.is_some() {
             config.language = language.unwrap();
-        };
+        }
         config.flags.insert(flags);
 
         config.validation()?;
