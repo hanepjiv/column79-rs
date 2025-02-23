@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.10-alpha.9"
+version                 = "0.2.11-alpha.0"
 publish                 = false
 
 description             = "Source code column checker."
@@ -10,7 +10,7 @@ keywords                = ["tool", "developm1ent"]
 categories              = ["text-processing"]
 readme                  = "README.md"
 
-edition                 = "2021"
+edition                 = "2024"
 rust-version            = "1.85.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT OR Apache-2.0"
