@@ -39,7 +39,7 @@ const CONFIG_USER: &str = include_str!("config/user.toml");
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Command
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Command {
     ///  Unknown
     Unknown,
@@ -55,10 +55,10 @@ impl<'a> From<&'a str> for Command {
     // ========================================================================
     fn from(src: &'a str) -> Self {
         match src.to_lowercase().as_str() {
-            "init" => Command::Init,
-            "check" => Command::Check,
-            "replace" => Command::Replace,
-            _ => Command::Unknown,
+            "init" => Self::Init,
+            "check" => Self::Check,
+            "replace" => Self::Replace,
+            _ => Self::Unknown,
         }
     }
 }
@@ -85,7 +85,7 @@ impl Column79 {
     // ========================================================================
     /// `as_config_dir`
     #[must_use]
-    pub fn as_config_dir(&self) -> &PathBuf {
+    pub const fn as_config_dir(&self) -> &PathBuf {
         &self.config_dir
     }
     // ========================================================================
@@ -140,13 +140,13 @@ impl Column79 {
         let mut config_default_path = config_dir.clone();
         config_default_path.push(CONFIG_DEFAULT_PATH);
         if !config_default_path.exists() {
-            Column79::create_config(&config_default_path, CONFIG_DEFAULT)?;
+            Self::create_config(&config_default_path, CONFIG_DEFAULT)?;
         }
         // config_user_path  --------------------------------------------------
         let mut config_user_path = config_dir.clone();
         config_user_path.push(CONFIG_USER_PATH);
         if !config_user_path.exists() {
-            Column79::create_config(&config_user_path, CONFIG_USER)?;
+            Self::create_config(&config_user_path, CONFIG_USER)?;
         }
 
         let mut config =
@@ -166,7 +166,7 @@ impl Column79 {
 
         config.validation()?;
 
-        let c79 = Column79 {
+        let c79 = Self {
             command,
             input,
             config_dir,
@@ -214,24 +214,15 @@ impl Column79 {
     // ========================================================================
     /// init
     fn init(&self) -> Result<(), Error> {
-        Column79::create_config(&self.config_default_path, CONFIG_DEFAULT)?;
+        Self::create_config(&self.config_default_path, CONFIG_DEFAULT)?;
         if !self.config_user_path.exists() {
-            return Column79::create_config(
-                &self.config_user_path,
-                CONFIG_USER,
-            );
+            return Self::create_config(&self.config_user_path, CONFIG_USER);
         }
         if self.config.flags.contains(Flags::NOASK) {
-            return Column79::create_config(
-                &self.config_user_path,
-                CONFIG_USER,
-            );
+            return Self::create_config(&self.config_user_path, CONFIG_USER);
         }
         if ask::ask("Do you want to overwrite your user config?", false)? {
-            return Column79::create_config(
-                &self.config_user_path,
-                CONFIG_USER,
-            );
+            return Self::create_config(&self.config_user_path, CONFIG_USER);
         }
         Ok(())
     }

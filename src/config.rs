@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2024/12/02
+//  @date 2025/03/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -54,7 +54,7 @@ pub(crate) struct Config {
 // ============================================================================
 impl Default for Config {
     fn default() -> Self {
-        Config {
+        Self {
             column: 79,
             separator_threshold: 12,
             flags: Flags::empty(),
@@ -68,7 +68,7 @@ impl Config {
     // ========================================================================
     /// new
     pub(crate) fn new(path: &OsString) -> Result<Self, Error> {
-        let mut config = Config::default();
+        let mut config = Self::default();
         config.import(path)?;
         Ok(config)
     }
@@ -130,9 +130,8 @@ impl Config {
         &self,
         path: &std::path::PathBuf,
     ) -> Option<&Language> {
-        match self.languages.get(&self.language) {
-            Some(lang) => lang.check_path(path, &self.languages),
-            _ => None,
-        }
+        self.languages
+            .get(&self.language)
+            .and_then(|lang| lang.check_path(path, &self.languages))
     }
 }

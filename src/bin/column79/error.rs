@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/11
-//  @date 2024/03/26
+//  @date 2025/03/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -30,25 +30,25 @@ pub(crate) enum Error {
 // ============================================================================
 impl From<::getopts::Fail> for Error {
     fn from(e: ::getopts::Fail) -> Self {
-        Error::GetOpts(e)
+        Self::GetOpts(e)
     }
 }
 // ----------------------------------------------------------------------------
 impl From<::std::io::Error> for Error {
     fn from(e: ::std::io::Error) -> Self {
-        Error::StdIO(e)
+        Self::StdIO(e)
     }
 }
 // ----------------------------------------------------------------------------
 impl From<::std::num::ParseIntError> for Error {
     fn from(e: ::std::num::ParseIntError) -> Self {
-        Error::StdNumParseInt(e)
+        Self::StdNumParseInt(e)
     }
 }
 // ----------------------------------------------------------------------------
 impl From<::column79::Error> for Error {
     fn from(e: ::column79::Error) -> Self {
-        Error::Column79(e)
+        Self::Column79(e)
     }
 }
 // ============================================================================
@@ -56,7 +56,7 @@ impl ::std::fmt::Display for Error {
     // ========================================================================
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Error::OptionNone(txt) => txt.fmt(f),
+            Self::OptionNone(txt) => txt.fmt(f),
             _ => <Self as ::std::fmt::Debug>::fmt(self, f),
         }
     }
@@ -66,11 +66,11 @@ impl StdError for Error {
     // ========================================================================
     fn cause(&self) -> Option<&(dyn StdError + 'static)> {
         match *self {
-            Error::OptionNone(_) => None,
-            Error::GetOpts(ref e) => Some(e),
-            Error::StdIO(ref e) => Some(e),
-            Error::StdNumParseInt(ref e) => Some(e),
-            Error::Column79(ref e) => Some(e),
+            Self::OptionNone(_) => None,
+            Self::GetOpts(ref e) => Some(e),
+            Self::StdIO(ref e) => Some(e),
+            Self::StdNumParseInt(ref e) => Some(e),
+            Self::Column79(ref e) => Some(e),
         }
     }
 }
@@ -86,15 +86,15 @@ mod tests {
     use crate::{Error, Result};
     // ========================================================================
     #[test]
-    fn test_send() {
-        fn assert_send<T: Send>() {}
+    const fn test_send() {
+        const fn assert_send<T: Send>() {}
         assert_send::<Error>();
         assert_send::<Result<()>>();
     }
     // ------------------------------------------------------------------------
     #[test]
-    fn test_sync() {
-        fn assert_sync<T: Sync>() {}
+    const fn test_sync() {
+        const fn assert_sync<T: Sync>() {}
         assert_sync::<Error>();
         assert_sync::<Result<()>>();
     }

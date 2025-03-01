@@ -114,7 +114,7 @@ pub(crate) struct Checker<'a> {
 impl<'a> Checker<'a> {
     // ========================================================================
     /// new
-    pub(crate) fn new(config: &'a Config) -> Self {
+    pub(crate) const fn new(config: &'a Config) -> Self {
         Checker { config }
     }
 }
@@ -145,7 +145,7 @@ pub(crate) struct Replacer<'a> {
 impl<'a> Replacer<'a> {
     // ========================================================================
     /// new
-    pub(crate) fn new(config: &'a Config) -> Self {
+    pub(crate) const fn new(config: &'a Config) -> Self {
         Replacer { config }
     }
     // ========================================================================

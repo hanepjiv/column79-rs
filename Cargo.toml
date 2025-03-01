@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.11-alpha.0"
+version                 = "0.2.11-alpha.1"
 publish                 = false
 
 description             = "Source code column checker."
@@ -23,7 +23,7 @@ strip                   = true
 lto                     = true
 # =============================================================================
 [dependencies]
-bitflags                = { default-features = false, version = "2.8.0" }
+bitflags                = { default-features = false, version = "2.9.0" }
 dirs                    = { default-features = false, version = "6.0.0" }
 env_logger              = { default-features = false, version = "0.11.6" }
 getopts                 = { default-features = false, version = "0.2.21" }

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2024/12/02
+//  @date 2025/03/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -30,36 +30,36 @@ pub(crate) enum LineType {
 // ============================================================================
 impl LineType {
     // ========================================================================
-    pub(crate) fn head(&self) -> Option<&String> {
+    pub(crate) const fn head(&self) -> Option<&String> {
         match *self {
-            LineType::LineComment(ref head, _)
-            | LineType::LineSeparator(ref head, _)
-            | LineType::BlockComment(ref head, _, _)
-            | LineType::BlockSeparator(ref head, _, _) => Some(head),
+            Self::LineComment(ref head, _)
+            | Self::LineSeparator(ref head, _)
+            | Self::BlockComment(ref head, _, _)
+            | Self::BlockSeparator(ref head, _, _) => Some(head),
 
-            LineType::Other => None,
+            Self::Other => None,
         }
     }
     // ------------------------------------------------------------------------
-    pub(crate) fn body(&self) -> Option<&String> {
+    pub(crate) const fn body(&self) -> Option<&String> {
         match *self {
-            LineType::LineComment(_, ref body)
-            | LineType::LineSeparator(_, ref body)
-            | LineType::BlockComment(_, ref body, _)
-            | LineType::BlockSeparator(_, ref body, _) => Some(body),
+            Self::LineComment(_, ref body)
+            | Self::LineSeparator(_, ref body)
+            | Self::BlockComment(_, ref body, _)
+            | Self::BlockSeparator(_, ref body, _) => Some(body),
 
-            LineType::Other => None,
+            Self::Other => None,
         }
     }
     // ------------------------------------------------------------------------
-    pub(crate) fn foot(&self) -> Option<&String> {
+    pub(crate) const fn foot(&self) -> Option<&String> {
         match *self {
-            LineType::BlockComment(_, _, ref foot)
-            | LineType::BlockSeparator(_, _, ref foot) => Some(foot),
+            Self::BlockComment(_, _, ref foot)
+            | Self::BlockSeparator(_, _, ref foot) => Some(foot),
 
-            LineType::LineComment(_, _)
-            | LineType::LineSeparator(_, _)
-            | LineType::Other => None,
+            Self::LineComment(_, _)
+            | Self::LineSeparator(_, _)
+            | Self::Other => None,
         }
     }
     // ========================================================================
@@ -85,17 +85,17 @@ impl LineType {
         conf: &Config,
         lang: &Language,
         line: &str,
-    ) -> Option<LineType> {
+    ) -> Option<Self> {
         if !lang.has_line_comment() {
             return None;
         }
-        lang.re_line_captures(line).map(|c| -> LineType {
+        lang.re_line_captures(line).map(|c| -> Self {
             let head = String::from(c.get(1).unwrap().as_str());
             let body = String::from(c.get(2).unwrap().as_str());
-            if LineType::is_separator(conf, &body) {
-                LineType::LineSeparator(head, body)
+            if Self::is_separator(conf, &body) {
+                Self::LineSeparator(head, body)
             } else {
-                LineType::LineComment(head, body)
+                Self::LineComment(head, body)
             }
         })
     }
@@ -104,29 +104,29 @@ impl LineType {
         conf: &Config,
         lang: &Language,
         line: &str,
-    ) -> Option<LineType> {
+    ) -> Option<Self> {
         if !lang.has_block_comment() {
             return None;
         }
-        lang.re_block_captures(line).map(|c| -> LineType {
+        lang.re_block_captures(line).map(|c| -> Self {
             let head = String::from(c.get(1).unwrap().as_str());
             let body = String::from(c.get(2).unwrap().as_str());
             let foot = String::from(c.get(3).unwrap().as_str());
-            if LineType::is_separator(conf, &body) {
-                LineType::BlockSeparator(head, body, foot)
+            if Self::is_separator(conf, &body) {
+                Self::BlockSeparator(head, body, foot)
             } else {
-                LineType::BlockComment(head, body, foot)
+                Self::BlockComment(head, body, foot)
             }
         })
     }
     // ========================================================================
-    pub(crate) fn new(conf: &Config, lang: &Language, line: &str) -> LineType {
-        match LineType::is_block_comment(conf, lang, line) {
-            Some(l) => l,
-            None => match LineType::is_line_comment(conf, lang, line) {
-                Some(b) => b,
-                None => LineType::Other,
+    pub(crate) fn new(conf: &Config, lang: &Language, line: &str) -> Self {
+        Self::is_block_comment(conf, lang, line).map_or_else(
+            || {
+                Self::is_line_comment(conf, lang, line)
+                    .map_or(Self::Other, |b| b)
             },
-        }
+            |l| l,
+        )
     }
 }

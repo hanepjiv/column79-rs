@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2024/12/02
+//  @date 2025/03/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -63,13 +63,13 @@ pub(crate) struct Language {
 // ============================================================================
 impl Language {
     // ========================================================================
-    pub(crate) fn peek_name(&self) -> &String {
+    pub(crate) const fn peek_name(&self) -> &String {
         &self.name
     }
-    pub(crate) fn peek_lcb(&self) -> Option<&String> {
+    pub(crate) const fn peek_lcb(&self) -> Option<&String> {
         self.line_comment_begin.as_ref()
     }
-    pub(crate) fn peek_bcb(&self) -> Option<&String> {
+    pub(crate) const fn peek_bcb(&self) -> Option<&String> {
         self.block_comment_begin.as_ref()
     }
     /*
@@ -78,16 +78,16 @@ impl Language {
     }
      */
     // ========================================================================
-    pub(crate) fn has_line_comment(&self) -> bool {
+    pub(crate) const fn has_line_comment(&self) -> bool {
         self.line_comment_begin.is_some()
     }
     // ------------------------------------------------------------------------
-    pub(crate) fn has_block_comment(&self) -> bool {
+    pub(crate) const fn has_block_comment(&self) -> bool {
         self.block_comment_begin.is_some() && self.block_comment_end.is_some()
     }
     // ========================================================================
     /// extend
-    pub(crate) fn extend(&mut self, base: &Language) {
+    pub(crate) fn extend(&mut self, base: &Self) {
         if self.line_comment_begin.is_none()
             && base.line_comment_begin.is_some()
         {
@@ -107,7 +107,7 @@ impl Language {
     // ========================================================================
     fn check_descent(
         &self,
-        ls: &BTreeMap<String, Language>,
+        ls: &BTreeMap<String, Self>,
         descent: &mut Vec<String>,
     ) -> Result<(), Error> {
         if descent.contains(&self.name) {
@@ -133,9 +133,9 @@ impl Language {
     // ------------------------------------------------------------------------
     pub(crate) fn from_src(
         src: LanguageSrc,
-        languages: &BTreeMap<String, Language>,
+        languages: &BTreeMap<String, Self>,
     ) -> Result<Self, Error> {
-        let mut ret = Language::default();
+        let mut ret = Self::default();
         if let Some(x) = src.name {
             ret.name = x;
         }
@@ -204,8 +204,8 @@ impl Language {
     pub(crate) fn check_path_<'a>(
         &'a self,
         p: &std::path::PathBuf,
-        ls: &'a BTreeMap<String, Language>,
-    ) -> Option<&'a Language> {
+        ls: &'a BTreeMap<String, Self>,
+    ) -> Option<&'a Self> {
         for i in &self.sublanguages {
             if let x @ Some(_) = ls.get(i).unwrap().check_path(p, ls) {
                 return x;
@@ -217,20 +217,22 @@ impl Language {
     pub(crate) fn check_path<'a>(
         &'a self,
         path: &std::path::PathBuf,
-        languages: &'a BTreeMap<String, Language>,
-    ) -> Option<&'a Language> {
-        if let Some(ext) = path.extension() {
-            if let Ok(ref s) = ext.to_os_string().into_string() {
-                if self.extensions.contains(s) {
-                    Some(self)
-                } else {
-                    self.check_path_(path, languages)
-                }
-            } else {
-                self.check_path_(path, languages)
-            }
-        } else {
-            self.check_path_(path, languages)
-        }
+        languages: &'a BTreeMap<String, Self>,
+    ) -> Option<&'a Self> {
+        path.extension().map_or_else(
+            || self.check_path_(path, languages),
+            |ext| {
+                ext.to_os_string().into_string().as_ref().map_or_else(
+                    |_| self.check_path_(path, languages),
+                    |s| {
+                        if self.extensions.contains(s) {
+                            Some(self)
+                        } else {
+                            self.check_path_(path, languages)
+                        }
+                    },
+                )
+            },
+        )
     }
 }

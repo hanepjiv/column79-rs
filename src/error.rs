@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2024/12/02
+//  @date 2025/03/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -36,25 +36,25 @@ pub enum Error {
 // ============================================================================
 impl From<std::env::VarError> for Error {
     fn from(e: std::env::VarError) -> Self {
-        Error::EnvVar(e)
+        Self::EnvVar(e)
     }
 }
 // ----------------------------------------------------------------------------
 impl From<std::io::Error> for Error {
     fn from(e: std::io::Error) -> Self {
-        Error::IO(e)
+        Self::IO(e)
     }
 }
 // ----------------------------------------------------------------------------
 impl From<toml::ser::Error> for Error {
     fn from(e: toml::ser::Error) -> Self {
-        Error::TOMLSer(e)
+        Self::TOMLSer(e)
     }
 }
 // ----------------------------------------------------------------------------
 impl From<toml::de::Error> for Error {
     fn from(e: toml::de::Error) -> Self {
-        Error::TOMLDe(e)
+        Self::TOMLDe(e)
     }
 }
 // ============================================================================
@@ -68,15 +68,15 @@ impl StdError for Error {
     // ========================================================================
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         match *self {
-            Error::EnvVar(ref e) => Some(e),
-            Error::IO(ref e) => Some(e),
-            Error::TOMLSer(ref e) => Some(e),
+            Self::EnvVar(ref e) => Some(e),
+            Self::IO(ref e) => Some(e),
+            Self::TOMLSer(ref e) => Some(e),
 
-            Error::TOMLDe(ref e) | Error::ParseConfig(_, ref e) => Some(e),
+            Self::TOMLDe(ref e) | Self::ParseConfig(_, ref e) => Some(e),
 
-            Error::Column79(_)
-            | Error::InvalidConfig(_)
-            | Error::Inspect(_) => None,
+            Self::Column79(_) | Self::InvalidConfig(_) | Self::Inspect(_) => {
+                None
+            }
         }
     }
 }
@@ -88,14 +88,14 @@ mod tests {
     use crate::Error;
     // ========================================================================
     #[test]
-    fn test_send() {
-        fn assert_send<T: Send>() {}
+    const fn test_send() {
+        const fn assert_send<T: Send>() {}
         assert_send::<Error>();
     }
     // ------------------------------------------------------------------------
     #[test]
-    fn test_sync() {
-        fn assert_sync<T: Sync>() {}
+    const fn test_sync() {
+        const fn assert_sync<T: Sync>() {}
         assert_sync::<Error>();
     }
 }
