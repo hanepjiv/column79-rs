@@ -166,7 +166,7 @@ impl<'a> Replacer<'a> {
                 for _ in 0..(l - c) {
                     let _ = s.pop().ok_or_else(|| {
                         Error::Inspect(format!(
-                            "::column79::inspector::Replacer::line_separator: \
+                            "column79::inspector::Replacer::line_separator: \
                              path = \"{0}\", row = {row}: \
                              pop",
                             path.display()
@@ -286,7 +286,7 @@ impl<'a> Replacer<'a> {
                 for _ in 0..(l - c) {
                     let _ = s.pop().ok_or_else(|| {
                         Error::Inspect(format!(
-                            "::column79::inspector::Replacer::block_separator : \
+                            "column79::inspector::Replacer::block_separator : \
                              path = \"{0}\", row = {row}: \
                              pop",
                             path.display()
