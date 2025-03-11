@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/01/31
+//  @date 2025/03/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -119,17 +119,19 @@ impl Column79 {
         // config_dir  --------------------------------------------------------
         let mut config_dir = dirs::home_dir().ok_or_else(|| {
             Error::Column79(format!(
-                "::column79::lib::Column79::run(\"{input:?}\"): \
-                 ::std::env::home_dir(): not found"
+                "::column79::lib::Column79::run(\"{0}\"): \
+                 ::std::env::home_dir(): not found",
+                input.display()
             ))
         })?;
         config_dir.push(CONFIG_DIRNAME);
         config_dir.push(std::env::current_exe()?.file_name().ok_or_else(
             || {
                 Error::Column79(format!(
-                    "::column79::lib::Column79::run(\"{input:?}\"): \
+                    "::column79::lib::Column79::run(\"{0}\"): \
                      ::std::env::current_exe().file_name(): \
-                     not found"
+                     not found",
+                    input.display()
                 ))
             },
         )?);

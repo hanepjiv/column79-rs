@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.11-alpha.1"
+version                 = "0.2.11-alpha.2"
 publish                 = false
 
 description             = "Source code column checker."
@@ -25,13 +25,13 @@ lto                     = true
 [dependencies]
 bitflags                = { default-features = false, version = "2.9.0" }
 dirs                    = { default-features = false, version = "6.0.0" }
-env_logger              = { default-features = false, version = "0.11.6" }
+env_logger              = { default-features = false, version = "0.11.7" }
 getopts                 = { default-features = false, version = "0.2.21" }
 log                     = { default-features = false, version = "0.4.26" }
 regex                   = { default-features = true,  version = "1.11.1" }
-serde                   = { default-features = false, version = "1.0.218" }
-serde_derive            = { default-features = false, version = "1.0.218" }
-tempfile                = { default-features = false, version = "3.17.1" }
+serde                   = { default-features = false, version = "1.0.219" }
+serde_derive            = { default-features = false, version = "1.0.219" }
+tempfile                = { default-features = false, version = "3.18.0" }
 # -----------------------------------------------------------------------------
 [dependencies.toml]
 default-features        = false
@@ -158,7 +158,6 @@ overlapping_range_endpoints = "forbid"
 path_statements = "forbid"
 private_bounds = "forbid"
 private_interfaces = "forbid"
-ptr_cast_add_auto_to_object = "forbid"
 ptr_to_integer_transmute_in_consts = "forbid"
 redundant_semicolons = "forbid"
 refining_impl_trait_internal = "forbid"
@@ -226,7 +225,6 @@ missing_fragment_specifier = "forbid"
 mutable_transmutes = "forbid"
 named_asm_labels = "forbid"
 no_mangle_const_items = "forbid"
-order_dependent_trait_objects = "forbid"
 overflowing_literals = "forbid"
 patterns_in_fns_without_body = "forbid"
 proc_macro_derive_resolution_fallback = "forbid"

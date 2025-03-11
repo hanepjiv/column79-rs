@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2024/12/02
+//  @date 2025/03/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -58,11 +58,9 @@ pub(crate) trait Inspector: std::fmt::Debug {
         line: &str,
     ) -> Result<(), Error> {
         println!(
-            "{}({}): {} : {}",
+            "{0}({row}): {1} : {line}",
             path.as_os_str().to_str().unwrap(),
-            row,
             line.len(),
-            line
         );
         Ok(())
     }
@@ -169,8 +167,9 @@ impl<'a> Replacer<'a> {
                     let _ = s.pop().ok_or_else(|| {
                         Error::Inspect(format!(
                             "::column79::inspector::Replacer::line_separator: \
-                         path = \"{path:?}\", row = {row}: \
-                         pop"
+                             path = \"{0}\", row = {row}: \
+                             pop",
+                            path.display()
                         ))
                     })?;
                 }
@@ -193,11 +192,11 @@ impl<'a> Replacer<'a> {
     /// `make_line`
     fn make_line(lang: &Language, line_type: &LineType) -> String {
         let mut s =
-            Regex::new(&format!(r"(.*){}(.*)", lang.peek_bcb().unwrap()))
+            Regex::new(&format!(r"(.*){0}(.*)", lang.peek_bcb().unwrap()))
                 .unwrap()
                 .replace(
                     line_type.head().unwrap(),
-                    format!(r"$1{}$2", lang.peek_lcb().unwrap()).as_str(),
+                    format!(r"$1{0}$2", lang.peek_lcb().unwrap()).as_str(),
                 )
                 .into_owned();
         s.push_str(line_type.body().unwrap());
@@ -287,10 +286,11 @@ impl<'a> Replacer<'a> {
                 for _ in 0..(l - c) {
                     let _ = s.pop().ok_or_else(|| {
                         Error::Inspect(format!(
-                        "::column79::inspector::Replacer::block_separator : \
-                         path = \"{path:?}\", row = {row}: \
-                         pop"
-                    ))
+                            "::column79::inspector::Replacer::block_separator : \
+                             path = \"{0}\", row = {row}: \
+                             pop",
+                            path.display()
+                        ))
                     })?;
                 }
                 s.push_str(line_type.foot().unwrap());
