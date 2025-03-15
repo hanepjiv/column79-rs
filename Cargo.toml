@@ -31,7 +31,7 @@ log                     = { default-features = false, version = "0.4.26" }
 regex                   = { default-features = true,  version = "1.11.1" }
 serde                   = { default-features = false, version = "1.0.219" }
 serde_derive            = { default-features = false, version = "1.0.219" }
-tempfile                = { default-features = false, version = "3.18.0" }
+tempfile                = { default-features = false, version = "3.19.1" }
 # -----------------------------------------------------------------------------
 [dependencies.toml]
 default-features        = false
