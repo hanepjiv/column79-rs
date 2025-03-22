@@ -6,11 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2025/03/01
+//  @date 2025/03/22
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{collections::BTreeMap, ffi::OsString, fs::File, io::Read};
+use std::{
+    collections::{BTreeMap, btree_map::Entry},
+    ffi::OsString,
+    fs::File,
+    io::Read,
+};
 // ----------------------------------------------------------------------------
 use serde_derive::Deserialize;
 // ----------------------------------------------------------------------------
@@ -113,15 +118,16 @@ impl Config {
     }
     // ========================================================================
     /// validation
-    pub(crate) fn validation(&self) -> Result<(), Error> {
-        if self.languages.contains_key(&self.language) {
-            Ok(())
-        } else {
-            Err(Error::InvalidConfig(format!(
-                "::column79::config::Config::validation(&self): \
-                 language not found {}",
-                self.language
-            )))
+    pub(crate) fn validation(&mut self) -> Result<(), Error> {
+        match self.languages.entry(self.language.clone()) {
+            Entry::<'_, _, _, _>::Vacant(_) => {
+                Err(Error::InvalidConfig(format!(
+                    "::column79::config::Config::validation(&self): \
+                     language not found {}",
+                    self.language
+                )))
+            }
+            Entry::<'_, _, _, _>::Occupied(_) => Ok(()),
         }
     }
     // ========================================================================
