@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/03/11
+//  @date 2025/03/24
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -206,7 +206,7 @@ impl Column79 {
                 info!(
                     "Column79::walk {} {:?}",
                     language.peek_name(),
-                    entry_path
+                    entry_path.display()
                 );
                 inspector.inspect(language, entry_path)?;
             }
