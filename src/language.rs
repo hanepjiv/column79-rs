@@ -6,11 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2025/03/01
+//  @date 2025/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{cell::RefCell, collections::BTreeMap};
+use alloc::collections::BTreeMap;
+use core::cell::RefCell;
 // ----------------------------------------------------------------------------
 use regex::{Captures, Regex};
 use serde_derive::Deserialize;
@@ -22,19 +23,19 @@ use crate::error::Error;
 #[derive(Debug, Deserialize)]
 pub(crate) struct LanguageSrc {
     /// name
-    pub(crate) name: Option<String>,
+    pub name: Option<String>,
     /// base
-    pub(crate) base: Option<String>,
+    pub base: Option<String>,
     /// extensions
-    pub(crate) extensions: Option<Vec<String>>,
+    pub extensions: Option<Vec<String>>,
     /// `line_comment_begin`
-    pub(crate) line_comment_begin: Option<String>,
+    pub line_comment_begin: Option<String>,
     /// `block_comment_begin`
-    pub(crate) block_comment_begin: Option<String>,
+    pub block_comment_begin: Option<String>,
     /// `block_comment_end`
-    pub(crate) block_comment_end: Option<String>,
+    pub block_comment_end: Option<String>,
     /// sublanguages
-    pub(crate) sublanguages: Option<Vec<String>>,
+    pub sublanguages: Option<Vec<String>>,
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -105,6 +106,11 @@ impl Language {
         }
     }
     // ========================================================================
+    #[expect(
+        clippy::unwrap_used,
+        clippy::unwrap_in_result,
+        reason = "checked"
+    )]
     fn check_descent(
         &self,
         ls: &BTreeMap<String, Self>,
@@ -131,6 +137,11 @@ impl Language {
         Ok(())
     }
     // ------------------------------------------------------------------------
+    #[expect(
+        clippy::unwrap_used,
+        clippy::unwrap_in_result,
+        reason = "checked"
+    )]
     pub(crate) fn from_src(
         src: LanguageSrc,
         languages: &BTreeMap<String, Self>,
@@ -160,6 +171,11 @@ impl Language {
         Ok(ret)
     }
     // ========================================================================
+    #[expect(
+        clippy::expect_used,
+        clippy::unwrap_in_result,
+        reason = "checked"
+    )]
     pub(crate) fn re_line_captures<'t>(
         &self,
         line: &'t str,
@@ -178,6 +194,11 @@ impl Language {
         }
     }
     // ------------------------------------------------------------------------
+    #[expect(
+        clippy::expect_used,
+        clippy::unwrap_in_result,
+        reason = "checked"
+    )]
     pub(crate) fn re_block_captures<'t>(
         &self,
         line: &'t str,
@@ -201,6 +222,11 @@ impl Language {
         }
     }
     // ========================================================================
+    #[expect(
+        clippy::unwrap_used,
+        clippy::unwrap_in_result,
+        reason = "checked"
+    )]
     pub(crate) fn check_path_<'a>(
         &'a self,
         p: &std::path::PathBuf,

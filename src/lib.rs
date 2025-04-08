@@ -6,11 +6,14 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/03/24
+//  @date 2025/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
-#![doc = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/README.md"))]
+#![cfg_attr(doc, doc = include_str!(concat!(env!("CARGO_MANIFEST_DIR"),
+                                            "/README.md")))]
+// extern  ====================================================================
+extern crate alloc;
 // mod  =======================================================================
 mod ask;
 mod config;
@@ -20,7 +23,7 @@ mod inspector;
 mod language;
 mod line_type;
 // use  =======================================================================
-use std::{fs::File, io::Write, path::PathBuf};
+use std::{fs::File, io::Write as _, path::PathBuf};
 // ----------------------------------------------------------------------------
 use env_logger as _;
 use getopts as _;
@@ -40,6 +43,7 @@ const CONFIG_USER: &str = include_str!("config/user.toml");
 // ============================================================================
 /// enum Command
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum Command {
     ///  Unknown
     Unknown,
@@ -53,6 +57,7 @@ pub enum Command {
 // ============================================================================
 impl<'a> From<&'a str> for Command {
     // ========================================================================
+    #[inline]
     fn from(src: &'a str) -> Self {
         match src.to_lowercase().as_str() {
             "init" => Self::Init,
@@ -85,11 +90,13 @@ impl Column79 {
     // ========================================================================
     /// `as_config_dir`
     #[must_use]
+    #[inline]
     pub const fn as_config_dir(&self) -> &PathBuf {
         &self.config_dir
     }
     // ========================================================================
     /// `create_config_default`
+    #[inline]
     fn create_config(
         path: &PathBuf,
         config: &'static str,
@@ -108,6 +115,12 @@ impl Column79 {
     /// # Panics
     ///
     /// `unwrap`: never failed
+    #[expect(
+        clippy::unwrap_used,
+        clippy::unwrap_in_result,
+        reason = "checked"
+    )]
+    #[inline]
     pub fn run(
         command: Command,
         input: PathBuf,
@@ -139,14 +152,12 @@ impl Column79 {
             std::fs::create_dir_all(config_dir.clone())?;
         }
         // config_default_path  -----------------------------------------------
-        let mut config_default_path = config_dir.clone();
-        config_default_path.push(CONFIG_DEFAULT_PATH);
+        let config_default_path = config_dir.clone().join(CONFIG_DEFAULT_PATH);
         if !config_default_path.exists() {
             Self::create_config(&config_default_path, CONFIG_DEFAULT)?;
         }
         // config_user_path  --------------------------------------------------
-        let mut config_user_path = config_dir.clone();
-        config_user_path.push(CONFIG_USER_PATH);
+        let config_user_path = config_dir.clone().join(CONFIG_USER_PATH);
         if !config_user_path.exists() {
             Self::create_config(&config_user_path, CONFIG_USER)?;
         }
@@ -161,9 +172,9 @@ impl Column79 {
         if septhr.is_some() {
             config.separator_threshold = septhr.unwrap();
         }
-        if language.is_some() {
-            config.language = language.unwrap();
-        }
+        config.language = language.ok_or_else(|| {
+            Error::Column79("Column79::run: language is none".to_owned())
+        })?;
         config.flags.insert(flags);
 
         config.validation()?;

@@ -6,14 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2025/03/11
+//  @date 2025/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
+use core::cmp::Ordering::{Equal, Greater, Less};
 use std::{
-    cmp::Ordering::{Equal, Greater, Less},
     fs::File,
-    io::{BufRead, BufReader, BufWriter, Seek, SeekFrom, Write},
+    io::{
+        BufRead as _, BufReader, BufWriter, Seek as _, SeekFrom, Write as _,
+    },
     path::Path,
 };
 // ----------------------------------------------------------------------------
@@ -27,12 +29,13 @@ use crate::{
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait Inspector
-pub(crate) trait Inspector: std::fmt::Debug {
+pub(crate) trait Inspector: core::fmt::Debug {
     // ========================================================================
     /// inspect
     fn inspect(&self, lang: &Language, path: &Path) -> Result<(), Error>;
     // ========================================================================
     /// `inspect_impl`
+    #[expect(clippy::arithmetic_side_effects, reason = "checked")]
     fn inspect_impl(
         &self,
         conf: &Config,
@@ -43,7 +46,7 @@ pub(crate) trait Inspector: std::fmt::Debug {
         let file_in = File::open(path)?;
         let fin = BufReader::new(&file_in);
         for (row, line) in fin.lines().enumerate() {
-            let l = &line.unwrap();
+            let l = &line?;
             let line_type = LineType::new(conf, lang, l);
             func(row + 1, &line_type, l)?;
         }
@@ -59,7 +62,9 @@ pub(crate) trait Inspector: std::fmt::Debug {
     ) -> Result<(), Error> {
         println!(
             "{0}({row}): {1} : {line}",
-            path.as_os_str().to_str().unwrap(),
+            path.as_os_str().to_str().ok_or_else(|| Error::Inspect(
+                "Inspector::println_line: path".to_owned()
+            ))?,
             line.len(),
         );
         Ok(())
@@ -148,6 +153,7 @@ impl<'a> Replacer<'a> {
     }
     // ========================================================================
     /// `line_separator`
+    #[expect(clippy::arithmetic_side_effects, reason = "checked")]
     fn line_separator(
         &self,
         _lang: &Language,
@@ -158,7 +164,11 @@ impl<'a> Replacer<'a> {
     ) -> Result<(bool, String), Error> {
         let l = line.len();
         let c = self.config.column;
-        let body = line_type.body().unwrap();
+        let body = line_type.body().ok_or_else(|| {
+            Error::Inspect(
+                "Inspectpr::line_separator; line_type.body()".to_owned(),
+            )
+        })?;
 
         if c < l {
             if self.ask(self.config, "* shrink?", true)? {
@@ -179,7 +189,12 @@ impl<'a> Replacer<'a> {
             }
         } else if self.ask(self.config, "* expand?", true)? {
             let mut s = String::from(line);
-            let b = body.chars().rev().nth(0).unwrap();
+            let b = body.chars().rev().nth(0).ok_or_else(|| {
+                Error::Inspect(
+                    "Inspectpr::line_separator; body.chars(rev().nth(0)))"
+                        .to_owned(),
+                )
+            })?;
             for _ in 0..(c - l) {
                 s.push(b);
             }
@@ -190,13 +205,14 @@ impl<'a> Replacer<'a> {
     }
     // ========================================================================
     /// `make_line`
+    #[expect(clippy::unwrap_used, reason = "checked")]
     fn make_line(lang: &Language, line_type: &LineType) -> String {
         let mut s =
-            Regex::new(&format!(r"(.*){0}(.*)", lang.peek_bcb().unwrap()))
+            Regex::new(&format!("(.*){0}(.*)", lang.peek_bcb().unwrap()))
                 .unwrap()
                 .replace(
                     line_type.head().unwrap(),
-                    format!(r"$1{0}$2", lang.peek_lcb().unwrap()).as_str(),
+                    format!("$1{0}$2", lang.peek_lcb().unwrap()).as_str(),
                 )
                 .into_owned();
         s.push_str(line_type.body().unwrap());
@@ -204,7 +220,12 @@ impl<'a> Replacer<'a> {
     }
     // ========================================================================
     /// `make_line_separator`
-    #[allow(clippy::cast_possible_wrap)]
+    #[expect(
+        clippy::arithmetic_side_effects,
+        clippy::cast_possible_wrap,
+        clippy::unwrap_used,
+        reason = "checked"
+    )]
     fn make_line_separator(
         &self,
         lang: &Language,
@@ -249,6 +270,12 @@ impl<'a> Replacer<'a> {
     }
     // ========================================================================
     /// `block_separator`
+    #[expect(
+        clippy::arithmetic_side_effects,
+        clippy::unwrap_used,
+        clippy::unwrap_in_result,
+        reason = "checked"
+    )]
     fn block_separator(
         &self,
         lang: &Language,
@@ -325,6 +352,11 @@ impl<'a> Replacer<'a> {
 impl Inspector for Replacer<'_> {
     // ========================================================================
     /// inspect
+    #[expect(
+        clippy::unwrap_used,
+        clippy::unwrap_in_result,
+        reason = "checked"
+    )]
     fn inspect(&self, lang: &Language, path: &Path) -> Result<(), Error> {
         let c = self.config.column;
         let mut file_tmp = tempfile()?;
@@ -356,9 +388,9 @@ impl Inspector for Replacer<'_> {
             Ok(())
         })?;
         if fixes {
-            let file_tmp = ftmp.into_inner().unwrap();
-            let _ = file_tmp.seek(SeekFrom::Start(0))?;
-            let mut ftmp = BufReader::new(file_tmp);
+            let file_tmp_x = ftmp.into_inner().unwrap();
+            let _ = file_tmp_x.seek(SeekFrom::Start(0))?;
+            let mut ftmp_x = BufReader::new(file_tmp_x);
             {
                 // backup
                 let mut extension = path.extension().unwrap().to_os_string();
@@ -369,7 +401,7 @@ impl Inspector for Replacer<'_> {
             }
             let mut file_new = File::create(path)?;
             let mut fnew = BufWriter::new(&mut file_new);
-            let _ = std::io::copy(&mut ftmp, &mut fnew)?;
+            let _ = std::io::copy(&mut ftmp_x, &mut fnew)?;
             println!("* replace: {:?}", path.as_os_str());
         }
         Ok(())

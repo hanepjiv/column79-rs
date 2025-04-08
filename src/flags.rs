@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/15
-//  @date 2025/01/21
+//  @date 2025/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -18,6 +18,6 @@ bitflags! {
     #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct Flags: u32 {
     /// const NOASK
-    const NOASK = 0b0000_0001u32;
+    const NOASK = 0b0000_0001_u32;
     }
 }

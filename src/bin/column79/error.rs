@@ -6,11 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/11
-//  @date 2025/03/01
+//  @date 2025/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::error::Error as StdError;
+use core::error::Error as StdError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
@@ -23,7 +23,7 @@ pub(crate) enum Error {
     /// `StdIO`
     StdIO(::std::io::Error),
     /// `StdNumParseInt`
-    StdNumParseInt(::std::num::ParseIntError),
+    StdNumParseInt(::core::num::ParseIntError),
     /// Column79
     Column79(::column79::Error),
 }
@@ -40,8 +40,8 @@ impl From<::std::io::Error> for Error {
     }
 }
 // ----------------------------------------------------------------------------
-impl From<::std::num::ParseIntError> for Error {
-    fn from(e: ::std::num::ParseIntError) -> Self {
+impl From<::core::num::ParseIntError> for Error {
+    fn from(e: ::core::num::ParseIntError) -> Self {
         Self::StdNumParseInt(e)
     }
 }
@@ -52,12 +52,15 @@ impl From<::column79::Error> for Error {
     }
 }
 // ============================================================================
-impl ::std::fmt::Display for Error {
+impl ::core::fmt::Display for Error {
     // ========================================================================
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match self {
-            Self::OptionNone(txt) => txt.fmt(f),
-            _ => <Self as ::std::fmt::Debug>::fmt(self, f),
+    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+        match *self {
+            Self::OptionNone(ref txt) => txt.fmt(f),
+            Self::GetOpts(_)
+            | Self::StdIO(_)
+            | Self::StdNumParseInt(_)
+            | Self::Column79(_) => <Self as ::core::fmt::Debug>::fmt(self, f),
         }
     }
 }
@@ -77,7 +80,7 @@ impl StdError for Error {
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// type Result
-pub(crate) type Result<T> = ::std::result::Result<T, Error>;
+pub(crate) type Result<T> = ::core::result::Result<T, Error>;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 #[cfg(test)]

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2025/03/01
+//  @date 2025/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -63,6 +63,7 @@ impl LineType {
         }
     }
     // ========================================================================
+    #[expect(clippy::unwrap_used, reason = "checked")]
     pub(crate) fn is_separator(conf: &Config, body: &str) -> bool {
         let t = conf.separator_threshold;
         if body.len() < t {
@@ -81,6 +82,11 @@ impl LineType {
         true
     }
     // ========================================================================
+    #[expect(
+        clippy::unwrap_used,
+        clippy::unwrap_in_result,
+        reason = "checked"
+    )]
     pub(crate) fn is_line_comment(
         conf: &Config,
         lang: &Language,
@@ -100,6 +106,11 @@ impl LineType {
         })
     }
     // ------------------------------------------------------------------------
+    #[expect(
+        clippy::unwrap_used,
+        clippy::unwrap_in_result,
+        reason = "checked"
+    )]
     pub(crate) fn is_block_comment(
         conf: &Config,
         lang: &Language,

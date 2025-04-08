@@ -6,15 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2025/03/01
+//  @date 2025/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::error::Error as StdError;
+use core::error::Error as CoreError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
 #[derive(Debug)]
+#[non_exhaustive]
 pub enum Error {
     /// `EnvVar`
     EnvVar(std::env::VarError),
@@ -35,38 +36,44 @@ pub enum Error {
 }
 // ============================================================================
 impl From<std::env::VarError> for Error {
+    #[inline]
     fn from(e: std::env::VarError) -> Self {
         Self::EnvVar(e)
     }
 }
 // ----------------------------------------------------------------------------
 impl From<std::io::Error> for Error {
+    #[inline]
     fn from(e: std::io::Error) -> Self {
         Self::IO(e)
     }
 }
 // ----------------------------------------------------------------------------
 impl From<toml::ser::Error> for Error {
+    #[inline]
     fn from(e: toml::ser::Error) -> Self {
         Self::TOMLSer(e)
     }
 }
 // ----------------------------------------------------------------------------
 impl From<toml::de::Error> for Error {
+    #[inline]
     fn from(e: toml::de::Error) -> Self {
         Self::TOMLDe(e)
     }
 }
 // ============================================================================
-impl std::fmt::Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        <Self as std::fmt::Debug>::fmt(self, f)
+impl core::fmt::Display for Error {
+    #[inline]
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        <Self as core::fmt::Debug>::fmt(self, f)
     }
 }
 // ============================================================================
-impl StdError for Error {
+impl CoreError for Error {
     // ========================================================================
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+    #[inline]
+    fn source(&self) -> Option<&(dyn CoreError + 'static)> {
         match *self {
             Self::EnvVar(ref e) => Some(e),
             Self::IO(ref e) => Some(e),

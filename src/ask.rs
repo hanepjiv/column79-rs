@@ -6,10 +6,10 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2024/04/06
+//  @date 2025/04/06
 
 // use  =======================================================================
-use std::io::Write;
+use std::io::Write as _;
 // ----------------------------------------------------------------------------
 use crate::error::Error;
 // ////////////////////////////////////////////////////////////////////////////

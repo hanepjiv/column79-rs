@@ -6,16 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2025/03/22
+//  @date 2025/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{
-    collections::{BTreeMap, btree_map::Entry},
-    ffi::OsString,
-    fs::File,
-    io::Read,
-};
+use alloc::collections::{BTreeMap, btree_map::Entry};
+use std::ffi::OsString;
 // ----------------------------------------------------------------------------
 use serde_derive::Deserialize;
 // ----------------------------------------------------------------------------
@@ -30,15 +26,15 @@ use crate::{
 #[derive(Debug, Deserialize)]
 pub(crate) struct ConfigSrc {
     /// column
-    pub(crate) column: Option<usize>,
+    pub column: Option<usize>,
     /// `separator_threshold`
-    pub(crate) separator_threshold: Option<usize>,
+    pub separator_threshold: Option<usize>,
     /// ask
-    pub(crate) ask: Option<bool>,
+    pub ask: Option<bool>,
     /// language
-    pub(crate) language: Option<String>,
+    pub language: Option<String>,
     /// languages
-    pub(crate) languages: Option<Vec<LanguageSrc>>,
+    pub languages: Option<Vec<LanguageSrc>>,
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -46,15 +42,15 @@ pub(crate) struct ConfigSrc {
 #[derive(Debug, Clone)]
 pub(crate) struct Config {
     /// column
-    pub(crate) column: usize,
+    pub column: usize,
     /// `separator_threshold`
-    pub(crate) separator_threshold: usize,
+    pub separator_threshold: usize,
     /// flags
-    pub(crate) flags: Flags,
+    pub flags: Flags,
     /// language
-    pub(crate) language: String,
+    pub language: String,
     /// languages
-    pub(crate) languages: BTreeMap<String, Language>,
+    pub languages: BTreeMap<String, Language>,
 }
 // ============================================================================
 impl Default for Config {
@@ -80,10 +76,7 @@ impl Config {
     // ========================================================================
     /// import
     pub(crate) fn import(&mut self, path: &OsString) -> Result<(), Error> {
-        let mut source = String::new();
-        let _ = File::open(path.clone())
-            .and_then(|mut f| f.read_to_string(&mut source))?;
-        let src: ConfigSrc = toml::from_str(&source)?;
+        let src: ConfigSrc = toml::from_str(&std::fs::read_to_string(path)?)?;
         if let Some(x) = src.column {
             self.column = x;
         }
@@ -109,7 +102,7 @@ impl Config {
                     return Err(Error::InvalidConfig(
                         "::column79::language::Config::import(...): \
                          languages base: insert failed"
-                            .to_string(),
+                            .to_owned(),
                     ));
                 }
             }
@@ -137,7 +130,7 @@ impl Config {
         path: &std::path::PathBuf,
     ) -> Option<&Language> {
         self.languages
-            .get(&self.language)
-            .and_then(|lang| lang.check_path(path, &self.languages))
+            .get(&self.language)?
+            .check_path(path, &self.languages)
     }
 }

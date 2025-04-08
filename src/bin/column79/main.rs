@@ -6,11 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/01/21
+//  @date 2025/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
-#![doc = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/README.md"))]
+#![cfg_attr(doc, doc = include_str!(concat!(env!("CARGO_MANIFEST_DIR"),
+                                            "/README.md")))]
 // mod  =======================================================================
 mod error;
 // use  =======================================================================
@@ -33,7 +34,7 @@ fn print_usage(opts: &::getopts::Options) {
     print!(
         "{}",
         opts.usage(&format!(
-            r"Usage:
+            "Usage:
     {0} Command [Input] [Options]
 
 Command:
@@ -74,52 +75,43 @@ fn main() -> Result<()> {
         print_usage(&opts);
         return Ok(());
     }
+
     let command = Command::from(matches.free[0].as_ref());
     if Command::Unknown == command {
         print_usage(&opts);
         return Ok(());
     }
-    let input = if 1usize == matches.free.len() {
+    let input = if 1_usize == matches.free.len() {
         ::std::env::current_dir()?
     } else {
         PathBuf::from(matches.free[1].clone())
     };
-    let column = if matches.opt_present("c") {
-        Some(
-            matches
-                .opt_str("c")
-                .ok_or_else(|| {
-                    Error::OptionNone(
-                        "column79: matches.opt_str(\"c\").".to_string(),
-                    )
-                })?
-                .parse::<usize>()?,
-        )
-    } else {
-        None
-    };
-    let septhr = if matches.opt_present("t") {
-        Some(
-            matches
-                .opt_str("t")
-                .ok_or_else(|| {
-                    Error::OptionNone(
-                        "column79: matches.opt_str(\"t\").".to_string(),
-                    )
-                })?
-                .parse::<usize>()?,
-        )
-    } else {
-        None
-    };
-    let language = if matches.opt_present("l") {
-        Some(matches.opt_str("l").ok_or_else(|| {
-            Error::OptionNone("column79: matches.opt_str(\"l\").".to_string())
-        })?)
-    } else {
-        None
-    };
+
+    let column = matches
+        .opt_str("c")
+        .ok_or_else(|| {
+            Error::OptionNone("column79: matches.opt_str(\"c\").".to_owned())
+        })?
+        .parse::<usize>()
+        .ok();
+
+    let septhr = matches
+        .opt_str("t")
+        .ok_or_else(|| {
+            Error::OptionNone("column79: matches.opt_str(\"t\").".to_owned())
+        })?
+        .parse::<usize>()
+        .ok();
+
+    let language = matches
+        .opt_str("l")
+        .ok_or_else(|| {
+            Error::OptionNone("column79: matches.opt_str(\"l\").".to_owned())
+        })
+        .ok();
+
     let mut fs = Flags::empty();
+
     if matches.opt_present("no-ask") {
         fs.insert(Flags::NOASK);
     }
