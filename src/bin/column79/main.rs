@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/04/06
+//  @date 2025/04/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -87,28 +87,21 @@ fn main() -> Result<()> {
         PathBuf::from(matches.free[1].clone())
     };
 
-    let column = matches
-        .opt_str("c")
-        .ok_or_else(|| {
-            Error::OptionNone("column79: matches.opt_str(\"c\").".to_owned())
-        })?
-        .parse::<usize>()
-        .ok();
+    let column = match matches.opt_str("c") {
+        Some(x) => Some(x.parse::<usize>().map_err(|_e| {
+            Error::OptionNone("column79: opt_str('c').".to_owned())
+        })?),
+        None => None,
+    };
 
-    let septhr = matches
-        .opt_str("t")
-        .ok_or_else(|| {
-            Error::OptionNone("column79: matches.opt_str(\"t\").".to_owned())
-        })?
-        .parse::<usize>()
-        .ok();
+    let septhr = match matches.opt_str("t") {
+        Some(x) => Some(x.parse::<usize>().map_err(|_e| {
+            Error::OptionNone("column79: opt_str('t').".to_owned())
+        })?),
+        None => None,
+    };
 
-    let language = matches
-        .opt_str("l")
-        .ok_or_else(|| {
-            Error::OptionNone("column79: matches.opt_str(\"l\").".to_owned())
-        })
-        .ok();
+    let language = matches.opt_str("l");
 
     let mut fs = Flags::empty();
 

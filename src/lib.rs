@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/04/06
+//  @date 2025/04/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -172,9 +172,10 @@ impl Column79 {
         if septhr.is_some() {
             config.separator_threshold = septhr.unwrap();
         }
-        config.language = language.ok_or_else(|| {
-            Error::Column79("Column79::run: language is none".to_owned())
-        })?;
+
+        if language.is_some() {
+            config.language = language.unwrap();
+        }
         config.flags.insert(flags);
 
         config.validation()?;

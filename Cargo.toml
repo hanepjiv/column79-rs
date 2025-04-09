@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.11-alpha.2"
+version                 = "0.2.11-alpha.3"
 publish                 = false
 
 description             = "Source code column checker."
