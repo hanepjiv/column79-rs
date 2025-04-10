@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/04/09
+//  @date 2025/04/10
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -76,15 +76,24 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    let command = Command::from(matches.free[0].as_ref());
+    let command = if let Some(cmd) = matches.free.first() {
+        Command::from(cmd.as_ref())
+    } else {
+        print_usage(&opts);
+        return Ok(());
+    };
+
     if Command::Unknown == command {
         print_usage(&opts);
         return Ok(());
     }
+
     let input = if 1_usize == matches.free.len() {
         ::std::env::current_dir()?
     } else {
-        PathBuf::from(matches.free[1].clone())
+        PathBuf::from(matches.free.get(1).ok_or_else(|| {
+            Error::OptionNone("column79: empty input".to_owned())
+        })?)
     };
 
     let column = match matches.opt_str("c") {
