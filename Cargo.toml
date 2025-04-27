@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.11-alpha.4"
+version                 = "0.2.11-alpha.5"
 publish                 = false
 
 description             = "Source code column checker."
@@ -35,7 +35,7 @@ tempfile                = { default-features = false, version = "3.19.1" }
 # -----------------------------------------------------------------------------
 [dependencies.toml]
 default-features        = false
-version                 = "0.8.20"
+version                 = "0.8.21"
 features                = ["parse"]
 # =============================================================================
 [lints]

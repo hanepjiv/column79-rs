@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/11
-//  @date 2025/04/06
+//  @date 2025/04/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -89,14 +89,14 @@ mod tests {
     use crate::{Error, Result};
     // ========================================================================
     #[test]
-    const fn test_send() {
+    const fn send() {
         const fn assert_send<T: Send>() {}
         assert_send::<Error>();
         assert_send::<Result<()>>();
     }
     // ------------------------------------------------------------------------
     #[test]
-    const fn test_sync() {
+    const fn sync() {
         const fn assert_sync<T: Sync>() {}
         assert_sync::<Error>();
         assert_sync::<Result<()>>();
