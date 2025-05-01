@@ -35,7 +35,7 @@ tempfile                = { default-features = false, version = "3.19.1" }
 # -----------------------------------------------------------------------------
 [dependencies.toml]
 default-features        = false
-version                 = "0.8.21"
+version                 = "0.8.22"
 features                = ["parse"]
 # =============================================================================
 [lints]
@@ -93,7 +93,6 @@ unused_lifetimes = "forbid"
 unused_macro_rules = "forbid"
 unused_results = "forbid"
 variant_size_differences = "forbid"
-abi_unsupported_vector_types = "forbid"
 ambiguous_glob_imports = "forbid"
 ambiguous_glob_reexports = "forbid"
 ambiguous_wide_pointer_comparisons = "forbid"
@@ -177,7 +176,6 @@ tyvar_behind_raw_pointer = "forbid"
 uncommon_codepoints = "forbid"
 unconditional_recursion = "forbid"
 uncovered_param_in_projection = "forbid"
-undefined_naked_function_abi = "forbid"
 unexpected_cfgs = "forbid"
 unfulfilled_lint_expectations = "forbid"
 ungated_async_fn_track_caller = "forbid"
