@@ -23,7 +23,7 @@ strip                   = true
 lto                     = true
 # =============================================================================
 [dependencies]
-bitflags                = { default-features = false, version = "2.9.0" }
+bitflags                = { default-features = false, version = "2.9.1" }
 dirs                    = { default-features = false, version = "6.0.0" }
 env_logger              = { default-features = false, version = "0.11.8" }
 getopts                 = { default-features = false, version = "0.2.21" }
@@ -31,7 +31,7 @@ log                     = { default-features = false, version = "0.4.27" }
 regex                   = { default-features = true,  version = "1.11.1" }
 serde                   = { default-features = false, version = "1.0.219" }
 serde_derive            = { default-features = false, version = "1.0.219" }
-tempfile                = { default-features = false, version = "3.19.1" }
+tempfile                = { default-features = false, version = "3.20.0" }
 # -----------------------------------------------------------------------------
 [dependencies.toml]
 default-features        = false
@@ -42,30 +42,18 @@ features                = ["parse"]
 workspace               = true
 # -----------------------------------------------------------------------------
 [workspace.lints.rust]
-# rustc 1.86.0 (05f9846f8 2025-03-31)
-absolute_paths_not_starting_with_crate = "forbid"
-ambiguous_negative_literals = "forbid"
-closure_returning_async_block = "forbid"
-deprecated_in_future = "forbid"
-deprecated_safe_2024 = "forbid"
-deref_into_dyn_supertrait = "forbid"
-edition_2024_expr_fragment_specifier = "forbid"
-elided_lifetimes_in_paths = "forbid"
-explicit_outlives_requirements = "forbid"
-ffi_unwind_calls = "forbid"
-if_let_rescope = "forbid"
-impl_trait_overcaptures = "forbid"
-impl_trait_redundant_captures = "forbid"
-keyword_idents_2018 = "forbid"
-keyword_idents_2024 = "forbid"
-let_underscore_drop = "forbid"
-linker_messages = "forbid"
-macro_use_extern_crate = "forbid"
-meta_variable_misuse = "forbid"
-missing_copy_implementations = "forbid"
-missing_debug_implementations = "forbid"
-missing_docs = "forbid"
-missing_unsafe_on_extern = "forbid"
+# rustc 1.87.0 (17067e9ac 2025-05-09)
+non_upper_case_globals = "deny"
+unused_attributes = "deny"
+unused_qualifications = "deny"
+unused_extern_crates = "deny"
+non_camel_case_types = "deny"
+deprecated = "deny"
+dead_code = "deny"
+unused_doc_comments = "deny"
+unused_mut = "deny"
+unused_imports = "deny"
+
 non_ascii_idents = "forbid"
 redundant_imports = "forbid"
 redundant_lifetimes = "forbid"
@@ -202,6 +190,7 @@ unused_unsafe = "forbid"
 unused_variables = "forbid"
 useless_ptr_null_checks = "forbid"
 uses_power_alignment = "forbid"
+wasm_c_abi = "forbid"
 while_true = "forbid"
 ambiguous_associated_items = "forbid"
 arithmetic_overflow = "forbid"
@@ -237,17 +226,6 @@ unconditional_panic = "forbid"
 undropped_manually_drops = "forbid"
 unknown_crate_types = "forbid"
 useless_deprecated = "forbid"
-
-non_upper_case_globals = "deny"
-unused_attributes = "deny"
-unused_qualifications = "deny"
-unused_extern_crates = "deny"
-non_camel_case_types = "deny"
-deprecated = "deny"
-dead_code = "deny"
-unused_doc_comments = "deny"
-unused_mut = "deny"
-unused_imports = "deny"
 
 renamed_and_removed_lints = "warn"
 unknown_lints = "warn"

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/04/09
+//  @date 2025/05/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -111,15 +111,6 @@ impl Column79 {
     /// # Errors
     ///
     /// `Error::Column79`
-    ///
-    /// # Panics
-    ///
-    /// `unwrap`: never failed
-    #[expect(
-        clippy::unwrap_used,
-        clippy::unwrap_in_result,
-        reason = "checked"
-    )]
     #[inline]
     pub fn run(
         command: Command,
@@ -166,16 +157,18 @@ impl Column79 {
             Config::new(&config_default_path.clone().into_os_string())?;
         config.import(&config_user_path.clone().into_os_string())?;
 
-        if column.is_some() {
-            config.column = column.unwrap();
-        }
-        if septhr.is_some() {
-            config.separator_threshold = septhr.unwrap();
+        if let Some(x) = column {
+            config.column = x;
         }
 
-        if language.is_some() {
-            config.language = language.unwrap();
+        if let Some(x) = septhr {
+            config.separator_threshold = x;
         }
+
+        if let Some(x) = language {
+            config.language = x;
+        }
+
         config.flags.insert(flags);
 
         config.validation()?;
