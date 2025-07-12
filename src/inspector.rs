@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2025/04/06
+//  @date 2025/07/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -396,13 +396,13 @@ impl Inspector for Replacer<'_> {
                 let mut extension = path.extension().unwrap().to_os_string();
                 extension.push(".backup");
                 let path_back = path.with_extension(extension);
-                println!("* backup: {:?}", path_back.as_os_str());
+                println!("* backup: {}", path_back.display());
                 std::fs::rename(path, path_back)?;
             }
             let mut file_new = File::create(path)?;
             let mut fnew = BufWriter::new(&mut file_new);
             let _ = std::io::copy(&mut ftmp_x, &mut fnew)?;
-            println!("* replace: {:?}", path.as_os_str());
+            println!("* replace: {}", path.display());
         }
         Ok(())
     }

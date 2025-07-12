@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/04/10
+//  @date 2025/07/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -22,7 +22,6 @@ use dirs as _;
 use log as _;
 use regex as _;
 use serde as _;
-use serde_derive as _;
 use tempfile as _;
 use toml as _;
 // ----------------------------------------------------------------------------

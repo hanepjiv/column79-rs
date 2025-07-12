@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2025/04/06
+//  @date 2025/07/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -14,7 +14,7 @@ use alloc::collections::BTreeMap;
 use core::cell::RefCell;
 // ----------------------------------------------------------------------------
 use regex::{Captures, Regex};
-use serde_derive::Deserialize;
+use serde::Deserialize;
 // ----------------------------------------------------------------------------
 use crate::error::Error;
 // ////////////////////////////////////////////////////////////////////////////
