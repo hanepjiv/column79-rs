@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.11-alpha.6"
+version                 = "0.2.11-alpha.7"
 publish                 = false
 
 description             = "Source code column checker."
@@ -194,7 +194,7 @@ unexpected_cfgs = "forbid"
 unfulfilled_lint_expectations = "forbid"
 ungated_async_fn_track_caller = "forbid"
 uninhabited_static = "forbid"
-unknown_or_malformed_diagnostic_attributes = "forbid"
+unknown_or_malformed_diagnostic_attributes = {level = "forbid", priority = -1}
 unnameable_test_items = "forbid"
 unnecessary_transmutes = "forbid"
 unpredictable_function_pointer_comparisons = "forbid"
