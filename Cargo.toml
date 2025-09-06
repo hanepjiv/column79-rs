@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.11-alpha.7"
+version                 = "0.2.11-alpha.8"
 publish                 = false
 
 description             = "Source code column checker."
@@ -11,7 +11,7 @@ categories              = ["text-processing"]
 readme                  = "README.md"
 
 edition                 = "2024"
-rust-version            = "1.88.0"
+rust-version            = "1.89.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT OR Apache-2.0"
 documentation           = "https://github.com/hanepjiv/column79-rs/wiki"
@@ -23,13 +23,13 @@ strip                   = true
 lto                     = true
 # =============================================================================
 [dependencies]
-bitflags                = { default-features = false, version = "2.9.1" }
+bitflags                = { default-features = false, version = "2.9.4" }
 dirs                    = { default-features = false, version = "6.0.0" }
 env_logger              = { default-features = false, version = "0.11.8" }
-getopts                 = { default-features = false, version = "0.2.23" }
-log                     = { default-features = false, version = "0.4.27" }
-regex                   = { default-features = true,  version = "1.11.1" }
-tempfile                = { default-features = false, version = "3.20.0" }
+getopts                 = { default-features = false, version = "0.2.24" }
+log                     = { default-features = false, version = "0.4.28" }
+regex                   = { default-features = true,  version = "1.11.2" }
+tempfile                = { default-features = false, version = "3.21.0" }
 # -----------------------------------------------------------------------------
 [dependencies.serde]
 default-features        = false
@@ -38,14 +38,16 @@ features                = ["derive"]
 # -----------------------------------------------------------------------------
 [dependencies.toml]
 default-features        = false
-version                 = "0.9.2"
+version                 = "0.9.5"
 features                = ["parse", "serde"]
 # =============================================================================
 [lints]
 workspace               = true
 # -----------------------------------------------------------------------------
 [workspace.lints.rust]
-# rustc 1.88.0 (6b00bc388 2025-06-23)
+# rustc 1.89.0 (29483883e 2025-08-04)
+unfulfilled_lint_expectations = "warn" # remove when rustc 1.91.0
+
 deprecated = "deny"
 dead_code = "deny"
 non_upper_case_globals = "deny"
@@ -57,7 +59,6 @@ unused_doc_comments = "deny"
 unused_mut = "deny"
 unused_imports = "deny"
 
-trivial_casts = "forbid"
 absolute_paths_not_starting_with_crate = "forbid"
 ambiguous_negative_literals = "forbid"
 closure_returning_async_block = "forbid"
@@ -68,6 +69,7 @@ edition_2024_expr_fragment_specifier = "forbid"
 elided_lifetimes_in_paths = "forbid"
 explicit_outlives_requirements = "forbid"
 ffi_unwind_calls = "forbid"
+fuzzy_provenance_casts = "forbid"
 if_let_rescope = "forbid"
 impl_trait_overcaptures = "forbid"
 impl_trait_redundant_captures = "forbid"
@@ -75,13 +77,17 @@ keyword_idents_2018 = "forbid"
 keyword_idents_2024 = "forbid"
 let_underscore_drop = "forbid"
 linker_messages = "forbid"
+lossy_provenance_casts = "forbid"
 macro_use_extern_crate = "forbid"
 meta_variable_misuse = "forbid"
 missing_copy_implementations = "forbid"
 missing_debug_implementations = "forbid"
 missing_docs = "forbid"
 missing_unsafe_on_extern = "forbid"
+multiple_supertrait_upcastable = "forbid"
+must_not_suspend = "forbid"
 non_ascii_idents = "forbid"
+non_exhaustive_omitted_patterns = "forbid"
 redundant_imports = "forbid"
 redundant_lifetimes = "forbid"
 rust_2021_incompatible_closure_captures = "forbid"
@@ -92,10 +98,14 @@ rust_2024_guarded_string_incompatible_syntax = "forbid"
 rust_2024_incompatible_pat = "forbid"
 rust_2024_prelude_collisions = "forbid"
 single_use_lifetimes = "forbid"
+supertrait_item_shadowing_definition = "forbid"
+supertrait_item_shadowing_usage = "forbid"
 tail_expr_drop_order = "forbid"
+trivial_casts = "forbid"
 trivial_numeric_casts = "forbid"
 unit_bindings = "forbid"
 unnameable_types = "forbid"
+unqualified_local_imports = "forbid"
 unreachable_pub = "forbid"
 unsafe_attr_outside_unsafe = "forbid"
 unsafe_code = "forbid"
@@ -107,6 +117,7 @@ unused_lifetimes = "forbid"
 unused_macro_rules = "forbid"
 unused_results = "forbid"
 variant_size_differences = "forbid"
+aarch64_softfloat_neon = "forbid"
 ambiguous_glob_imports = "forbid"
 ambiguous_glob_reexports = "forbid"
 ambiguous_wide_pointer_comparisons = "forbid"
@@ -123,7 +134,6 @@ coherence_leak_check = "forbid"
 confusable_idents = "forbid"
 const_evaluatable_unchecked = "forbid"
 const_item_mutation = "forbid"
-dangerous_implicit_autorefs = "forbid"
 dangling_pointers_from_temporaries = "forbid"
 dependency_on_unit_never_type_fallback = "forbid"
 deprecated_where_clause_location = "forbid"
@@ -156,6 +166,7 @@ large_assignments = "forbid"
 late_bound_lifetime_arguments = "forbid"
 legacy_derive_helpers = "forbid"
 map_unit_fn = "forbid"
+mismatched_lifetime_syntaxes = "forbid"
 missing_abi = "forbid"
 mixed_script_confusables = "forbid"
 named_arguments_used_positionally = "forbid"
@@ -191,10 +202,9 @@ uncommon_codepoints = "forbid"
 unconditional_recursion = "forbid"
 uncovered_param_in_projection = "forbid"
 unexpected_cfgs = "forbid"
-unfulfilled_lint_expectations = "forbid"
 ungated_async_fn_track_caller = "forbid"
 uninhabited_static = "forbid"
-unknown_or_malformed_diagnostic_attributes = {level = "forbid", priority = -1}
+unknown_or_malformed_diagnostic_attributes =  {level = "forbid", priority = -1}
 unnameable_test_items = "forbid"
 unnecessary_transmutes = "forbid"
 unpredictable_function_pointer_comparisons = "forbid"
@@ -202,6 +212,8 @@ unreachable_code = "forbid"
 unreachable_patterns = "forbid"
 unstable_name_collisions = "forbid"
 unstable_syntax_pre_expansion = "forbid"
+unsupported_calling_conventions = "forbid"
+unsupported_fn_ptr_calling_conventions = "forbid"
 unused_allocation = "forbid"
 unused_assignments = "forbid"
 unused_associated_type_bounds = "forbid"
@@ -222,6 +234,8 @@ arithmetic_overflow = "forbid"
 binary_asm_labels = "forbid"
 bindings_with_variant_name = "forbid"
 conflicting_repr_hints = "forbid"
+dangerous_implicit_autorefs = "forbid"
+default_overrides_default_fields = "forbid"
 elided_lifetimes_in_associated_constant = "forbid"
 enum_intrinsics_non_enums = "forbid"
 explicit_builtin_cfgs_in_flags = "forbid"
@@ -245,6 +259,7 @@ patterns_in_fns_without_body = "forbid"
 proc_macro_derive_resolution_fallback = "forbid"
 pub_use_of_private_extern_crate = "forbid"
 soft_unstable = "forbid"
+test_unstable_lint = "forbid"
 text_direction_codepoint_in_comment = "forbid"
 text_direction_codepoint_in_literal = "forbid"
 unconditional_panic = "forbid"
