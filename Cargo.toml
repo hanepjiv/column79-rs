@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.11-alpha.9"
+version                 = "0.2.11-alpha.10"
 publish                 = false
 
 description             = "Source code column checker."
@@ -46,6 +46,8 @@ workspace               = true
 # -----------------------------------------------------------------------------
 [workspace.lints.rust]
 # rustc 1.90.0 (1159e78c4 2025-09-14)
+
+unfulfilled_lint_expectations = "warn" # remove when 1.91.0
 
 deprecated = "deny"
 dead_code = "deny"
@@ -195,7 +197,6 @@ uncommon_codepoints = "forbid"
 unconditional_recursion = "forbid"
 uncovered_param_in_projection = "forbid"
 unexpected_cfgs = "forbid"
-unfulfilled_lint_expectations = "forbid"
 ungated_async_fn_track_caller = "forbid"
 uninhabited_static = "forbid"
 unknown_diagnostic_attributes = "forbid"
