@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2025/04/06
+//  @date 2025/10/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -132,12 +132,8 @@ impl LineType {
     }
     // ========================================================================
     pub(crate) fn new(conf: &Config, lang: &Language, line: &str) -> Self {
-        Self::is_block_comment(conf, lang, line).map_or_else(
-            || {
-                Self::is_line_comment(conf, lang, line)
-                    .map_or(Self::Other, |b| b)
-            },
-            |l| l,
-        )
+        Self::is_block_comment(conf, lang, line).unwrap_or_else(|| {
+            Self::is_line_comment(conf, lang, line).map_or(Self::Other, |b| b)
+        })
     }
 }

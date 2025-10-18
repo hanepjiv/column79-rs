@@ -28,17 +28,17 @@ dirs                    = { default-features = false, version = "6.0.0" }
 env_logger              = { default-features = false, version = "0.11.8" }
 getopts                 = { default-features = false, version = "0.2.24" }
 log                     = { default-features = false, version = "0.4.28" }
-regex                   = { default-features = true,  version = "1.11.2" }
-tempfile                = { default-features = false, version = "3.22.0" }
+regex                   = { default-features = true,  version = "1.12.2" }
+tempfile                = { default-features = false, version = "3.23.0" }
 # -----------------------------------------------------------------------------
 [dependencies.serde]
 default-features        = false
-version                 = "1.0.225"
+version                 = "1.0.228"
 features                = ["derive"]
 # -----------------------------------------------------------------------------
 [dependencies.toml]
 default-features        = false
-version                 = "0.9.7"
+version                 = "0.9.8"
 features                = ["parse", "serde"]
 # =============================================================================
 [lints]
