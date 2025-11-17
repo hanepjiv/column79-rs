@@ -1,7 +1,7 @@
 # column79-rs
 
 ## Build Status
-- master: [![Build Status](https://travis-ci.org/hanepjiv/column79-rs.svg?branch=master)](https://travis-ci.org/hanepjiv/column79-rs)
+- main: [![CI Rust](https://github.com/hanepjiv/column79-rs/actions/workflows/ci-rust.yml/badge.svg?branch=main)](https://github.com/hanepjiv/column79-rs/actions/workflows/ci-rust.yml)
 
 ## License
 
