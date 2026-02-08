@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.11-alpha.11"
+version                 = "0.2.11-alpha.12"
 publish                 = false
 
 description             = "Source code column checker."
@@ -27,9 +27,9 @@ bitflags                = { default-features = false, version = "2.10.0" }
 dirs                    = { default-features = false, version = "6.0.0" }
 env_logger              = { default-features = false, version = "0.11.8" }
 getopts                 = { default-features = false, version = "0.2.24" }
-log                     = { default-features = false, version = "0.4.28" }
-regex                   = { default-features = true,  version = "1.12.2" }
-tempfile                = { default-features = false, version = "3.23.0" }
+log                     = { default-features = false, version = "0.4.29" }
+regex                   = { default-features = true,  version = "1.12.3" }
+tempfile                = { default-features = false, version = "3.24.0" }
 # -----------------------------------------------------------------------------
 [dependencies.serde]
 default-features        = false
@@ -38,7 +38,7 @@ features                = ["derive"]
 # -----------------------------------------------------------------------------
 [dependencies.toml]
 default-features        = false
-version                 = "0.9.8"
+version                 = "0.9.11"
 features                = ["parse", "serde"]
 # =============================================================================
 [lints]
