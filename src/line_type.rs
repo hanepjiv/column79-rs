@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2025/10/18
+//  @date 2026/03/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -82,11 +82,7 @@ impl LineType {
         true
     }
     // ========================================================================
-    #[expect(
-        clippy::unwrap_used,
-        clippy::unwrap_in_result,
-        reason = "checked"
-    )]
+    #[expect(clippy::unwrap_used, reason = "checked")]
     pub(crate) fn is_line_comment(
         conf: &Config,
         lang: &Language,
@@ -106,11 +102,7 @@ impl LineType {
         })
     }
     // ------------------------------------------------------------------------
-    #[expect(
-        clippy::unwrap_used,
-        clippy::unwrap_in_result,
-        reason = "checked"
-    )]
+    #[expect(clippy::unwrap_used, reason = "checked")]
     pub(crate) fn is_block_comment(
         conf: &Config,
         lang: &Language,

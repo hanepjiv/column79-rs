@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2025/07/12
+//  @date 2026/03/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -106,11 +106,7 @@ impl Language {
         }
     }
     // ========================================================================
-    #[expect(
-        clippy::unwrap_used,
-        clippy::unwrap_in_result,
-        reason = "checked"
-    )]
+    #[expect(clippy::unwrap_used, reason = "checked")]
     fn check_descent(
         &self,
         ls: &BTreeMap<String, Self>,
@@ -137,11 +133,7 @@ impl Language {
         Ok(())
     }
     // ------------------------------------------------------------------------
-    #[expect(
-        clippy::unwrap_used,
-        clippy::unwrap_in_result,
-        reason = "checked"
-    )]
+    #[expect(clippy::unwrap_used, reason = "checked")]
     pub(crate) fn from_src(
         src: LanguageSrc,
         languages: &BTreeMap<String, Self>,
@@ -171,11 +163,7 @@ impl Language {
         Ok(ret)
     }
     // ========================================================================
-    #[expect(
-        clippy::expect_used,
-        clippy::unwrap_in_result,
-        reason = "checked"
-    )]
+    #[expect(clippy::expect_used, reason = "checked")]
     pub(crate) fn re_line_captures<'t>(
         &self,
         line: &'t str,
@@ -194,11 +182,7 @@ impl Language {
         }
     }
     // ------------------------------------------------------------------------
-    #[expect(
-        clippy::expect_used,
-        clippy::unwrap_in_result,
-        reason = "checked"
-    )]
+    #[expect(clippy::expect_used, reason = "checked")]
     pub(crate) fn re_block_captures<'t>(
         &self,
         line: &'t str,

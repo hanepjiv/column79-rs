@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2025/09/06
+//  @date 2026/03/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -273,7 +273,6 @@ impl<'a> Replacer<'a> {
     #[expect(
         clippy::arithmetic_side_effects,
         clippy::unwrap_used,
-        clippy::unwrap_in_result,
         reason = "checked"
     )]
     fn block_separator(
