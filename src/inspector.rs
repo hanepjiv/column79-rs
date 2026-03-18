@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2026/03/01
+//  @date 2026/03/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -21,6 +21,7 @@ use std::{
 // ----------------------------------------------------------------------------
 use regex::Regex;
 use tempfile::tempfile;
+use unicode_segmentation::UnicodeSegmentation as _;
 // ----------------------------------------------------------------------------
 use crate::{
     config::Config, error::Error, flags::Flags, language::Language,
@@ -65,7 +66,7 @@ pub(crate) trait Inspector: core::fmt::Debug {
             path.as_os_str().to_str().ok_or_else(|| Error::Inspect(
                 "Inspector::println_line: path".to_owned()
             ))?,
-            line.len(),
+            line.graphemes(true).count(),
         );
         Ok(())
     }
@@ -94,13 +95,15 @@ pub(crate) trait Inspector: core::fmt::Debug {
         match *line_type {
             LineType::LineComment(_, _)
             | LineType::LineSeparator(_, _)
-            | LineType::Other => column >= line.len(),
+            | LineType::Other => column >= line.graphemes(true).count(),
 
             LineType::BlockComment(_, _, _) => {
-                column >= line.len() && !lang.has_line_comment()
+                column >= line.graphemes(true).count()
+                    && !lang.has_line_comment()
             }
             LineType::BlockSeparator(_, _, _) => {
-                column == line.len() && !lang.has_line_comment()
+                column == line.graphemes(true).count()
+                    && !lang.has_line_comment()
             }
         }
     }
@@ -162,7 +165,7 @@ impl<'a> Replacer<'a> {
         line_type: &LineType,
         line: &str,
     ) -> Result<(bool, String), Error> {
-        let l = line.len();
+        let l = line.graphemes(true).count();
         let c = self.config.column;
         let body = line_type.body().ok_or_else(|| {
             Error::Inspect(
@@ -233,7 +236,7 @@ impl<'a> Replacer<'a> {
     ) -> String {
         let c = self.config.column;
         let mut s = Self::make_line(lang, line_type);
-        let d = s.len() as isize - c as isize;
+        let d = s.graphemes(true).count() as isize - c as isize;
         match d.cmp(&0) {
             Less => {
                 let b =
@@ -283,7 +286,7 @@ impl<'a> Replacer<'a> {
         line_type: &LineType,
         line: &str,
     ) -> Result<(bool, String), Error> {
-        let l = line.len();
+        let l = line.graphemes(true).count();
         let c = self.config.column;
         let has_line = lang.has_line_comment();
         let body = line_type.body().unwrap();

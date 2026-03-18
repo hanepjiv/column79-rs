@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.11-alpha.14"
+version                 = "0.2.12-alpha.0"
 publish                 = false
 
 description             = "Source code column checker."
@@ -30,6 +30,7 @@ getopts                 = { default-features = false, version = "0.2.24" }
 log                     = { default-features = false, version = "0.4.29" }
 regex                   = { default-features = true,  version = "1.12.3" }
 tempfile                = { default-features = false, version = "3.27.0" }
+unicode-segmentation    = { default-features = false, version = "1.12.0" }
 # -----------------------------------------------------------------------------
 [dependencies.serde]
 default-features        = false

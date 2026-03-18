@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/07/12
+//  @date 2026/03/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -24,6 +24,7 @@ use regex as _;
 use serde as _;
 use tempfile as _;
 use toml as _;
+use unicode_segmentation as _;
 // ----------------------------------------------------------------------------
 use self::error::{Error, Result};
 use column79::{Column79, Command, Flags};

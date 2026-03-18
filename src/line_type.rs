@@ -6,10 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2026/03/01
+//  @date 2026/03/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
+use unicode_segmentation::UnicodeSegmentation as _;
+// ----------------------------------------------------------------------------
 use crate::{config::Config, language::Language};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -66,7 +68,7 @@ impl LineType {
     #[expect(clippy::unwrap_used, reason = "checked")]
     pub(crate) fn is_separator(conf: &Config, body: &str) -> bool {
         let t = conf.separator_threshold;
-        if body.len() < t {
+        if body.graphemes(true).count() < t {
             return false;
         }
         let mut s = body.chars().rev();
