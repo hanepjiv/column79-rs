@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.11-alpha.13"
+version                 = "0.2.11-alpha.14"
 publish                 = false
 
 description             = "Source code column checker."
@@ -23,13 +23,13 @@ strip                   = true
 lto                     = true
 # =============================================================================
 [dependencies]
-bitflags                = { default-features = false, version = "2.10.0" }
+bitflags                = { default-features = false, version = "2.11.0" }
 dirs                    = { default-features = false, version = "6.0.0" }
-env_logger              = { default-features = false, version = "0.11.8" }
+env_logger              = { default-features = false, version = "0.11.9" }
 getopts                 = { default-features = false, version = "0.2.24" }
 log                     = { default-features = false, version = "0.4.29" }
 regex                   = { default-features = true,  version = "1.12.3" }
-tempfile                = { default-features = false, version = "3.24.0" }
+tempfile                = { default-features = false, version = "3.27.0" }
 # -----------------------------------------------------------------------------
 [dependencies.serde]
 default-features        = false
@@ -38,7 +38,7 @@ features                = ["derive"]
 # -----------------------------------------------------------------------------
 [dependencies.toml]
 default-features        = false
-version                 = "0.9.11"
+version                 = "1.0.7"
 features                = ["parse", "serde"]
 # =============================================================================
 [lints]
@@ -46,8 +46,6 @@ workspace               = true
 # -----------------------------------------------------------------------------
 [workspace.lints.rust]
 # rustc 1.93.1 (01f6ddf75 2026-02-11)
-
-#unfulfilled_lint_expectations = "warn"
 
 dead_code = "deny"
 deprecated = "deny"
