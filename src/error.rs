@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2025/04/27
+//  @date 2026/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -96,13 +96,21 @@ mod tests {
     // ========================================================================
     #[test]
     const fn send() {
-        const fn assert_send<T: Send>() {}
+        const fn assert_send<T>()
+        where
+            T: Send,
+        {
+        }
         assert_send::<Error>();
     }
     // ------------------------------------------------------------------------
     #[test]
     const fn sync() {
-        const fn assert_sync<T: Sync>() {}
+        const fn assert_sync<T>()
+        where
+            T: Sync,
+        {
+        }
         assert_sync::<Error>();
     }
 }
