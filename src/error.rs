@@ -6,32 +6,32 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2026/05/16
+//  @date 2026/05/30
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use core::error::Error as CoreError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// enum Error
+/// enum Error.
 #[derive(Debug)]
 #[non_exhaustive]
 pub enum Error {
-    /// `EnvVar`
+    /// `EnvVar`.
     EnvVar(std::env::VarError),
-    /// IO
+    /// IO.
     IO(std::io::Error),
-    /// `TOMLSer`
+    /// `TOMLSer`.
     TOMLSer(toml::ser::Error),
-    /// `TOMLDe`
+    /// `TOMLDe`.
     TOMLDe(toml::de::Error),
-    /// `ParseConfig`
+    /// `ParseConfig`.
     ParseConfig(String, toml::de::Error),
-    /// Column79
+    /// Column79.
     Column79(String),
-    /// `InvalidConfig`
+    /// `InvalidConfig`.
     InvalidConfig(String),
-    /// Inspect
+    /// Inspect.
     Inspect(String),
 }
 // ============================================================================

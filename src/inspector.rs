@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2026/03/18
+//  @date 2026/05/30
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -29,13 +29,13 @@ use crate::{
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// trait Inspector
+/// trait Inspector.
 pub(crate) trait Inspector: core::fmt::Debug {
     // ========================================================================
-    /// inspect
+    /// inspect.
     fn inspect(&self, lang: &Language, path: &Path) -> Result<(), Error>;
     // ========================================================================
-    /// `inspect_impl`
+    /// `inspect_impl`.
     #[expect(clippy::arithmetic_side_effects, reason = "checked")]
     fn inspect_impl(
         &self,
@@ -54,7 +54,7 @@ pub(crate) trait Inspector: core::fmt::Debug {
         Ok(())
     }
     // ========================================================================
-    /// `println_line`
+    /// `println_line`.
     fn println_line(
         &self,
         path: &Path,
@@ -71,7 +71,7 @@ pub(crate) trait Inspector: core::fmt::Debug {
         Ok(())
     }
     // ========================================================================
-    /// ask
+    /// ask.
     fn ask(
         &self,
         config: &Config,
@@ -84,7 +84,7 @@ pub(crate) trait Inspector: core::fmt::Debug {
         crate::ask::ask(msg, default)
     }
     // ========================================================================
-    /// `check_type`
+    /// `check_type`.
     fn check_type(
         &self,
         lang: &Language,
@@ -110,16 +110,16 @@ pub(crate) trait Inspector: core::fmt::Debug {
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// struct Checker
+/// struct Checker.
 #[derive(Debug, Clone)]
 pub(crate) struct Checker<'a> {
-    /// config
+    /// config.
     config: &'a Config,
 }
 // ============================================================================
 impl<'a> Checker<'a> {
     // ========================================================================
-    /// new
+    /// new.
     pub(crate) const fn new(config: &'a Config) -> Self {
         Checker { config }
     }
@@ -127,7 +127,7 @@ impl<'a> Checker<'a> {
 // ============================================================================
 impl Inspector for Checker<'_> {
     // ========================================================================
-    /// inspect
+    /// inspect.
     fn inspect(&self, lang: &Language, path: &Path) -> Result<(), Error> {
         let c = self.config.column;
         self.inspect_impl(self.config, lang, path, &mut |row, line_type, l| {
@@ -141,21 +141,21 @@ impl Inspector for Checker<'_> {
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// struct Replacer
+/// struct Replacer.
 #[derive(Debug, Clone)]
 pub(crate) struct Replacer<'a> {
-    /// config
+    /// config.
     config: &'a Config,
 }
 // ============================================================================
 impl<'a> Replacer<'a> {
     // ========================================================================
-    /// new
+    /// new.
     pub(crate) const fn new(config: &'a Config) -> Self {
         Replacer { config }
     }
     // ========================================================================
-    /// `line_separator`
+    /// `line_separator`.
     #[expect(clippy::arithmetic_side_effects, reason = "checked")]
     fn line_separator(
         &self,
@@ -207,7 +207,7 @@ impl<'a> Replacer<'a> {
         }
     }
     // ========================================================================
-    /// `make_line`
+    /// `make_line`.
     #[expect(clippy::unwrap_used, reason = "checked")]
     fn make_line(lang: &Language, line_type: &LineType) -> String {
         let mut s =
@@ -222,7 +222,7 @@ impl<'a> Replacer<'a> {
         s
     }
     // ========================================================================
-    /// `make_line_separator`
+    /// `make_line_separator`.
     #[expect(
         clippy::arithmetic_side_effects,
         clippy::cast_possible_wrap,
@@ -255,7 +255,7 @@ impl<'a> Replacer<'a> {
         s
     }
     // ========================================================================
-    /// `block_comment`
+    /// `block_comment`.
     fn block_comment(
         &self,
         lang: &Language,
@@ -272,7 +272,7 @@ impl<'a> Replacer<'a> {
         }
     }
     // ========================================================================
-    /// `block_separator`
+    /// `block_separator`.
     #[expect(
         clippy::arithmetic_side_effects,
         clippy::unwrap_used,
@@ -353,7 +353,7 @@ impl<'a> Replacer<'a> {
 // ============================================================================
 impl Inspector for Replacer<'_> {
     // ========================================================================
-    /// inspect
+    /// inspect.
     #[expect(
         clippy::unwrap_used,
         clippy::unwrap_in_result,

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2026/03/18
+//  @date 2026/05/30
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,7 +15,7 @@ use unicode_segmentation::UnicodeSegmentation as _;
 use crate::{config::Config, language::Language};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// enum `LineType`
+/// enum `LineType`.
 #[derive(Debug, Clone)]
 pub(crate) enum LineType {
     /// `LineComment`
@@ -127,7 +127,7 @@ impl LineType {
     // ========================================================================
     pub(crate) fn new(conf: &Config, lang: &Language, line: &str) -> Self {
         Self::is_block_comment(conf, lang, line).unwrap_or_else(|| {
-            Self::is_line_comment(conf, lang, line).map_or(Self::Other, |b| b)
+            Self::is_line_comment(conf, lang, line).unwrap_or(Self::Other)
         })
     }
 }

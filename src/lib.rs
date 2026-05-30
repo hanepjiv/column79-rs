@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2025/05/18
+//  @date 2026/05/30
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -41,17 +41,17 @@ const CONFIG_DEFAULT: &str = include_str!("config/default.toml");
 const CONFIG_USER: &str = include_str!("config/user.toml");
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// enum Command
+/// enum Command.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum Command {
-    ///  Unknown
+    ///  Unknown.
     Unknown,
-    ///  Init
+    ///  Init.
     Init,
-    ///  Check
+    ///  Check.
     Check,
-    ///  Replace
+    ///  Replace.
     Replace,
 }
 // ============================================================================

@@ -1,30 +1,30 @@
 // -*- coding:utf-8-unix; -*-
 
-//! error.rs
+//! error.rs.
 
 //  Copyright 2017 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/11
-//  @date 2026/05/16
+//  @date 2026/05/31
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use core::error::Error as StdError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// enum Error
+/// enum Error.
 #[derive(Debug)]
 pub(crate) enum Error {
-    /// `OptionNone`
+    /// `OptionNone`.
     OptionNone(String),
-    /// `GetOpts`
+    /// `GetOpts`.
     GetOpts(::getopts::Fail),
-    /// `StdIO`
+    /// `StdIO`.
     StdIO(::std::io::Error),
-    /// `StdNumParseInt`
+    /// `StdNumParseInt`.
     StdNumParseInt(::core::num::ParseIntError),
-    /// Column79
+    /// Column79.
     Column79(::column79::Error),
 }
 // ============================================================================
@@ -79,7 +79,7 @@ impl StdError for Error {
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// type Result
+/// type Result.
 pub(crate) type Result<T> = ::core::result::Result<T, Error>;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
