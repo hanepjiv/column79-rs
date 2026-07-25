@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "column79"
-version                 = "0.2.12-alpha.1"
+version                 = "0.2.12-alpha.2"
 publish                 = false
 
 description             = "Source code column checker."
@@ -23,14 +23,14 @@ strip                   = true
 lto                     = true
 # =============================================================================
 [dependencies]
-bitflags                = { default-features = false, version = "2.11.1" }
+bitflags                = { default-features = false, version = "2.13.0" }
 dirs                    = { default-features = false, version = "6.0.0" }
 env_logger              = { default-features = false, version = "0.11.10" }
 getopts                 = { default-features = false, version = "0.2.24" }
-log                     = { default-features = false, version = "0.4.29" }
-regex                   = { default-features = true,  version = "1.12.3" }
+log                     = { default-features = false, version = "0.4.32" }
+regex                   = { default-features = true,  version = "1.12.4" }
 tempfile                = { default-features = false, version = "3.27.0" }
-unicode-segmentation    = { default-features = false, version = "1.13.2" }
+unicode-segmentation    = { default-features = false, version = "1.13.3" }
 # -----------------------------------------------------------------------------
 [dependencies.serde]
 default-features        = false
@@ -46,7 +46,9 @@ features                = ["parse", "serde"]
 workspace               = true
 # -----------------------------------------------------------------------------
 [workspace.lints.rust]
-# rustc 1.96.0 (ac68faa20 2026-05-25)
+# rustc 1.97.1 (8bab26f4f 2026-07-14)
+
+dead_code_pub_in_binary = "warn"
 
 dead_code = "deny"
 deprecated = "deny"
@@ -63,6 +65,7 @@ absolute_paths_not_starting_with_crate = "forbid"
 ambiguous_negative_literals = "forbid"
 closure_returning_async_block = "forbid"
 deprecated_in_future = "forbid"
+deprecated_llvm_intrinsic = "forbid"
 deprecated_safe_2024 = "forbid"
 deref_into_dyn_supertrait = "forbid"
 edition_2024_expr_fragment_specifier = "forbid"
@@ -77,7 +80,6 @@ keyword_idents_2018 = "forbid"
 keyword_idents_2024 = "forbid"
 let_underscore_drop = "forbid"
 linker_info = "forbid"
-linker_messages = "forbid"
 lossy_provenance_casts = "forbid"
 macro_use_extern_crate = "forbid"
 meta_variable_misuse = "forbid"
@@ -150,6 +152,7 @@ duplicate_macro_attributes = "forbid"
 dyn_drop = "forbid"
 ellipsis_inclusive_range_patterns = "forbid"
 exported_private_dependencies = "forbid"
+float_literal_f32_fallback = "forbid"
 forbidden_lint_groups = "forbid"
 forgetting_copy_types = "forbid"
 forgetting_references = "forbid"
@@ -161,7 +164,6 @@ improper_ctypes = "forbid"
 improper_ctypes_definitions = "forbid"
 improper_gpu_kernel_arg = "forbid"
 incomplete_features = "forbid"
-inline_always_mismatching_target_features = "forbid"
 inline_no_sanitize = "forbid"
 integer_to_ptr_transmutes = "forbid"
 internal_eq_trait_method_impls = "forbid"
@@ -173,6 +175,7 @@ invalid_value = "forbid"
 irrefutable_let_patterns = "forbid"
 large_assignments = "forbid"
 late_bound_lifetime_arguments = "forbid"
+linker_messages = "forbid"
 malformed_diagnostic_attributes = "forbid"
 malformed_diagnostic_format_literals = "forbid"
 map_unit_fn = "forbid"
@@ -205,6 +208,7 @@ special_module_name = "forbid"
 stable_features = "forbid"
 static_mut_refs = "forbid"
 suspicious_double_ref_op = "forbid"
+tail_call_track_caller = "forbid"
 trivial_bounds = "forbid"
 type_alias_bounds = "forbid"
 tyvar_behind_raw_pointer = "forbid"
@@ -239,7 +243,6 @@ unused_variables = "forbid"
 unused_visibilities = "forbid"
 useless_ptr_null_checks = "forbid"
 uses_power_alignment = "forbid"
-varargs_without_pattern = "forbid"
 while_true = "forbid"
 ambiguous_associated_items = "forbid"
 ambiguous_glob_imports = "forbid"
@@ -287,6 +290,7 @@ undropped_manually_drops = "forbid"
 uninhabited_static = "forbid"
 unknown_crate_types = "forbid"
 useless_deprecated = "forbid"
+varargs_without_pattern = "forbid"
 
 renamed_and_removed_lints = "warn"
 unknown_lints = "warn"
