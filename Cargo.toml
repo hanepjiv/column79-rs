@@ -48,6 +48,8 @@ workspace               = true
 [workspace.lints.rust]
 # rustc 1.99.0 (b940084d7 2026-09-28)
 
+dead_code_pub_in_binary = "warn"
+
 dead_code = "deny"
 deprecated = "deny"
 non_camel_case_types = "deny"
@@ -62,7 +64,6 @@ unused_mut = "deny"
 absolute_paths_not_starting_with_crate = "forbid"
 ambiguous_negative_literals = "forbid"
 closure_returning_async_block = "forbid"
-dead_code_pub_in_binary = "forbid"
 deprecated_in_future = "forbid"
 deprecated_llvm_intrinsic = "forbid"
 deprecated_safe_2024 = "forbid"
