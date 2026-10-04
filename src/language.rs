@@ -1,12 +1,12 @@
 // -*- coding:utf-8-unix; -*-
 
-//! language.rs
+//! language.rs.
 
 //  Copyright 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/13
-//  @date 2026/03/01
+//  @date 2026/10/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -19,57 +19,60 @@ use serde::Deserialize;
 use crate::error::Error;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// struct `LanguageSrc`
+/// struct `LanguageSrc`.
 #[derive(Debug, Deserialize)]
 pub(crate) struct LanguageSrc {
-    /// name
+    /// name.
     pub name: Option<String>,
-    /// base
+    /// base.
     pub base: Option<String>,
-    /// extensions
+    /// extensions.
     pub extensions: Option<Vec<String>>,
-    /// `line_comment_begin`
+    /// `line_comment_begin`.
     pub line_comment_begin: Option<String>,
-    /// `block_comment_begin`
+    /// `block_comment_begin`.
     pub block_comment_begin: Option<String>,
-    /// `block_comment_end`
+    /// `block_comment_end`.
     pub block_comment_end: Option<String>,
-    /// sublanguages
+    /// sublanguages.
     pub sublanguages: Option<Vec<String>>,
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// struct Language
+/// struct Language.
 #[derive(Debug, Clone, Default)]
 pub(crate) struct Language {
-    /// name
+    /// name.
     name: String,
-    /// base
+    /// base.
     base: Option<String>,
-    /// extensions
+    /// extensions.
     extensions: Vec<String>,
-    /// `line_comment_begin`
+    /// `line_comment_begin`.
     line_comment_begin: Option<String>,
-    /// `block_comment_begin`
+    /// `block_comment_begin`.
     block_comment_begin: Option<String>,
-    /// `block_comment_end`
+    /// `block_comment_end`.
     block_comment_end: Option<String>,
-    /// sublanguages
+    /// sublanguages.
     sublanguages: Vec<String>,
-    /// `re_line`
+    /// `re_line`.
     re_line: RefCell<Option<Regex>>,
-    /// `re_block`
+    /// `re_block`.
     re_block: RefCell<Option<Regex>>,
 }
 // ============================================================================
 impl Language {
     // ========================================================================
+    /// fn `peek_name`.
     pub(crate) const fn peek_name(&self) -> &String {
         &self.name
     }
+    /// fn `peek_lcb`.
     pub(crate) const fn peek_lcb(&self) -> Option<&String> {
         self.line_comment_begin.as_ref()
     }
+    /// fn `peek_bcb`.
     pub(crate) const fn peek_bcb(&self) -> Option<&String> {
         self.block_comment_begin.as_ref()
     }
@@ -79,15 +82,17 @@ impl Language {
     }
      */
     // ========================================================================
+    /// fn `has_line_comment`.
     pub(crate) const fn has_line_comment(&self) -> bool {
         self.line_comment_begin.is_some()
     }
     // ------------------------------------------------------------------------
+    /// fn `has_block_comment`.
     pub(crate) const fn has_block_comment(&self) -> bool {
         self.block_comment_begin.is_some() && self.block_comment_end.is_some()
     }
     // ========================================================================
-    /// extend
+    /// extend.
     pub(crate) fn extend(&mut self, base: &Self) {
         if self.line_comment_begin.is_none()
             && base.line_comment_begin.is_some()
@@ -106,6 +111,7 @@ impl Language {
         }
     }
     // ========================================================================
+    /// fn `check_descent`.
     #[expect(clippy::unwrap_used, reason = "checked")]
     fn check_descent(
         &self,
@@ -133,6 +139,7 @@ impl Language {
         Ok(())
     }
     // ------------------------------------------------------------------------
+    /// fn `from_src`.
     #[expect(clippy::unwrap_used, reason = "checked")]
     pub(crate) fn from_src(
         src: LanguageSrc,
@@ -163,6 +170,7 @@ impl Language {
         Ok(ret)
     }
     // ========================================================================
+    /// fn `re_line_captures`.
     #[expect(clippy::expect_used, reason = "checked")]
     pub(crate) fn re_line_captures<'t>(
         &self,
@@ -182,6 +190,7 @@ impl Language {
         }
     }
     // ------------------------------------------------------------------------
+    /// fn `re_block_captures`.
     #[expect(clippy::expect_used, reason = "checked")]
     pub(crate) fn re_block_captures<'t>(
         &self,
@@ -206,6 +215,7 @@ impl Language {
         }
     }
     // ========================================================================
+    /// fn `check_path_`.
     #[expect(
         clippy::unwrap_used,
         clippy::unwrap_in_result,
@@ -224,6 +234,7 @@ impl Language {
         None
     }
     // ------------------------------------------------------------------------
+    /// fn `check_path`.
     pub(crate) fn check_path<'a>(
         &'a self,
         path: &std::path::PathBuf,

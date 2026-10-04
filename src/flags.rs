@@ -1,6 +1,6 @@
 // -*- coding:utf-8-unix; -*-
 
-//! flags.rs
+//! flags.rs.
 
 //  Copyright 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
@@ -9,15 +9,15 @@
 //  @date 2025/04/06
 
 // ////////////////////////////////////////////////////////////////////////////
-// use  =======================================================================
+// use	=======================================================================
 use bitflags::bitflags;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 bitflags! {
-    /// struct Flags
+    /// struct Flags.
     #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct Flags: u32 {
-    /// const NOASK
+    /// const NOASK.
     const NOASK = 0b0000_0001_u32;
     }
 }

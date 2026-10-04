@@ -1,12 +1,12 @@
 // -*- coding:utf-8-unix; -*-
 
-//! inspector.rs
+//! inspector.rs.
 
 //  Copyright 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/14
-//  @date 2026/05/30
+//  @date 2026/10/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -400,7 +400,7 @@ impl Inspector for Replacer<'_> {
                 let path_back = path.with_extension(extension);
                 println!("* backup: {}", path_back.display());
                 std::fs::rename(path, path_back)?;
-            }
+            };
             let mut file_new = File::create(path)?;
             let mut fnew = BufWriter::new(&mut file_new);
             let _ = std::io::copy(&mut ftmp_x, &mut fnew)?;

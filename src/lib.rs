@@ -1,12 +1,12 @@
 // -*- coding:utf-8-unix; -*-
 
-//! lib.rs
+//! lib.rs.
 
 //  Copyright 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/12
-//  @date 2026/05/30
+//  @date 2026/10/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -34,10 +34,15 @@ pub use self::error::Error;
 pub use self::flags::Flags;
 use self::inspector::{Checker, Inspector, Replacer};
 // define  ====================================================================
+/// const `CONFIG_DIRNAME`.
 const CONFIG_DIRNAME: &str = ".config";
+/// const `CONFIG_DEFAULT_PATH`.
 const CONFIG_DEFAULT_PATH: &str = "default.toml";
+/// const `CONFIG_USER_PATH`.
 const CONFIG_USER_PATH: &str = "user.toml";
+/// const `CONFIG_DEFAULT`.
 const CONFIG_DEFAULT: &str = include_str!("config/default.toml");
+/// const `CONFIG_USER`.
 const CONFIG_USER: &str = include_str!("config/user.toml");
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -69,33 +74,33 @@ impl<'a> From<&'a str> for Command {
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// struct Column79
+/// struct Column79.
 #[derive(Debug, Clone)]
 pub struct Column79 {
-    /// command
+    /// command.
     command: Command,
-    /// input
+    /// input.
     input: PathBuf,
-    /// `config_dir`
+    /// `config_dir`.
     config_dir: PathBuf,
-    /// `config_default_path`
+    /// `config_default_path`.
     config_default_path: PathBuf,
-    /// `config_user_path`
+    /// `config_user_path`.
     config_user_path: PathBuf,
-    /// Config
+    /// Config.
     config: Config,
 }
 // ============================================================================
 impl Column79 {
     // ========================================================================
-    /// `as_config_dir`
-    #[must_use]
+    /// `as_config_dir`.
+    #[must_use = "AsRef."]
     #[inline]
     pub const fn as_config_dir(&self) -> &PathBuf {
         &self.config_dir
     }
     // ========================================================================
-    /// `create_config_default`
+    /// `create_config_default`.
     #[inline]
     fn create_config(
         path: &PathBuf,
@@ -106,11 +111,11 @@ impl Column79 {
         Ok(())
     }
     // ========================================================================
-    /// run
+    /// run.
     ///
     /// # Errors
     ///
-    /// `Error::Column79`
+    /// - `Error::Column79`
     #[inline]
     pub fn run(
         command: Command,
@@ -193,7 +198,7 @@ impl Column79 {
         }
     }
     // ========================================================================
-    /// walk
+    /// walk.
     fn walk(
         &self,
         path: &PathBuf,
@@ -219,7 +224,7 @@ impl Column79 {
         Ok(())
     }
     // ========================================================================
-    /// init
+    /// init.
     fn init(&self) -> Result<(), Error> {
         Self::create_config(&self.config_default_path, CONFIG_DEFAULT)?;
         if !self.config_user_path.exists() {
@@ -234,12 +239,12 @@ impl Column79 {
         Ok(())
     }
     // ========================================================================
-    /// check
+    /// check.
     fn check(&self) -> Result<(), Error> {
         self.walk(&self.input, &Checker::new(&self.config))
     }
     // ========================================================================
-    /// replace
+    /// replace.
     fn replace(&self) -> Result<(), Error> {
         self.walk(&self.input, &Replacer::new(&self.config))
     }

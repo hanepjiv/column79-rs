@@ -1,18 +1,19 @@
 // -*- coding:utf-8-unix; -*-
 
-//! ask.rs
+//! ask.rs.
 
 //  Copyright 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2025/04/06
+//  @date 2026/10/04
 
 // use  =======================================================================
 use std::io::Write as _;
 // ----------------------------------------------------------------------------
 use crate::error::Error;
 // ////////////////////////////////////////////////////////////////////////////
+/// fn ask.
 pub(crate) fn ask(msg: &str, default: bool) -> Result<bool, Error> {
     std::io::stdout().write_all(msg.as_ref())?;
     std::io::stdout().write_all(if default {

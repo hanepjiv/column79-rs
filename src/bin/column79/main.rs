@@ -1,6 +1,6 @@
 // -*- coding:utf-8-unix; -*-
 
-//! main.rs
+//! main.rs.
 
 //  Copyright 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
@@ -11,10 +11,10 @@
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
 #![cfg_attr(doc, doc = include_str!(concat!(env!("CARGO_MANIFEST_DIR"),
-                                            "/README.md")))]
-// mod  =======================================================================
+					    "/README.md")))]
+// mod	=======================================================================
 pub(crate) mod error;
-// use  =======================================================================
+// use	=======================================================================
 use std::{env, path::PathBuf};
 // ----------------------------------------------------------------------------
 use bitflags as _;
@@ -30,6 +30,7 @@ use self::error::{Error, Result};
 use column79::{Column79, Command, Flags};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
+/// `fn print_usage`.
 fn print_usage(opts: &::getopts::Options) {
     print!(
         "{}",
@@ -38,17 +39,18 @@ fn print_usage(opts: &::getopts::Options) {
     {0} Command [Input] [Options]
 
 Command:
-    init        initialize the configure
-    check       to check the column overflow
-    replace     replace the result of the checked
+    init	initialize the configure
+    check	to check the column overflow
+    replace	replace the result of the checked
 
 Input:
-    ./          current directory (default)",
+    ./		current directory (default)",
             module_path!()
         ))
     );
 }
 // ============================================================================
+/// fn main.
 fn main() -> Result<()> {
     env_logger::init();
 

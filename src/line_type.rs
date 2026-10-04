@@ -1,12 +1,12 @@
 // -*- coding:utf-8-unix; -*-
 
-//! `line_type.rs`
+//! `line_type.rs`.
 
 //  Copyright 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/10/21
-//  @date 2026/05/30
+//  @date 2026/10/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -18,20 +18,21 @@ use crate::{config::Config, language::Language};
 /// enum `LineType`.
 #[derive(Debug, Clone)]
 pub(crate) enum LineType {
-    /// `LineComment`
+    /// `LineComment`.
     LineComment(String, String),
-    /// `LineSeparator`
+    /// `LineSeparator`.
     LineSeparator(String, String),
-    /// `BlockComment`
+    /// `BlockComment`.
     BlockComment(String, String, String),
-    /// `BlockSeparator`
+    /// `BlockSeparator`.
     BlockSeparator(String, String, String),
-    /// Other
+    /// Other.
     Other,
 }
 // ============================================================================
 impl LineType {
     // ========================================================================
+    /// fn head.
     pub(crate) const fn head(&self) -> Option<&String> {
         match *self {
             Self::LineComment(ref head, _)
@@ -43,6 +44,7 @@ impl LineType {
         }
     }
     // ------------------------------------------------------------------------
+    /// fn body.
     pub(crate) const fn body(&self) -> Option<&String> {
         match *self {
             Self::LineComment(_, ref body)
@@ -54,6 +56,7 @@ impl LineType {
         }
     }
     // ------------------------------------------------------------------------
+    /// fn foot.
     pub(crate) const fn foot(&self) -> Option<&String> {
         match *self {
             Self::BlockComment(_, _, ref foot)
@@ -65,6 +68,7 @@ impl LineType {
         }
     }
     // ========================================================================
+    /// fn `is_separator`.
     #[expect(clippy::unwrap_used, reason = "checked")]
     pub(crate) fn is_separator(conf: &Config, body: &str) -> bool {
         let t = conf.separator_threshold;
@@ -84,6 +88,7 @@ impl LineType {
         true
     }
     // ========================================================================
+    /// fn `is_line_comment`.
     #[expect(clippy::unwrap_used, reason = "checked")]
     pub(crate) fn is_line_comment(
         conf: &Config,
@@ -104,6 +109,7 @@ impl LineType {
         })
     }
     // ------------------------------------------------------------------------
+    /// `is_block_comment`.
     #[expect(clippy::unwrap_used, reason = "checked")]
     pub(crate) fn is_block_comment(
         conf: &Config,
@@ -125,6 +131,7 @@ impl LineType {
         })
     }
     // ========================================================================
+    /// `new`.
     pub(crate) fn new(conf: &Config, lang: &Language, line: &str) -> Self {
         Self::is_block_comment(conf, lang, line).unwrap_or_else(|| {
             Self::is_line_comment(conf, lang, line).unwrap_or(Self::Other)

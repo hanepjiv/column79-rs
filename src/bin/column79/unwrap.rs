@@ -1,6 +1,6 @@
 // -*- coding:utf-8-unix; -*-
 
-//! unwrap.rs
+//! unwrap.rs.
 
 //  Copyright 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
@@ -10,7 +10,7 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// unwrap!
+/// unwrap!.
 #[cfg(not(debug_assertions))]
 #[macro_export]
 macro_rules! unwrap {
@@ -25,19 +25,19 @@ macro_rules! unwrap {
     };
 }
 // ----------------------------------------------------------------------------
-/// unwrap!
+/// unwrap!.
 #[cfg(debug_assertions)]
 #[macro_export]
 macro_rules! unwrap {
-    ($e:expr)                           => {
-        ($e).expect(concat!(module_path!(), ": ", file!(),
-                            "(", line!(), "): "))
+    ($e:expr)				=> {
+	($e).expect(concat!(module_path!(), ": ", file!(),
+			    "(", line!(), "): "))
     };
-    ($e:expr, $msg:expr)                => {
-        unwrap!($e, "{}", $msg)
+    ($e:expr, $msg:expr)		=> {
+	unwrap!($e, "{}", $msg)
     };
-    ($e:expr, $fmt:expr, $($args:tt)+)  => {
-        ($e).expect(&format!(concat!(module_path!(), ": ", file!(),
-                                     "(", line!(), "): ", $fmt), $($args)+))
+    ($e:expr, $fmt:expr, $($args:tt)+)	=> {
+	($e).expect(&format!(concat!(module_path!(), ": ", file!(),
+				     "(", line!(), "): ", $fmt), $($args)+))
     };
 }

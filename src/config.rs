@@ -1,6 +1,6 @@
 // -*- coding:utf-8-unix; -*-
 
-//! config.rs
+//! config.rs.
 
 //  Copyright 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
@@ -9,7 +9,7 @@
 //  @date 2025/07/12
 
 // ////////////////////////////////////////////////////////////////////////////
-// use  =======================================================================
+// use	=======================================================================
 use alloc::collections::{BTreeMap, btree_map::Entry};
 use std::ffi::OsString;
 // ----------------------------------------------------------------------------
@@ -22,34 +22,34 @@ use crate::{
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// struct `ConfigSrc`
+/// struct `ConfigSrc`.
 #[derive(Debug, Deserialize)]
 pub(crate) struct ConfigSrc {
-    /// column
+    /// column.
     pub column: Option<usize>,
-    /// `separator_threshold`
+    /// `separator_threshold`.
     pub separator_threshold: Option<usize>,
-    /// ask
+    /// ask.
     pub ask: Option<bool>,
-    /// language
+    /// language.
     pub language: Option<String>,
-    /// languages
+    /// languages.
     pub languages: Option<Vec<LanguageSrc>>,
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// struct Config
+/// struct Config.
 #[derive(Debug, Clone)]
 pub(crate) struct Config {
-    /// column
+    /// column.
     pub column: usize,
-    /// `separator_threshold`
+    /// `separator_threshold`.
     pub separator_threshold: usize,
-    /// flags
+    /// flags.
     pub flags: Flags,
-    /// language
+    /// language.
     pub language: String,
-    /// languages
+    /// languages.
     pub languages: BTreeMap<String, Language>,
 }
 // ============================================================================
@@ -67,14 +67,14 @@ impl Default for Config {
 // ============================================================================
 impl Config {
     // ========================================================================
-    /// new
+    /// new.
     pub(crate) fn new(path: &OsString) -> Result<Self, Error> {
         let mut config = Self::default();
         config.import(path)?;
         Ok(config)
     }
     // ========================================================================
-    /// import
+    /// import.
     pub(crate) fn import(&mut self, path: &OsString) -> Result<(), Error> {
         let src: ConfigSrc = toml::from_str(&std::fs::read_to_string(path)?)?;
         if let Some(x) = src.column {
@@ -101,7 +101,7 @@ impl Config {
                 if self.languages.insert(l.peek_name().clone(), l).is_some() {
                     return Err(Error::InvalidConfig(
                         "::column79::language::Config::import(...): \
-                         languages base: insert failed"
+			 languages base: insert failed"
                             .to_owned(),
                     ));
                 }
@@ -110,13 +110,13 @@ impl Config {
         Ok(())
     }
     // ========================================================================
-    /// validation
+    /// validation.
     pub(crate) fn validation(&mut self) -> Result<(), Error> {
         match self.languages.entry(self.language.clone()) {
             Entry::<'_, _, _, _>::Vacant(_) => {
                 Err(Error::InvalidConfig(format!(
                     "::column79::config::Config::validation(&self): \
-                     language not found {}",
+		     language not found {}",
                     self.language
                 )))
             }
@@ -124,7 +124,7 @@ impl Config {
         }
     }
     // ========================================================================
-    /// `check_path`
+    /// `check_path`.
     pub(crate) fn check_path(
         &self,
         path: &std::path::PathBuf,
